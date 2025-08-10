@@ -7,6 +7,7 @@ import { Badge } from '../../../components/ui/badge'
 import { Input } from '../../../components/ui/input'
 import { SuperAdminLayout } from '../../../components/layout/super-admin-layout'
 import { formatDate } from '../../../lib/utils'
+import { Building, Eye } from 'lucide-react'
 
 // Mock data for club requests
 const mockClubRequests = [
@@ -127,7 +128,7 @@ export default function ClubRequestsPage() {
                   <div className="flex-1">
                     <div className="flex items-center space-x-3">
                       <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <span className="text-xl">🏛️</span>
+                        <Building className="w-6 h-6 text-blue-600" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-lg">{request.clubName}</h3>
@@ -181,7 +182,7 @@ export default function ClubRequestsPage() {
                         ✗ Reject
                       </Button>
                       <Button size="sm" variant="outline" className="flex-1 lg:flex-none">
-                        👁️ Review
+                        <Eye className="w-4 h-4 mr-1" /> Review
                       </Button>
                     </div>
                   )}

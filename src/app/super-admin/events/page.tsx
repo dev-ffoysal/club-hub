@@ -7,6 +7,7 @@ import { Badge } from '../../../components/ui/badge'
 import { Input } from '../../../components/ui/input'
 import { SuperAdminLayout } from '../../../components/layout/super-admin-layout'
 import { formatDate, formatCurrency } from '../../../lib/utils'
+import { Eye } from 'lucide-react'
 
 // Mock data for events
 const mockEvents = [
@@ -325,7 +326,7 @@ export default function EventsPage() {
                       className="flex-1 lg:flex-none"
                       onClick={() => handleViewDetails(event.id)}
                     >
-                      👁️ Details
+                      <Eye className="w-4 h-4 mr-1" /> Details
                     </Button>
                     
                     {event.status === 'pending' && (

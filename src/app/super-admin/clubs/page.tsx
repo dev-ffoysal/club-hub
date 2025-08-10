@@ -7,6 +7,7 @@ import { Badge } from '../../../components/ui/badge'
 import { Input } from '../../../components/ui/input'
 import { SuperAdminLayout } from '../../../components/layout/super-admin-layout'
 import { formatDate } from '../../../lib/utils'
+import { Building, Sprout, Eye, Pause, Play, Trash2, Briefcase, Palette, Monitor, Drama } from 'lucide-react'
 
 // Mock data for clubs
 const mockClubs = [
@@ -371,11 +372,11 @@ export default function ClubsPage() {
                     <div className="flex items-center space-x-3">
                       <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                         <span className="text-xl">
-                          {club.category === 'Technology' ? '💻' :
-                           club.category === 'Cultural' ? '🎭' :
-                           club.category === 'Business' ? '💼' :
-                           club.category === 'Arts' ? '🎨' :
-                           club.category === 'Social Service' ? '🌱' : '🏛️'}
+                          {club.category === 'Technology' ? <Monitor className="w-4 h-4" /> :
+                            club.category === 'Cultural' ? <Drama className="w-4 h-4" /> :
+                           club.category === 'Business' ? <Briefcase className="w-4 h-4" /> :
+                            club.category === 'Arts' ? <Palette className="w-4 h-4" /> :
+                           club.category === 'Social Service' ? <Sprout className="w-4 h-4" /> : <Building className="w-4 h-4" />}
                         </span>
                       </div>
                       <div>
@@ -469,7 +470,7 @@ export default function ClubsPage() {
                       className="flex-1 lg:flex-none"
                       onClick={() => handleViewDetails(club.id)}
                     >
-                      👁️ Details
+                      <Eye className="w-4 h-4 mr-1" /> Details
                     </Button>
                     
                     <Button 
@@ -498,7 +499,7 @@ export default function ClubsPage() {
                         className="text-orange-600 border-orange-600 hover:bg-orange-50 flex-1 lg:flex-none"
                         onClick={() => handleSuspendClub(club.id)}
                       >
-                        ⏸️ Suspend
+                        <Pause className="w-4 h-4 mr-1" /> Suspend
                       </Button>
                     )}
                     
@@ -508,7 +509,7 @@ export default function ClubsPage() {
                         className="bg-blue-600 hover:bg-blue-700 flex-1 lg:flex-none"
                         onClick={() => handleActivateClub(club.id)}
                       >
-                        ▶️ Activate
+                        <Play className="w-4 h-4 mr-1" /> Activate
                       </Button>
                     )}
                     
@@ -518,7 +519,7 @@ export default function ClubsPage() {
                       className="text-red-600 border-red-600 hover:bg-red-50 flex-1 lg:flex-none"
                       onClick={() => handleDeleteClub(club.id)}
                     >
-                      🗑️ Delete
+                      <Trash2 className="w-4 h-4 mr-1" /> Delete
                     </Button>
                   </div>
                 </div>
@@ -531,7 +532,7 @@ export default function ClubsPage() {
           <Card>
             <CardContent className="p-12 text-center">
               <div className="text-gray-500">
-                <span className="text-4xl mb-4 block">🏛️</span>
+                <Building className="w-16 h-16 mb-4 text-blue-600" />
                 <h3 className="text-lg font-medium mb-2">No clubs found</h3>
                 <p>Try adjusting your search criteria or filters.</p>
               </div>

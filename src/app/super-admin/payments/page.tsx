@@ -7,6 +7,7 @@ import { Badge } from '../../../components/ui/badge'
 import { Input } from '../../../components/ui/input'
 import { SuperAdminLayout } from '../../../components/layout/super-admin-layout'
 import { formatDate, formatCurrency } from '../../../lib/utils'
+import { Megaphone, Rocket, Eye, Users, Calendar } from 'lucide-react'
 
 // Mock data for payments
 const mockPayments = [
@@ -323,9 +324,9 @@ export default function PaymentsPage() {
                     <div className="flex items-center space-x-3">
                       <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                         <span className="text-xl">
-                          {payment.type === 'membership' ? '👥' :
-                           payment.type === 'event' ? '📅' :
-                           payment.type === 'advertisement' ? '📢' : '🚀'}
+                          {payment.type === 'membership' ? <Users className="w-4 h-4" /> :
+                            payment.type === 'event' ? <Calendar className="w-4 h-4" /> :
+                           payment.type === 'advertisement' ? <Megaphone className="w-4 h-4" /> : <Rocket className="w-4 h-4" />}
                         </span>
                       </div>
                       <div>
@@ -404,7 +405,7 @@ export default function PaymentsPage() {
                       className="flex-1 lg:flex-none"
                       onClick={() => handleViewDetails(payment.id)}
                     >
-                      👁️ Details
+                      <Eye className="w-4 h-4 mr-1" /> Details
                     </Button>
                     
                     {payment.status === 'failed' && (

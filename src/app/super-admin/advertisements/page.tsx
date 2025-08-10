@@ -7,6 +7,7 @@ import { Badge } from '../../../components/ui/badge'
 import { Input } from '../../../components/ui/input'
 import { SuperAdminLayout } from '../../../components/layout/super-admin-layout'
 import { formatDate, formatCurrency } from '../../../lib/utils'
+import { Megaphone, Eye, Pause, Play } from 'lucide-react'
 
 // Mock data for advertisements
 const mockAdvertisements = [
@@ -230,7 +231,7 @@ export default function AdvertisementsPage() {
                   <div className="flex-1">
                     <div className="flex items-center space-x-3">
                       <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
-                        <span className="text-xl">📢</span>
+                        <Megaphone className="w-6 h-6 text-blue-600" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-lg">{ad.title}</h3>
@@ -291,7 +292,7 @@ export default function AdvertisementsPage() {
                       className="flex-1 lg:flex-none"
                       onClick={() => handleViewDetails(ad.id)}
                     >
-                      👁️ Details
+                      <Eye className="w-4 h-4 mr-1" /> Details
                     </Button>
                     
                     {ad.status === 'pending' && (
@@ -321,7 +322,7 @@ export default function AdvertisementsPage() {
                         className="text-orange-600 border-orange-600 hover:bg-orange-50 flex-1 lg:flex-none"
                         onClick={() => handlePauseAd(ad.id)}
                       >
-                        ⏸️ Pause
+                        <Pause className="w-4 h-4 mr-1" /> Pause
                       </Button>
                     )}
                   </div>
@@ -335,7 +336,7 @@ export default function AdvertisementsPage() {
           <Card>
             <CardContent className="p-12 text-center">
               <div className="text-gray-500">
-                <span className="text-4xl mb-4 block">📢</span>
+                <Megaphone className="w-16 h-16 mb-4 text-blue-600" />
                 <h3 className="text-lg font-medium mb-2">No advertisements found</h3>
                 <p>Try adjusting your search criteria or filters.</p>
               </div>

@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui
 import { ClubAdminLayout } from '../../../components/layout/club-admin-layout'
 import { formatDate } from '../../../lib/utils'
 import { User } from '../../../types'
+import { Building, Calendar } from 'lucide-react'
 
 // Mock admin user data
 const mockAdminUser: User = {
@@ -470,8 +471,8 @@ export default function AdminProfile() {
                           <h3 className="font-semibold text-lg">{achievement.title}</h3>
                           <p className="text-gray-600 mt-1">{achievement.description}</p>
                           <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
-                            <span>📅 {formatDate(achievement.date)}</span>
-                            <span>🏛️ {achievement.club}</span>
+                            <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {formatDate(achievement.date)}</span>
+                            <span className="flex items-center gap-1"><Building className="w-3 h-3" /> {achievement.club}</span>
                             <Badge variant="outline" className="text-xs">
                               {achievement.type}
                             </Badge>

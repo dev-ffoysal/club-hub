@@ -8,7 +8,7 @@ import { Input } from '../../components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
 import { MemberLayout } from '../../components/layout/member-layout'
 import { formatDate, formatTime, getTimeUntil, isEventUpcoming } from '../../lib/utils'
-import { Bell, Building2, Calendar, Rocket, Search, User, Users, CheckCircle, AlertTriangle } from 'lucide-react'
+import { Bell, Building2, Calendar, Rocket, Search, User, Users, CheckCircle, AlertTriangle, Info, Star } from 'lucide-react'
 
 // Mock data for member dashboard
 const mockMemberData = {
@@ -259,7 +259,7 @@ export default function MemberDashboard() {
                   <p className="text-sm font-medium text-gray-600">Engagement Score</p>
                   <p className="text-3xl font-bold text-orange-600">{mockMemberData.engagementScore}%</p>
                 </div>
-                <span className="text-2xl">⭐</span>
+                <Star className="w-8 h-8" />
               </div>
             </CardContent>
           </Card>
@@ -508,7 +508,7 @@ export default function MemberDashboard() {
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
                           <Badge variant={notification.type}>
-                            {notification.type === 'info' && 'ℹ️ Info'}
+                            {notification.type === 'info' && <><Info className="w-4 h-4 inline mr-1" />Info</>}
                             {notification.type === 'success' && <><CheckCircle className="w-4 h-4 inline mr-1" />Success</>}
                             {notification.type === 'warning' && <><AlertTriangle className="w-4 h-4 inline mr-1" />Warning</>}
                           </Badge>
