@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Button } from './button'
 import { Badge } from './badge'
+import { Users, ThumbsUp, ThumbsDown, UserPlus } from 'lucide-react'
 
 interface SocialInteractionsProps {
   eventId: string
@@ -98,15 +99,15 @@ export function SocialInteractions({
       {/* Social Stats */}
       <div className="flex items-center space-x-4 text-sm text-gray-600">
         <div className="flex items-center space-x-1">
-          <span>👥</span>
+          <Users className="w-4 h-4" />
           <span>{localFollowers} followers</span>
         </div>
         <div className="flex items-center space-x-1">
-          <span>👍</span>
+          <ThumbsUp className="w-4 h-4" />
           <span>{localUpvotes}</span>
         </div>
         <div className="flex items-center space-x-1">
-          <span>👎</span>
+          <ThumbsDown className="w-4 h-4" />
           <span>{localDownvotes}</span>
         </div>
       </div>
@@ -120,7 +121,17 @@ export function SocialInteractions({
             onClick={handleFollow}
             className="text-xs"
           >
-            {localIsFollowing ? '✓ Following' : '+ Follow'}
+            {localIsFollowing ? (
+              <>
+                <UserPlus className="w-4 h-4 mr-1" />
+                Following
+              </>
+            ) : (
+              <>
+                <UserPlus className="w-4 h-4 mr-1" />
+                Follow
+              </>
+            )}
           </Button>
           
           <Button
@@ -129,7 +140,7 @@ export function SocialInteractions({
             onClick={handleUpvote}
             className={`text-xs ${localUserVote === 'up' ? 'bg-green-600 hover:bg-green-700' : ''}`}
           >
-            👍
+            <ThumbsUp className="w-4 h-4" />
           </Button>
           
           <Button
@@ -138,7 +149,7 @@ export function SocialInteractions({
             onClick={handleDownvote}
             className={`text-xs ${localUserVote === 'down' ? 'bg-red-600 hover:bg-red-700' : ''}`}
           >
-            👎
+            <ThumbsDown className="w-4 h-4" />
           </Button>
         </div>
       )}

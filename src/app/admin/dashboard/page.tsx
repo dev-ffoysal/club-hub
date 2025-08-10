@@ -7,6 +7,7 @@ import { Badge } from '../../../components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
 import { ClubAdminLayout } from '../../../components/layout/club-admin-layout'
 import { formatDate, formatTime, getTimeUntil } from '../../../lib/utils'
+import { Users, Calendar, Clock, DollarSign, CheckCircle, X } from 'lucide-react'
 
 // Mock data for club admin
 const mockClubData = {
@@ -116,7 +117,7 @@ export default function ClubAdminDashboard() {
                   <p className="text-3xl font-bold text-blue-600">{mockClubData.memberCount}</p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <span className="text-2xl">👥</span>
+                  <Users className="w-6 h-6 text-blue-600" />
                 </div>
               </div>
               <div className="mt-4 flex items-center text-sm">
@@ -134,7 +135,7 @@ export default function ClubAdminDashboard() {
                   <p className="text-3xl font-bold text-yellow-600">{mockClubData.pendingMembers}</p>
                 </div>
                 <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <span className="text-2xl">⏳</span>
+                  <Clock className="w-6 h-6 text-yellow-600" />
                 </div>
               </div>
               <div className="mt-4">
@@ -151,7 +152,7 @@ export default function ClubAdminDashboard() {
                   <p className="text-3xl font-bold text-green-600">{mockClubData.activeEvents}</p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <span className="text-2xl">📅</span>
+                  <Calendar className="w-6 h-6 text-green-600" />
                 </div>
               </div>
               <div className="mt-4 text-sm text-gray-500">
@@ -168,7 +169,7 @@ export default function ClubAdminDashboard() {
                   <p className="text-3xl font-bold text-purple-600">৳{mockClubData.totalRevenue.toLocaleString()}</p>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <span className="text-2xl">💰</span>
+                  <DollarSign className="w-6 h-6 text-purple-600" />
                 </div>
               </div>
               <div className="mt-4 text-sm text-gray-500">
@@ -273,12 +274,14 @@ export default function ClubAdminDashboard() {
                             variant="outline"
                             onClick={() => handleRejectMember(member.id)}
                           >
+                            <X className="w-4 h-4 mr-1" />
                             Reject
                           </Button>
                           <Button 
                             size="sm"
                             onClick={() => handleApproveMember(member.id)}
                           >
+                            <CheckCircle className="w-4 h-4 mr-1" />
                             Approve
                           </Button>
                         </div>

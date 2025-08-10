@@ -1,13 +1,31 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card'
 import { Button } from '../../../components/ui/button'
 import { Badge } from '../../../components/ui/badge'
 import { Input } from '../../../components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../../../components/ui/dialog'
 import { ClubAdminLayout } from '../../../components/layout/club-admin-layout'
 import { formatDate, generateRandomCode } from '../../../lib/utils'
+import { 
+  Users, 
+  CheckCircle, 
+  Clock, 
+  Crown, 
+  QrCode, 
+  Key, 
+  Eye, 
+  UserPlus, 
+  UserMinus, 
+  Mail, 
+  Download,
+  Copy,
+  Search
+} from 'lucide-react'
 
 // Mock data
 const mockMembers = [
@@ -20,6 +38,7 @@ const mockMembers = [
     year: '3rd Year',
     joinedAt: new Date('2023-09-15'),
     role: 'member',
+    designation: null,
     isActive: true,
     activityData: {
       eventsAttended: 12,
@@ -37,6 +56,7 @@ const mockMembers = [
     year: '3rd Year',
     joinedAt: new Date('2023-09-20'),
     role: 'admin',
+    designation: 'Vice President',
     isActive: true,
     activityData: {
       eventsAttended: 18,
@@ -54,6 +74,7 @@ const mockMembers = [
     year: '4th Year',
     joinedAt: new Date('2023-08-10'),
     role: 'member',
+    designation: 'Event Coordinator',
     isActive: false,
     activityData: {
       eventsAttended: 5,
@@ -92,6 +113,20 @@ export default function MembersPage() {
   const [selectedMembers, setSelectedMembers] = useState<string[]>([])
   const [showQRCode, setShowQRCode] = useState(false)
   const [generatedCode, setGeneratedCode] = useState('')
+  const [promoteDialogOpen, setPromoteDialogOpen] = useState(false)
+  const [selectedMemberForPromotion, setSelectedMemberForPromotion] = useState<string | null>(null)
+  const [selectedDesignation, setSelectedDesignation] = useState('')
+
+  const designations = [
+    'President',
+    'Vice President',
+    'Secretary',
+    'Treasurer',
+    'Event Coordinator',
+    'Technical Lead',
+    'Marketing Head',
+    'Public Relations Officer'
+  ]
 
   const handleGenerateJoiningCode = () => {
     const code = generateRandomCode(8)
@@ -117,7 +152,35 @@ export default function MembersPage() {
   }
 
   const handlePromoteToAdmin = (memberId: string) => {
-    console.log('Promoting member to admin:', memberId)
+    setSelectedMemberForPromotion(memberId)
+    setPromoteDialogOpen(true)
+  }
+
+  const handleConfirmPromotion = () => {
+    if (selectedMemberForPromotion && selectedDesignation) {
+      // Update member designation in the mock data
+      const updatedMembers = mockMembers.map(member => 
+        member.id === selectedMemberForPromotion 
+          ? { ...member, designation: selectedDesignation }
+          : member
+      )
+      // In a real app, you would update the state or make an API call here
+      console.log(`Promoted member ${selectedMemberForPromotion} to ${selectedDesignation}`)
+      
+      // Reset dialog state
+      setPromoteDialogOpen(false)
+      setSelectedMemberForPromotion('')
+      setSelectedDesignation('')
+    }
+  }
+
+
+
+  const handleCopyCode = () => {
+    if (generatedCode) {
+      navigator.clipboard.writeText(generatedCode)
+      console.log('Code copied to clipboard')
+    }
   }
 
   const handleSendEmail = () => {
@@ -158,7 +221,7 @@ export default function MembersPage() {
                   <p className="text-sm font-medium text-gray-600">Total Members</p>
                   <p className="text-3xl font-bold text-blue-600">{mockMembers.length}</p>
                 </div>
-                <span className="text-2xl">👥</span>
+                <Users className="h-8 w-8 text-blue-600" />
               </div>
             </CardContent>
           </Card>
@@ -172,7 +235,7 @@ export default function MembersPage() {
                     {mockMembers.filter(m => m.isActive).length}
                   </p>
                 </div>
-                <span className="text-2xl">✅</span>
+                <CheckCircle className="h-8 w-8 text-green-600" />
               </div>
             </CardContent>
           </Card>
@@ -184,7 +247,7 @@ export default function MembersPage() {
                   <p className="text-sm font-medium text-gray-600">Pending Applications</p>
                   <p className="text-3xl font-bold text-yellow-600">{mockPendingMembers.length}</p>
                 </div>
-                <span className="text-2xl">⏳</span>
+                <Clock className="h-8 w-8 text-yellow-600" />
               </div>
             </CardContent>
           </Card>
@@ -198,7 +261,7 @@ export default function MembersPage() {
                     {mockMembers.filter(m => m.role === 'admin').length}
                   </p>
                 </div>
-                <span className="text-2xl">👑</span>
+                <Crown className="h-8 w-8 text-purple-600" />
               </div>
             </CardContent>
           </Card>
@@ -214,7 +277,8 @@ export default function MembersPage() {
                   <p className="text-2xl font-mono font-bold text-green-600 mt-2">{generatedCode}</p>
                   <p className="text-sm text-green-700 mt-1">Share this code with prospective members</p>
                 </div>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={handleCopyCode}>
+                  <Copy className="h-4 w-4 mr-2" />
                   Copy Code
                 </Button>
               </div>
@@ -267,9 +331,13 @@ export default function MembersPage() {
                   />
                   <div className="flex space-x-2">
                     <Button variant="outline" onClick={handleSendEmail}>
+                      <Mail className="h-4 w-4 mr-2" />
                       Send Email to Selected
                     </Button>
-                    <Button variant="outline">Export List</Button>
+                    <Button variant="outline">
+                      <Download className="h-4 w-4 mr-2" />
+                      Export List
+                    </Button>
                   </div>
                 </div>
 
@@ -299,10 +367,22 @@ export default function MembersPage() {
                             <div className="flex items-center space-x-2">
                               <h3 className="font-semibold">{member.name}</h3>
                               {member.role === 'admin' && (
-                                <Badge variant="secondary">Admin</Badge>
+                                <Badge variant="secondary">
+                                  <Crown className="h-3 w-3 mr-1" />
+                                  Admin
+                                </Badge>
                               )}
-                              <Badge variant={member.isActive ? 'success' : 'outline'}>
-                                {member.isActive ? 'Active' : 'Inactive'}
+                              {member.designation && (
+                                <Badge variant="outline">
+                                  {member.designation}
+                                </Badge>
+                              )}
+                              <Badge variant={member.isActive ? 'default' : 'secondary'}>
+                                {member.isActive ? (
+                                  <><CheckCircle className="h-3 w-3 mr-1" />Active</>
+                                ) : (
+                                  <><Clock className="h-3 w-3 mr-1" />Inactive</>
+                                )}
                               </Badge>
                             </div>
                             <div className="text-sm text-gray-600 space-y-1">
@@ -324,20 +404,20 @@ export default function MembersPage() {
 
                           {/* Actions */}
                           <div className="flex space-x-2">
-                            {member.role !== 'admin' && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handlePromoteToAdmin(member.id)}
-                              >
-                                Promote
-                              </Button>
-                            )}
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handlePromoteToAdmin(member.id)}
+                            >
+                              <UserPlus className="h-3 w-3 mr-1" />
+                              {member.designation ? 'Change Role' : 'Assign Role'}
+                            </Button>
                             <Button
                               size="sm"
                               variant="outline"
                               onClick={() => handleRemoveMember(member.id)}
                             >
+                              <UserMinus className="h-3 w-3 mr-1" />
                               Remove
                             </Button>
                           </div>
@@ -382,6 +462,12 @@ export default function MembersPage() {
                         </div>
 
                         <div className="flex space-x-2">
+                          <Link href={`/admin/members/${member.id}`}>
+                            <Button size="sm" variant="outline">
+                              <Eye className="h-3 w-3 mr-1" />
+                              View Details
+                            </Button>
+                          </Link>
                           <Button
                             size="sm"
                             variant="outline"
@@ -487,6 +573,43 @@ export default function MembersPage() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Promotion Dialog */}
+      <Dialog open={promoteDialogOpen} onOpenChange={setPromoteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Assign Designation</DialogTitle>
+            <DialogDescription>
+              Select a designation for the member. This will determine their role and permissions within the club.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Designation</label>
+              <Select value={selectedDesignation} onValueChange={setSelectedDesignation}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a designation" />
+                </SelectTrigger>
+                <SelectContent>
+                  {designations.map((designation) => (
+                    <SelectItem key={designation} value={designation}>
+                      {designation}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPromoteDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmPromotion}>
+              Assign Designation
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </ClubAdminLayout>
   )
 }

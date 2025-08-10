@@ -8,6 +8,7 @@ import { Input } from '../../../components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
 import { SuperAdminLayout } from '../../../components/layout/super-admin-layout'
 import { formatDate, formatCurrency } from '../../../lib/utils'
+import { Building2, ClipboardList, Users, Calendar, Megaphone, CreditCard, Eye, CheckCircle, X, User } from 'lucide-react'
 
 // Mock data
 const mockStats = {
@@ -241,7 +242,7 @@ export default function SuperAdminDashboard() {
                   <p className="text-2xl sm:text-3xl font-bold text-blue-600">{mockStats.totalClubs}</p>
                 </div>
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <span className="text-xl sm:text-2xl">🏛️</span>
+                  <Building2 className="w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
               </div>
               <div className="mt-2 sm:mt-4 flex items-center text-sm">
@@ -259,7 +260,7 @@ export default function SuperAdminDashboard() {
                   <p className="text-2xl sm:text-3xl font-bold text-yellow-600">{mockStats.pendingApplications}</p>
                 </div>
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <span className="text-xl sm:text-2xl">📋</span>
+                  <ClipboardList className="w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
               </div>
               <div className="mt-2 sm:mt-4 text-xs sm:text-sm text-gray-500">
@@ -276,7 +277,7 @@ export default function SuperAdminDashboard() {
                   <p className="text-2xl sm:text-3xl font-bold text-purple-600">{mockStats.totalUsers.toLocaleString()}</p>
                 </div>
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <span className="text-xl sm:text-2xl">👥</span>
+                  <Users className="w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
               </div>
               <div className="mt-2 sm:mt-4 text-xs sm:text-sm text-gray-500">
@@ -293,7 +294,7 @@ export default function SuperAdminDashboard() {
                   <p className="text-2xl sm:text-3xl font-bold text-green-600">{mockStats.activeEvents}</p>
                 </div>
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <span className="text-xl sm:text-2xl">📅</span>
+                  <Calendar className="w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
               </div>
               <div className="mt-2 sm:mt-4 text-xs sm:text-sm text-gray-500">
@@ -310,7 +311,7 @@ export default function SuperAdminDashboard() {
                   <p className="text-2xl sm:text-3xl font-bold text-indigo-600">{mockStats.activeAds}</p>
                 </div>
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
-                  <span className="text-xl sm:text-2xl">📢</span>
+                  <Megaphone className="w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
               </div>
               <div className="mt-2 sm:mt-4 text-xs sm:text-sm text-gray-500">
@@ -327,7 +328,7 @@ export default function SuperAdminDashboard() {
                   <p className="text-2xl sm:text-3xl font-bold text-emerald-600">৳{(mockStats.revenueThisMonth / 1000).toFixed(0)}K</p>
                 </div>
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
-                  <span className="text-xl sm:text-2xl">💳</span>
+                  <CreditCard className="w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
               </div>
               <div className="mt-2 sm:mt-4 text-xs sm:text-sm text-gray-500">
@@ -364,7 +365,7 @@ export default function SuperAdminDashboard() {
                         <div className="flex-1">
                           <div className="flex items-center space-x-3">
                             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                              <span className="text-xl">🏛️</span>
+                              <Building2 className="w-6 h-6" />
                             </div>
                             <div>
                               <h3 className="font-semibold text-lg">{application.clubName}</h3>
@@ -392,7 +393,7 @@ export default function SuperAdminDashboard() {
                             className="bg-green-600 hover:bg-green-700 flex-1 lg:flex-none"
                             onClick={() => handleApproveApplication(application.id)}
                           >
-                            ✓ Approve
+                            <CheckCircle className="w-4 h-4 mr-1" />Approve
                           </Button>
                           <Button 
                             size="sm" 
@@ -400,10 +401,10 @@ export default function SuperAdminDashboard() {
                             className="text-red-600 border-red-600 hover:bg-red-50 flex-1 lg:flex-none"
                             onClick={() => handleRejectApplication(application.id)}
                           >
-                            ✗ Reject
+                            <X className="w-4 h-4 mr-1" />Reject
                           </Button>
                           <Button size="sm" variant="outline" className="flex-1 lg:flex-none">
-                            👁️ Review
+                            <Eye className="w-4 h-4 mr-1" />Review
                           </Button>
                         </div>
                       </div>
@@ -439,7 +440,7 @@ export default function SuperAdminDashboard() {
                         <div className="flex-1">
                           <div className="flex items-center space-x-3">
                             <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                              <span className="text-lg">👤</span>
+                              <User className="w-5 h-5" />
                             </div>
                             <div>
                               <h4 className="font-semibold">{user.name}</h4>
@@ -509,7 +510,7 @@ export default function SuperAdminDashboard() {
                         <div className="flex-1">
                           <div className="flex items-center space-x-3">
                             <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
-                              <span className="text-xl">📢</span>
+                              <Megaphone className="w-6 h-6" />
                             </div>
                             <div>
                               <h4 className="font-semibold text-lg">{ad.title}</h4>
@@ -573,7 +574,7 @@ export default function SuperAdminDashboard() {
                         <div className="flex-1">
                           <div className="flex items-center space-x-3">
                             <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                              <span className="text-xl">📅</span>
+                              <Calendar className="w-6 h-6" />
                             </div>
                             <div>
                               <h4 className="font-semibold text-lg">{event.title}</h4>
@@ -636,7 +637,7 @@ export default function SuperAdminDashboard() {
                         <div className="flex-1">
                           <div className="flex items-center space-x-3">
                             <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
-                              <span className="text-xl">💳</span>
+                              <CreditCard className="w-6 h-6" />
                             </div>
                             <div>
                               <h4 className="font-semibold text-lg">{payment.clubName}</h4>

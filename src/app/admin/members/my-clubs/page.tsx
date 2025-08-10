@@ -1,13 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card'
-import { Badge } from '../../../components/ui/badge'
-import { Button } from '../../../components/ui/button'
-import { Input } from '../../../components/ui/input'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
-import { Club, Event } from '../../../types'
 import Link from 'next/link'
+import { Club, Event } from '@/types'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Users, School, Calendar, MapPin, Building2 } from 'lucide-react'
 
 // Mock data for user's joined clubs
 const mockUserClubs: Club[] = [
@@ -279,8 +280,8 @@ export default function MyClubsPage() {
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between text-sm text-gray-600">
-                      <span>👥 {club.memberCount} members</span>
-                      <span>🏫 {club.university}</span>
+                      <span className="flex items-center"><Users className="w-4 h-4 mr-1" />{club.memberCount} members</span>
+                      <span className="flex items-center"><School className="w-4 h-4 mr-1" />{club.university}</span>
                     </div>
                     
                     {club.tags && (
@@ -335,12 +336,12 @@ export default function MyClubsPage() {
                 <CardContent>
                   <div className="space-y-3">
                     <div className="flex items-center space-x-4 text-sm text-gray-600">
-                      <span>📅 {event.startDate.toLocaleDateString()}</span>
-                      <span>📍 {event.location}</span>
+                      <span className="flex items-center"><Calendar className="w-4 h-4 mr-1" />{event.startDate.toLocaleDateString()}</span>
+                      <span className="flex items-center"><MapPin className="w-4 h-4 mr-1" />{event.location}</span>
                     </div>
                     <div className="flex items-center space-x-4 text-sm text-gray-600">
-                      <span>🏢 {event.host}</span>
-                      <span>👥 {event.currentParticipants}/{event.maxParticipants}</span>
+                      <span className="flex items-center"><Building2 className="w-4 h-4 mr-1" />{event.host}</span>
+                      <span className="flex items-center"><Users className="w-4 h-4 mr-1" />{event.currentParticipants}/{event.maxParticipants}</span>
                     </div>
                     <div className="flex items-center justify-between pt-4">
                       <div className="text-sm text-gray-500">

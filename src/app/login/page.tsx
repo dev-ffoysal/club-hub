@@ -7,8 +7,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import { Button } from '../../components/ui/button'
 import { Input } from '../../components/ui/input'
 import { Navbar } from '../../components/layout/navbar'
-import { useAuth } from '../../contexts/auth-context'
+import { useAuth } from '../../hooks/useAuth'
 import { User } from '../../types'
+import { Calendar, Users, BarChart3, Trophy } from 'lucide-react'
 
 // Dummy user data for testing
 const DUMMY_USERS = [
@@ -64,7 +65,7 @@ const DUMMY_USERS = [
 
 export default function LoginPage() {
   const router = useRouter()
-  const { login } = useAuth()
+  const { login, setUser } = useAuth()
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -97,15 +98,18 @@ export default function LoginPage() {
     )
 
     if (user) {
-      // Use auth context to login
-      login(user as User)
+      // For dummy authentication, directly set user and store in localStorage
+      localStorage.setItem('user', JSON.stringify(user))
+      localStorage.setItem('token', 'dummy-token-' + user.id)
+      setUser(user)
+      
       // Redirect based on user role
       switch (user.role) {
         case 'super_admin':
-          router.push('/super-admin')
+          router.push('/super-admin/dashboard')
           break
         case 'club_admin':
-          router.push('/admin')
+          router.push('/admin/dashboard')
           break
         case 'member':
           router.push('/dashboard')
@@ -273,19 +277,19 @@ export default function LoginPage() {
             <h3 className="font-semibold mb-2">Club Hub Features</h3>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <p className="font-medium">📅 Event Management</p>
+                <p className="font-medium flex items-center"><Calendar className="w-4 h-4 mr-2" />Event Management</p>
                 <p className="text-blue-100">Create & manage events</p>
               </div>
               <div>
-                <p className="font-medium">👥 Member Management</p>
+                <p className="font-medium flex items-center"><Users className="w-4 h-4 mr-2" />Member Management</p>
                 <p className="text-blue-100">Track club members</p>
               </div>
               <div>
-                <p className="font-medium">📊 Analytics</p>
+                <p className="font-medium flex items-center"><BarChart3 className="w-4 h-4 mr-2" />Analytics</p>
                 <p className="text-blue-100">Event insights</p>
               </div>
               <div>
-                <p className="font-medium">🏆 Competitions</p>
+                <p className="font-medium flex items-center"><Trophy className="w-4 h-4 mr-2" />Competitions</p>
                 <p className="text-blue-100">Host competitions</p>
               </div>
             </div>

@@ -2,11 +2,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-// import { usePathname } from 'next/navigation'
-
+import { usePathname } from 'next/navigation'
 import { cn } from '../../lib/utils'
-import React from 'react'
 import { Button } from '../ui/button'
+import { BarChart3, ClipboardList, Building2, Users, Calendar, Megaphone, CreditCard, TrendingUp, Settings, X, Menu, Bell } from 'lucide-react'
 import { Badge } from '../ui/badge'
 
 
@@ -18,64 +17,63 @@ const sidebarNavigation = [
   {
     name: 'Dashboard',
     href: '/super-admin/dashboard',
-    icon: '📊',
+    icon: BarChart3,
     description: 'Overview and statistics'
   },
   {
     name: 'Club Requests',
     href: '/super-admin/club-requests',
-    icon: '📋',
+    icon: ClipboardList,
     description: 'Review club applications',
     badge: 23
   },
   {
     name: 'Clubs',
     href: '/super-admin/clubs',
-    icon: '🏛️',
+    icon: Building2,
     description: 'Manage all clubs'
   },
   {
     name: 'Users',
     href: '/super-admin/users',
-    icon: '👥',
+    icon: Users,
     description: 'User management'
   },
   {
     name: 'Events',
     href: '/super-admin/events',
-    icon: '📅',
+    icon: Calendar,
     description: 'Monitor and promote events'
   },
   {
     name: 'Advertisements',
     href: '/super-admin/advertisements',
-    icon: '📢',
+    icon: Megaphone,
     description: 'Manage platform ads'
   },
   {
     name: 'Payments',
     href: '/super-admin/payments',
-    icon: '💳',
+    icon: CreditCard,
     description: 'Payment management'
   },
   {
     name: 'Analytics',
     href: '/super-admin/analytics',
-    icon: '📈',
+    icon: TrendingUp,
     description: 'Platform analytics'
   },
   {
     name: 'Settings',
     href: '/super-admin/settings',
-    icon: '⚙️',
+    icon: Settings,
     description: 'System settings'
   }
 ]
 
 export function SuperAdminLayout({ children }: SuperAdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  // const pathname = usePathname()
-  const pathname = '/super-admin/dashboard' // Mock for now
+  const pathname = usePathname()
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -107,7 +105,7 @@ export function SuperAdminLayout({ children }: SuperAdminLayoutProps) {
               className="lg:hidden"
               onClick={() => setSidebarOpen(false)}
             >
-              ✕
+              <X className="w-4 h-4" />
             </Button>
           </div>
 
@@ -127,7 +125,7 @@ export function SuperAdminLayout({ children }: SuperAdminLayoutProps) {
                   )}
                 >
                   <div className="flex items-center space-x-3">
-                    <span className="text-lg">{item.icon}</span>
+                    <item.icon className="w-5 h-5" />
                     <div>
                       <div>{item.name}</div>
                       <div className="text-xs text-gray-500">{item.description}</div>
@@ -172,12 +170,12 @@ export function SuperAdminLayout({ children }: SuperAdminLayoutProps) {
               className="lg:hidden"
               onClick={() => setSidebarOpen(true)}
             >
-              ☰
+              <Menu className="w-5 h-5" />
             </Button>
             
             <div className="flex items-center space-x-4">
               <Button variant="ghost" size="sm">
-                🔔 Notifications
+                <Bell className="w-4 h-4 mr-2" />Notifications
               </Button>
               <Button variant="outline" size="sm">
                 <Link href="/">View Public Site</Link>

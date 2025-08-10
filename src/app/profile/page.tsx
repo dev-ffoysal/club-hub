@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/ta
 import { MemberLayout } from '../../components/layout/member-layout'
 import { formatDate } from '../../lib/utils'
 import { User } from '../../types'
+import { Mail, Phone, MapPin, Calendar, Building2, Trophy, Users, Star } from 'lucide-react'
 
 // Mock user data
 const mockUser: User = {
@@ -373,9 +374,9 @@ export default function MemberProfile() {
                     <h3 className="font-semibold text-lg mb-2">{membership.clubName}</h3>
                     
                     <div className="space-y-2 text-sm text-gray-600 mb-4">
-                      <p>📅 Joined {formatDate(membership.joinedAt)}</p>
-                      <p>🎯 Events Attended: {membership.eventsAttended}</p>
-                      <p>⭐ Engagement Score: {membership.engagementScore}%</p>
+                      <p><Calendar className="w-4 h-4 inline mr-1" />Joined {formatDate(membership.joinedAt)}</p>
+                      <p><Trophy className="w-4 h-4 inline mr-1" />Events Attended: {membership.eventsAttended}</p>
+                      <p><Star className="w-4 h-4 inline mr-1" />Engagement Score: {membership.engagementScore}%</p>
                     </div>
 
                     <div className="flex space-x-2">
@@ -403,14 +404,14 @@ export default function MemberProfile() {
                     <div className="flex items-start justify-between">
                       <div className="flex items-start space-x-4">
                         <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                          <span className="text-2xl">🏆</span>
+                          <Trophy className="w-6 h-6 text-yellow-600" />
                         </div>
                         <div>
                           <h3 className="font-semibold text-lg">{achievement.title}</h3>
                           <p className="text-gray-600 mt-1">{achievement.description}</p>
                           <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
-                            <span>📅 {formatDate(achievement.date)}</span>
-                            <span>🏛️ {achievement.club}</span>
+                            <span><Calendar className="w-4 h-4 inline mr-1" />{formatDate(achievement.date)}</span>
+                            <span><Building2 className="w-4 h-4 inline mr-1" />{achievement.club}</span>
                           </div>
                         </div>
                       </div>

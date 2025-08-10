@@ -8,6 +8,7 @@ import { Input } from '../../../components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
 import { Navbar } from '../../../components/layout/navbar'
 import { formatDate, formatTime, getTimeUntil, isEventUpcoming } from '../../../lib/utils'
+import { Users, Calendar, Trophy, Building2, MapPin, Mail, Phone } from 'lucide-react'
 
 // Mock data for individual club page
 const mockClub = {
@@ -192,9 +193,9 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
                 <h1 className="text-4xl font-bold text-white mb-2">{mockClub.name}</h1>
                 <p className="text-blue-100 text-lg mb-4">{mockClub.university}</p>
                 <div className="flex items-center space-x-6 text-blue-100">
-                  <span>👥 {mockClub.memberCount} members</span>
-                  <span>📅 Founded {mockClub.foundedYear}</span>
-                  <span>🏆 {mockClub.achievements.length} achievements</span>
+                  <span><Users className="w-4 h-4 inline mr-1" />{mockClub.memberCount} members</span>
+                  <span><Calendar className="w-4 h-4 inline mr-1" />Founded {mockClub.foundedYear}</span>
+                  <span><Trophy className="w-4 h-4 inline mr-1" />{mockClub.achievements.length} achievements</span>
                 </div>
               </div>
               <div className="flex flex-col space-y-3">
@@ -447,7 +448,7 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
                         <div className="flex space-x-2">
                           <Badge variant="outline">{event.category}</Badge>
                           {event.type === 'competition' && (
-                            <Badge variant="warning">🏆 Competition</Badge>
+                            <Badge variant="warning"><Trophy className="w-4 h-4 mr-1" />Competition</Badge>
                           )}
                           {isUpcoming && (
                             <Badge variant="success">
@@ -461,10 +462,10 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
                       <p className="text-gray-600 mb-4">{event.description}</p>
                       
                       <div className="space-y-2 text-sm text-gray-600 mb-4">
-                        <p>📅 {formatDate(event.startDate)} at {formatTime(event.startDate)}</p>
-                        <p>📍 {event.location}</p>
+                        <p><Calendar className="w-4 h-4 inline mr-1" />{formatDate(event.startDate)} at {formatTime(event.startDate)}</p>
+                        <p><MapPin className="w-4 h-4 inline mr-1" />{event.location}</p>
                         {event.maxParticipants && (
-                          <p>👥 {event.currentParticipants}/{event.maxParticipants} registered</p>
+                          <p><Users className="w-4 h-4 inline mr-1" />{event.currentParticipants}/{event.maxParticipants} registered</p>
                         )}
                       </div>
 
@@ -575,7 +576,7 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-6">
                       <div className="w-16 h-16 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <span className="text-2xl">🏆</span>
+                        <Trophy className="w-8 h-8 text-yellow-600" />
                       </div>
                       <div className="flex-1">
                         <h3 className="text-xl font-semibold mb-2">{achievement.title}</h3>
@@ -601,7 +602,7 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center space-x-3">
-                    <span className="text-blue-600">📧</span>
+                    <Mail className="w-5 h-5 text-blue-600" />
                     <div>
                       <p className="font-medium">Email</p>
                       <p className="text-gray-600">{mockClub.contactEmail}</p>
@@ -609,7 +610,7 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
                   </div>
                   {mockClub.contactPhone && (
                     <div className="flex items-center space-x-3">
-                      <span className="text-green-600">📞</span>
+                      <Phone className="w-5 h-5 text-green-600" />
                       <div>
                         <p className="font-medium">Phone</p>
                         <p className="text-gray-600">{mockClub.contactPhone}</p>
@@ -617,7 +618,7 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
                     </div>
                   )}
                   <div className="flex items-center space-x-3">
-                    <span className="text-purple-600">🏛️</span>
+                    <Building2 className="w-5 h-5 text-purple-600" />
                     <div>
                       <p className="font-medium">University</p>
                       <p className="text-gray-600">{mockClub.university}</p>
