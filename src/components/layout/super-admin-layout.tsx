@@ -22,8 +22,8 @@ const sidebarNavigation = [
     description: 'Overview and statistics'
   },
   {
-    name: 'Applications',
-    href: '/super-admin/applications',
+    name: 'Club Requests',
+    href: '/super-admin/club-requests',
     icon: '📋',
     description: 'Review club applications',
     badge: 23
@@ -35,16 +35,28 @@ const sidebarNavigation = [
     description: 'Manage all clubs'
   },
   {
-    name: 'Events',
-    href: '/super-admin/events',
-    icon: '📅',
-    description: 'Monitor all events'
-  },
-  {
     name: 'Users',
     href: '/super-admin/users',
     icon: '👥',
     description: 'User management'
+  },
+  {
+    name: 'Events',
+    href: '/super-admin/events',
+    icon: '📅',
+    description: 'Monitor and promote events'
+  },
+  {
+    name: 'Advertisements',
+    href: '/super-admin/advertisements',
+    icon: '📢',
+    description: 'Manage platform ads'
+  },
+  {
+    name: 'Payments',
+    href: '/super-admin/payments',
+    icon: '💳',
+    description: 'Payment management'
   },
   {
     name: 'Analytics',

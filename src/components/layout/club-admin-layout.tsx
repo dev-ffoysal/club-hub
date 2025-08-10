@@ -155,9 +155,9 @@ export function ClubAdminLayout({ children }: ClubAdminLayoutProps) {
       </div>
 
       {/* Main content */}
-      <div className="lg:pl-64">
+      <div className="lg:pl-64 min-h-screen">
         {/* Top bar */}
-        <div className="sticky top-0 z-30 bg-white border-b px-6 py-4">
+        <div className="sticky top-0 z-30 bg-white border-b px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             <Button
               variant="ghost"
@@ -168,8 +168,8 @@ export function ClubAdminLayout({ children }: ClubAdminLayoutProps) {
               ☰
             </Button>
             
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm">
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <Button variant="ghost" size="sm" className="hidden sm:flex">
                 🔔 Notifications
               </Button>
               <Button variant="outline" size="sm">
@@ -180,7 +180,7 @@ export function ClubAdminLayout({ children }: ClubAdminLayoutProps) {
         </div>
 
         {/* Page content */}
-        <main className="p-6">
+        <main className="p-4 sm:p-6 max-w-full overflow-x-hidden">
           {children}
         </main>
       </div>

@@ -12,6 +12,7 @@ import { formatDate, formatTime, getTimeUntil, isEventUpcoming, isEventWithinWee
 import Link from 'next/link'
 import { useState } from 'react'
 import { useAuth } from '../../contexts/auth-context'
+import { User } from '../../types'
 
 // Mock data - replace with actual API calls
 const mockEvents = [
@@ -245,7 +246,16 @@ export default function EventsPage() {
           <div className="flex justify-between items-center mb-6">
             <div></div>
             <Button
-               onClick={() => isLoggedIn ? logout() : login('john@example.com', 'password123')}
+               onClick={() => isLoggedIn ? logout() : login({
+                 id: 'demo-user',
+                 firstName: 'John',
+                 lastName: 'Doe',
+                 name: 'John Doe',
+                 email: 'john@example.com',
+                 role: 'member',
+                 createdAt: new Date(),
+                 updatedAt: new Date()
+               })}
                variant={isLoggedIn ? "default" : "outline"}
                className="ml-auto"
              >

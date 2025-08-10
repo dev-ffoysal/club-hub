@@ -1,11 +1,27 @@
 // User Types
 export interface User {
   id: string;
-  name: string;
+  firstName: string;
+  lastName?: string;
+  name: string; // computed from firstName + lastName
   email: string;
+  password?: string; // usually omitted in frontend responses
   studentId?: string;
-  role: 'super_admin' | 'club_admin' | 'member';
+  department?: string;
+  university?: string;
+  verified?: boolean;
+  bloodGroup?: string;
+  gender?: 'male' | 'female' | 'other';
+  contact?: string;
+  address?: {
+    city?: string;
+    line?: string;
+  };
+  role: UserRole;
   avatar?: string;
+  profileImage?: string;
+  profileVisibility?: 'public' | 'private';
+  interestedIn?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -14,21 +30,49 @@ export interface User {
 export interface Club {
   id: string;
   name: string;
+  clubName: string; // alias for name
   slug: string;
+  clubCode?: string;
+  category?: string;
+  clubRegistrationNumber?: string;
+  clubFoundedAt?: string;
+  certificates?: string[];
   description: string;
   purpose: string;
+  objective?: string;
   university: string;
+  dept?: string;
   contactEmail: string;
   contactPhone?: string;
+  contact?: {
+    email?: string;
+    phone?: string;
+  };
+  applicant?: {
+    name?: string;
+    email?: string;
+  };
   logo?: string;
   coverImage?: string;
+  clubImages?: string[];
+  cover?: string;
+  tags?: string[];
+  slogan?: string;
   template: ClubTemplate;
   colorScheme: ColorScheme;
-  status: 'pending' | 'approved' | 'rejected';
+  status: ClubStatus;
+  verified?: boolean;
   isPublic: boolean;
   memberCount: number;
+  registrationFee?: number;
   achievements: Achievement[];
   socialLinks: SocialLinks;
+  socialMedia?: {
+    facebook?: string;
+    instagram?: string;
+    twitter?: string;
+    website?: string;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -84,29 +128,80 @@ export interface ColorScheme {
 export interface Event {
   id: string;
   clubId: string;
+  host?: string;
   title: string;
-  description: string;
+  description?: string;
   category: EventCategory;
   type: EventType;
   startDate: Date;
   endDate: Date;
+  eventDate?: string;
+  eventTime?: string;
+  eventDuration?: string;
   location: string;
+  eventPlace?: string;
   isOnline: boolean;
+  mode?: 'online' | 'offline';
   meetingLink?: string;
   maxParticipants?: number;
+  totalSeat?: number;
   currentParticipants: number;
+  seatAvailable?: number;
   registrationDeadline?: Date;
   isPublic: boolean;
   commentsEnabled: boolean;
   image?: string;
+  images?: string[];
+  cover?: string;
+  videos?: string[];
   tags: string[];
+  guests?: {
+    name?: string;
+    image?: string;
+    designation?: string;
+    eventChairs?: string;
+  }[];
+  collaboratedWith?: string[];
+  eventAgenda?: {
+    timeLine?: string;
+    text?: string;
+  }[];
+  verified?: boolean;
+  status?: EventStatus;
+  snackAvailable?: boolean;
+  organizers?: {
+    name?: string;
+    designation?: string;
+    email?: string;
+    contact?: string;
+  }[];
+  sponsors?: {
+    name?: string;
+    image?: string;
+  }[];
+  upvote?: number;
+  downvote?: number;
+  followersCount?: number;
+  requirements?: string[];
+  benefits?: string[];
+  notes?: {
+    from?: string;
+    image?: string;
+    descriptions?: string;
+  }[];
+  collaboratedClubsNotes?: {
+    from?: string;
+    image?: string;
+    descriptions?: string;
+  }[];
+  fee?: number;
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export type EventCategory = 'seminar' | 'workshop' | 'competition' | 'meeting' | 'social' | 'academic';
-export type EventType = 'event' | 'competition';
+export type EventType = 'event' | 'competition' | 'seminar' | 'workshop';
 
 // Member Management Types
 export interface ClubMember {
@@ -175,12 +270,15 @@ export interface FinancialRecord {
   type: 'income' | 'expense';
   category: string;
   amount: number;
+  currency?: string;
   description: string;
   date: Date;
   receipt?: string;
   approvedBy?: string;
   createdBy: string;
+  transactionId?: string; // link to Transaction if applicable
   createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Budget {
@@ -263,6 +361,57 @@ export interface MonthlyFinancialData {
   expenses: number;
 }
 
+// Additional Utility Types
+export type PaymentMethod = 'cash' | 'card' | 'bank_transfer' | 'digital_wallet' | 'cheque';
+export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'cancelled' | 'refunded';
+export type UserRole = 'super_admin' | 'club_admin' | 'member';
+export type ClubStatus = 'pending' | 'approved' | 'rejected' | 'active' | 'restricted' | 'deleted';
+export type EventStatus = 'draft' | 'published' | 'ongoing' | 'completed' | 'cancelled';
+export type RegistrationStatus = 'pending' | 'confirmed' | 'waitlisted' | 'cancelled';
+
+// Search and Filter Types
+export interface SearchFilters {
+  query?: string;
+  category?: string;
+  status?: string;
+  dateFrom?: Date;
+  dateTo?: Date;
+  university?: string;
+  tags?: string[];
+}
+
+export interface EventFilters extends SearchFilters {
+  eventType?: EventType;
+  location?: string;
+  isOnline?: boolean;
+  hasAvailableSeats?: boolean;
+}
+
+export interface ClubFilters extends SearchFilters {
+  verified?: boolean;
+  hasRegistrationFee?: boolean;
+}
+
+// Dashboard Statistics Types
+export interface DashboardStats {
+  totalClubs: number;
+  totalEvents: number;
+  totalUsers: number;
+  totalRegistrations: number;
+  recentActivity: ActivityItem[];
+}
+
+export interface ActivityItem {
+  id: string;
+  type: 'club_created' | 'event_created' | 'user_registered' | 'payment_completed';
+  title: string;
+  description: string;
+  timestamp: Date;
+  userId?: string;
+  clubId?: string;
+  eventId?: string;
+}
+
 // API Response Types
 export interface ApiResponse<T> {
   success: boolean;
@@ -279,6 +428,57 @@ export interface PaginatedResponse<T> {
     total: number;
     totalPages: number;
   };
+}
+
+// Registration Types
+export interface Registration {
+  id: string;
+  clubId?: string;
+  eventId?: string;
+  userId?: string;
+  amount?: number;
+  status?: RegistrationStatus;
+  paymentMethod?: PaymentMethod;
+  registrationDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Transaction Types
+export interface Transaction {
+  id: string;
+  userId?: string;
+  clubId?: string;
+  eventId?: string;
+  registrationId?: string;
+  type: 'registration' | 'membership_fee' | 'donation' | 'sponsorship' | 'income' | 'expense';
+  amount: number;
+  currency?: string;
+  status?: PaymentStatus;
+  paymentMethod?: PaymentMethod;
+  transactionRef?: string;
+  description?: string;
+  receipt?: string;
+  approvedBy?: string;
+  createdBy?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Event Invitation Types
+export interface EventInvitation {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  eventId?: string;
+  clubId?: string;
+  status?: 'pending' | 'accepted' | 'rejected';
+  type?: 'oneTime' | 'normal';
+  validTill?: Date;
+  joiningLink?: string;
+  message?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // Form Types
@@ -317,4 +517,18 @@ export interface MemberJoinForm {
   university?: string;
   department?: string;
   year?: string;
+}
+
+export interface RegistrationForm {
+  eventId: string;
+  userId: string;
+  paymentMethod?: PaymentMethod;
+  specialRequirements?: string;
+}
+
+export interface TransactionForm {
+  type: 'registration' | 'membership_fee' | 'donation' | 'sponsorship';
+  amount: number;
+  paymentMethod: PaymentMethod;
+  description?: string;
 }

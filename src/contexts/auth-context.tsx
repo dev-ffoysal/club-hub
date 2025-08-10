@@ -1,16 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-
-interface User {
-  id: string
-  email: string
-  name: string
-  role: 'admin' | 'student' | 'organizer' | 'superadmin'
-  password: string
-  university: string
-  club: string | null
-}
+import { User } from '../types'
 
 interface AuthContextType {
   user: User | null

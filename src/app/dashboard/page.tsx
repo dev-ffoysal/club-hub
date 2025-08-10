@@ -138,6 +138,45 @@ const mockNotifications = [
   }
 ]
 
+const mockAnnouncements = [
+  {
+    id: '1',
+    clubId: '1',
+    clubName: 'Computer Science Club',
+    title: 'New Study Group Formation',
+    content: 'We are forming study groups for competitive programming. Join us every Saturday at 2 PM.',
+    date: new Date('2024-01-25'),
+    priority: 'normal' as const
+  },
+  {
+    id: '2',
+    clubId: '3',
+    clubName: 'Photography Club',
+    title: 'Equipment Available for Rent',
+    content: 'Professional cameras and lenses are now available for rent to club members at discounted rates.',
+    date: new Date('2024-01-23'),
+    priority: 'high' as const
+  },
+  {
+    id: '3',
+    clubId: '1',
+    clubName: 'Computer Science Club',
+    title: 'Hackathon Registration Open',
+    content: 'Registration is now open for our annual hackathon. Limited seats available!',
+    date: new Date('2024-01-20'),
+    priority: 'urgent' as const
+  }
+]
+
+const getPriorityColor = (priority: string) => {
+  switch (priority) {
+    case 'urgent': return 'bg-red-100 text-red-800'
+    case 'high': return 'bg-orange-100 text-orange-800'
+    case 'normal': return 'bg-blue-100 text-blue-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
+
 export default function MemberDashboard() {
   const [selectedTab, setSelectedTab] = useState('overview')
 
@@ -226,7 +265,7 @@ export default function MemberDashboard() {
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
+        <Tabs defaultValue="overview" value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="clubs">My Clubs</TabsTrigger>
@@ -241,7 +280,7 @@ export default function MemberDashboard() {
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Upcoming Events */}
               <Card>
                 <CardHeader>
@@ -290,6 +329,33 @@ export default function MemberDashboard() {
                           <p className="text-xs text-gray-500">
                             {formatDate(activity.timestamp)} • {activity.club}
                           </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Announcements */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Club Announcements</CardTitle>
+                  <CardDescription>Latest announcements from your clubs</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {mockAnnouncements.map((announcement) => (
+                      <div key={announcement.id} className="p-3 border rounded-lg">
+                        <div className="flex items-start justify-between mb-2">
+                          <h4 className="font-medium text-sm">{announcement.title}</h4>
+                          <Badge className={`text-xs ${getPriorityColor(announcement.priority)}`}>
+                            {announcement.priority}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-2">{announcement.content}</p>
+                        <div className="flex items-center justify-between text-xs text-gray-500">
+                          <span>{announcement.clubName}</span>
+                          <span>{formatDate(announcement.date)}</span>
                         </div>
                       </div>
                     ))}

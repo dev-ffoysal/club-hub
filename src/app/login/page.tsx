@@ -8,6 +8,7 @@ import { Button } from '../../components/ui/button'
 import { Input } from '../../components/ui/input'
 import { Navbar } from '../../components/layout/navbar'
 import { useAuth } from '../../contexts/auth-context'
+import { User } from '../../types'
 
 // Dummy user data for testing
 const DUMMY_USERS = [
@@ -15,37 +16,49 @@ const DUMMY_USERS = [
     id: '1',
     email: 'admin@du.ac.bd',
     password: 'admin123',
+    firstName: 'Dr. Sarah',
+    lastName: 'Ahmed',
     name: 'Dr. Sarah Ahmed',
-    role: 'admin',
+    role: 'club_admin' as const,
     university: 'University of Dhaka',
-    club: 'Computer Science Club'
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
     id: '2',
     email: 'student@nsu.ac.bd',
     password: 'student123',
+    firstName: 'Mohammad',
+    lastName: 'Rahman',
     name: 'Mohammad Rahman',
-    role: 'student',
+    role: 'member' as const,
     university: 'North South University',
-    club: null
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
     id: '3',
     email: 'organizer@brac.ac.bd',
     password: 'organizer123',
+    firstName: 'Fatima',
+    lastName: 'Khan',
     name: 'Fatima Khan',
-    role: 'organizer',
+    role: 'club_admin' as const,
     university: 'BRAC University',
-    club: 'Photography Club'
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
     id: '4',
     email: 'superadmin@clubhub.com',
     password: 'super123',
+    firstName: 'System',
+    lastName: 'Administrator',
     name: 'System Administrator',
-    role: 'superadmin',
+    role: 'super_admin' as const,
     university: 'Club Hub Platform',
-    club: null
+    createdAt: new Date(),
+    updatedAt: new Date()
   }
 ]
 
@@ -88,17 +101,17 @@ export default function LoginPage() {
       login(user as User)
       // Redirect based on user role
       switch (user.role) {
-        case 'superadmin':
+        case 'super_admin':
           router.push('/super-admin')
           break
-        case 'admin':
+        case 'club_admin':
           router.push('/admin')
           break
-        case 'organizer':
+        case 'member':
           router.push('/dashboard')
           break
         default:
-          router.push('/events')
+          router.push('/dashboard')
       }
     } else {
       setError('Invalid email or password. Please try again.')
@@ -223,9 +236,6 @@ export default function LoginPage() {
                           </div>
                           <div className="text-right">
                             <p className="text-xs text-gray-500">{user.university}</p>
-                            {user.club && (
-                              <p className="text-xs text-gray-500">{user.club}</p>
-                            )}
                           </div>
                         </div>
                       </div>

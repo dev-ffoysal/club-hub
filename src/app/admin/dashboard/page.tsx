@@ -81,6 +81,7 @@ const mockRecentActivities = [
 
 export default function ClubAdminDashboard() {
   const [selectedTimeRange, setSelectedTimeRange] = useState('7d')
+  const [selectedTab, setSelectedTab] = useState('overview')
 
   const handleApproveMember = (memberId: string) => {
     console.log('Approving member:', memberId)
@@ -92,7 +93,7 @@ export default function ClubAdminDashboard() {
 
   return (
     <ClubAdminLayout>
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8 w-full max-w-none">
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
@@ -106,7 +107,7 @@ export default function ClubAdminDashboard() {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -178,7 +179,7 @@ export default function ClubAdminDashboard() {
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs defaultValue="overview" className="space-y-6">
+        <Tabs defaultValue="overview" value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="members">Members</TabsTrigger>

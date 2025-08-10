@@ -11,6 +11,7 @@ import { SocialInteractions } from '../../../components/ui/social-interactions'
 import { EVENT_CATEGORIES } from '../../../lib/constants'
 import { formatDate, formatTime, formatDateTime, isEventUpcoming, isEventWithinWeek } from '../../../lib/utils'
 import { useAuth } from '../../../contexts/auth-context'
+import { User } from '../../../types'
 import Link from 'next/link'
 
 // Mock data - same as events page (in real app, this would be fetched from API)
@@ -184,7 +185,16 @@ export default function EventDetailPage() {
             <Button variant="outline">← Back to Events</Button>
           </Link>
           <Button
-            onClick={() => user ? logout() : login({email: 'demo@example.com', password: 'password'})}
+            onClick={() => user ? logout() : login({
+              id: 'demo-user',
+              firstName: 'Demo',
+              lastName: 'User',
+              name: 'Demo User',
+              email: 'demo@example.com',
+              role: 'member',
+              createdAt: new Date(),
+              updatedAt: new Date()
+            })}
             variant={user ? "default" : "outline"}
           >
             {user ? `👤 ${user.name} (Demo)` : '🔐 Login (Demo)'}

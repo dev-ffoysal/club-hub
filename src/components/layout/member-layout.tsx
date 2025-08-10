@@ -20,12 +20,6 @@ const sidebarNavigation = [
     description: 'Overview and activities'
   },
   {
-    name: 'My Clubs',
-    href: '/my-clubs',
-    icon: '🏛️',
-    description: 'Clubs you\'ve joined'
-  },
-  {
     name: 'Events',
     href: '/events',
     icon: '📅',
