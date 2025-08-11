@@ -10,8 +10,10 @@ import { Countdown } from '../../../components/ui/countdown'
 import { SocialInteractions } from '../../../components/ui/social-interactions'
 import { EVENT_CATEGORIES } from '../../../lib/constants'
 import { formatDate, formatTime, formatDateTime, isEventUpcoming, isEventWithinWeek } from '../../../lib/utils'
-import { useAuth } from '../../../contexts/auth-context'
+import { useAuth } from '../../../hooks/useAuth'
+import { User } from '../../../types'
 import Link from 'next/link'
+import { User as UserIcon, Lock, Trophy, Building2, Users, Calendar, MapPin, Clock } from 'lucide-react'
 
 // Mock data - same as events page (in real app, this would be fetched from API)
 const mockEvents = [
@@ -184,10 +186,14 @@ export default function EventDetailPage() {
             <Button variant="outline">← Back to Events</Button>
           </Link>
           <Button
-            onClick={() => user ? logout() : login({email: 'demo@example.com', password: 'password'})}
+            onClick={() => user ? logout() : login({
+              email: 'demo@example.com',
+              password: 'password123'
+
+            })}
             variant={user ? "default" : "outline"}
           >
-            {user ? `👤 ${user.name} (Demo)` : '🔐 Login (Demo)'}
+            {user ? <><UserIcon className="w-4 h-4 inline mr-1" />{user.name} (Demo)</> : <><Lock className="w-4 h-4 inline mr-1" />Login (Demo)</>}
           </Button>
         </div>
 
@@ -209,7 +215,7 @@ export default function EventDetailPage() {
                   {categoryInfo.icon} {categoryInfo.name}
                 </Badge>
                 {event.type === 'competition' && (
-                  <Badge variant="warning">🏆 Competition</Badge>
+                  <Badge variant="warning"><Trophy className="w-4 h-4 mr-1" />Competition</Badge>
                 )}
                 {event.isOnline && (
                   <Badge variant="info">🌐 Online</Badge>
@@ -226,10 +232,10 @@ export default function EventDetailPage() {
               </h1>
               
               <div className="flex items-center text-blue-100 text-sm">
-                <span className="mr-4">🏛️ {event.club.university}</span>
-                <span className="mr-4">👥 {event.club.name}</span>
+                <span className="mr-4"><Building2 className="w-4 h-4 inline mr-1" />{event.club.university}</span>
+                <span className="mr-4"><Users className="w-4 h-4 inline mr-1" />{event.club.name}</span>
                 {event.organizer && (
-                  <span>👨‍🏫 {event.organizer.name}</span>
+                  <span><UserIcon className="w-4 h-4 inline mr-1" />{event.organizer.name}</span>
                 )}
               </div>
             </div>
@@ -329,7 +335,7 @@ export default function EventDetailPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center text-sm">
-                  <span className="mr-2">📅</span>
+                  <Calendar className="w-4 h-4 mr-2" />
                   <div>
                     <div className="font-semibold">{formatDate(event.startDate)}</div>
                     <div className="text-gray-600">
@@ -339,13 +345,13 @@ export default function EventDetailPage() {
                 </div>
                 
                 <div className="flex items-center text-sm">
-                  <span className="mr-2">📍</span>
+                  <MapPin className="w-4 h-4 mr-2" />
                   <span>{event.location}</span>
                 </div>
                 
                 {event.maxParticipants && (
                   <div className="flex items-center text-sm">
-                    <span className="mr-2">👥</span>
+                    <Users className="w-4 h-4 mr-2" />
                     <span>
                       {event.currentParticipants}/{event.maxParticipants} participants
                       {spotsLeft && spotsLeft > 0 && (
@@ -359,7 +365,7 @@ export default function EventDetailPage() {
                 
                 {event.registrationDeadline && isEventUpcoming(event.registrationDeadline) && (
                   <div className="flex items-center text-sm text-orange-600">
-                    <span className="mr-2">⏰</span>
+                    <Clock className="w-4 h-4 mr-2" />
                     <span>Registration closes: {formatDate(event.registrationDeadline)}</span>
                   </div>
                 )}

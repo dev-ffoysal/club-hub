@@ -8,6 +8,7 @@ import { Input } from '../../../components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
 import { ClubAdminLayout } from '../../../components/layout/club-admin-layout'
 import { formatDate, formatCurrency } from '../../../lib/utils'
+import { DollarSign, TrendingDown, BarChart3, TrendingUp } from 'lucide-react'
 
 // Mock data
 const mockFinancialRecords = [
@@ -142,7 +143,7 @@ export default function FinancesPage() {
                   <p className="text-sm font-medium text-gray-600">Total Income</p>
                   <p className="text-3xl font-bold text-green-600">{formatCurrency(totalIncome)}</p>
                 </div>
-                <span className="text-2xl">💰</span>
+                <DollarSign className="w-8 h-8 text-green-600" />
               </div>
             </CardContent>
           </Card>
@@ -154,7 +155,7 @@ export default function FinancesPage() {
                   <p className="text-sm font-medium text-gray-600">Total Expenses</p>
                   <p className="text-3xl font-bold text-red-600">{formatCurrency(totalExpenses)}</p>
                 </div>
-                <span className="text-2xl">💸</span>
+                <TrendingDown className="w-8 h-8 text-red-600" />
               </div>
             </CardContent>
           </Card>
@@ -168,7 +169,7 @@ export default function FinancesPage() {
                     {formatCurrency(balance)}
                   </p>
                 </div>
-                <span className="text-2xl">📊</span>
+                <BarChart3 className="w-8 h-8 text-blue-600" />
               </div>
             </CardContent>
           </Card>
@@ -182,7 +183,7 @@ export default function FinancesPage() {
                     {Math.round((totalExpenses / mockBudget.totalBudget) * 100)}%
                   </p>
                 </div>
-                <span className="text-2xl">📈</span>
+                <TrendingUp className="w-8 h-8 text-purple-600" />
               </div>
             </CardContent>
           </Card>
@@ -315,7 +316,13 @@ export default function FinancesPage() {
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-2">
                             <Badge variant={record.type === 'income' ? 'success' : 'destructive'}>
-                              {record.type === 'income' ? '💰 Income' : '💸 Expense'}
+                              <span className="flex items-center gap-1">
+                                {record.type === 'income' ? (
+                                  <><DollarSign className="w-3 h-3" /> Income</>
+                                ) : (
+                                  <><TrendingDown className="w-3 h-3" /> Expense</>
+                                )}
+                              </span>
                             </Badge>
                             <Badge variant="outline">{record.category}</Badge>
                           </div>

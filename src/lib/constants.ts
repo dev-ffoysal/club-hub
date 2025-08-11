@@ -1,4 +1,51 @@
 import { ClubTemplate, ColorScheme, EventCategory } from '@/types'
+import { GraduationCap, Wrench, Trophy, Users, Heart, BookOpen, PartyPopper } from 'lucide-react'
+
+// Club Categories
+export const CLUB_CATEGORIES = [
+  {
+    id: 'technology',
+    name: 'Technology',
+    description: 'Programming, AI, Robotics, and Tech Innovation',
+    icon: GraduationCap,
+    color: 'bg-blue-100 text-blue-800'
+  },
+  {
+    id: 'engineering',
+    name: 'Engineering',
+    description: 'Civil, Mechanical, Electrical, and other Engineering disciplines',
+    icon: Wrench,
+    color: 'bg-orange-100 text-orange-800'
+  },
+  {
+    id: 'business',
+    name: 'Business',
+    description: 'Entrepreneurship, Finance, Marketing, and Business Development',
+    icon: Trophy,
+    color: 'bg-green-100 text-green-800'
+  },
+  {
+    id: 'cultural',
+    name: 'Cultural',
+    description: 'Arts, Music, Dance, Drama, and Cultural Activities',
+    icon: Users,
+    color: 'bg-purple-100 text-purple-800'
+  },
+  {
+    id: 'social-service',
+    name: 'Social Service',
+    description: 'Community Service, Volunteering, and Social Impact',
+    icon: Heart,
+    color: 'bg-pink-100 text-pink-800'
+  },
+  {
+    id: 'academic',
+    name: 'Academic',
+    description: 'Subject-specific clubs, Research, and Academic Excellence',
+    icon: BookOpen,
+    color: 'bg-indigo-100 text-indigo-800'
+  }
+]
 
 // Club Templates
 export const CLUB_TEMPLATES: Record<ClubTemplate, { name: string; description: string; preview: string }> = {
@@ -70,35 +117,35 @@ export const COLOR_SCHEMES: Record<string, ColorScheme> = {
 }
 
 // Event Categories
-export const EVENT_CATEGORIES: Record<EventCategory, { name: string; icon: string; color: string }> = {
+export const EVENT_CATEGORIES: Record<EventCategory, { name: string; icon: any; color: string }> = {
   seminar: {
     name: 'Seminar',
-    icon: '🎓',
+    icon: GraduationCap,
     color: 'bg-blue-100 text-blue-800'
   },
   workshop: {
     name: 'Workshop',
-    icon: '🔧',
+    icon: Wrench,
     color: 'bg-green-100 text-green-800'
   },
   competition: {
     name: 'Competition',
-    icon: '🏆',
+    icon: Trophy,
     color: 'bg-yellow-100 text-yellow-800'
   },
   meeting: {
     name: 'Meeting',
-    icon: '👥',
+    icon: Users,
     color: 'bg-gray-100 text-gray-800'
   },
   social: {
     name: 'Social',
-    icon: '🎉',
+    icon: PartyPopper,
     color: 'bg-pink-100 text-pink-800'
   },
   academic: {
     name: 'Academic',
-    icon: '📚',
+    icon: BookOpen,
     color: 'bg-purple-100 text-purple-800'
   }
 }

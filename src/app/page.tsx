@@ -1,8 +1,9 @@
 import { Button } from '../components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
-import { Badge } from '../components/ui/badge'
+import { Users, Calendar, Palette, MessageCircle, DollarSign, BarChart3 } from 'lucide-react'
 import { Navbar } from '../components/layout/navbar'
 import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
 
 export default function HomePage() {
   return (
@@ -51,7 +52,7 @@ export default function HomePage() {
               <CardHeader>
                 <div className="flex items-center space-x-2">
                   <div className="rounded-lg bg-blue-100 p-2">
-                    <span className="text-2xl">👥</span>
+                    <Users className="w-8 h-8" />
                   </div>
                   <CardTitle className="text-xl">Member Management</CardTitle>
                 </div>
@@ -67,7 +68,7 @@ export default function HomePage() {
               <CardHeader>
                 <div className="flex items-center space-x-2">
                   <div className="rounded-lg bg-green-100 p-2">
-                    <span className="text-2xl">📅</span>
+                    <Calendar className="w-8 h-8" />
                   </div>
                   <CardTitle className="text-xl">Event Organization</CardTitle>
                 </div>
@@ -83,7 +84,7 @@ export default function HomePage() {
               <CardHeader>
                 <div className="flex items-center space-x-2">
                   <div className="rounded-lg bg-purple-100 p-2">
-                    <span className="text-2xl">🎨</span>
+                    <Palette className="w-8 h-8" />
                   </div>
                   <CardTitle className="text-xl">Custom Club Profiles</CardTitle>
                 </div>
@@ -99,7 +100,7 @@ export default function HomePage() {
               <CardHeader>
                 <div className="flex items-center space-x-2">
                   <div className="rounded-lg bg-yellow-100 p-2">
-                    <span className="text-2xl">💬</span>
+                    <MessageCircle className="w-8 h-8" />
                   </div>
                   <CardTitle className="text-xl">Communication Tools</CardTitle>
                 </div>
@@ -115,7 +116,7 @@ export default function HomePage() {
               <CardHeader>
                 <div className="flex items-center space-x-2">
                   <div className="rounded-lg bg-red-100 p-2">
-                    <span className="text-2xl">💰</span>
+                    <DollarSign className="w-8 h-8" />
                   </div>
                   <CardTitle className="text-xl">Financial Management</CardTitle>
                 </div>
@@ -131,7 +132,7 @@ export default function HomePage() {
               <CardHeader>
                 <div className="flex items-center space-x-2">
                   <div className="rounded-lg bg-indigo-100 p-2">
-                    <span className="text-2xl">📊</span>
+                    <BarChart3 className="w-8 h-8" />
                   </div>
                   <CardTitle className="text-xl">Analytics & Insights</CardTitle>
                 </div>

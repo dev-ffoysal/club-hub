@@ -4,6 +4,7 @@ import { Button } from '../../components/ui/button'
 import { Input } from '../../components/ui/input'
 import { Navbar } from '../../components/layout/navbar'
 import Link from 'next/link'
+import { Users, Trophy } from 'lucide-react'
 
 // Mock data - replace with actual API calls
 const mockClubs = [
@@ -201,7 +202,7 @@ export default function ClubsPage() {
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-4 text-sm text-gray-600">
                     <span className="flex items-center">
-                      <span className="mr-1">👥</span>
+                      <Users className="w-4 h-4 mr-1" />
                       {club.memberCount} members
                     </span>
                   </div>
@@ -214,7 +215,7 @@ export default function ClubsPage() {
                 {club.achievements.length > 0 && (
                   <div className="mb-4 p-3 bg-yellow-50 rounded-lg">
                     <div className="flex items-center space-x-2">
-                      <span className="text-yellow-600">🏆</span>
+                      <Trophy className="w-4 h-4 text-yellow-600" />
                       <span className="text-sm font-medium text-yellow-800">
                         Latest Achievement
                       </span>

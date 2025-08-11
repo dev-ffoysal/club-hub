@@ -10,6 +10,7 @@ import { ClubAdminLayout } from '../../../components/layout/club-admin-layout'
 import { EVENT_CATEGORIES } from '../../../lib/constants'
 import { formatDate, formatTime, getTimeUntil, isEventUpcoming } from '../../../lib/utils'
 import { EventForm } from '../../../types'
+import { Calendar, Rocket, Users, Trophy, Globe, Star } from 'lucide-react'
 
 // Mock data
 const mockEvents = [
@@ -167,7 +168,7 @@ export default function EventsPage() {
                   <p className="text-sm font-medium text-gray-600">Total Events</p>
                   <p className="text-3xl font-bold text-blue-600">{mockEvents.length}</p>
                 </div>
-                <span className="text-2xl">📅</span>
+                <Calendar className="w-8 h-8 text-blue-600" />
               </div>
             </CardContent>
           </Card>
@@ -179,7 +180,7 @@ export default function EventsPage() {
                   <p className="text-sm font-medium text-gray-600">Upcoming Events</p>
                   <p className="text-3xl font-bold text-green-600">{upcomingEvents.length}</p>
                 </div>
-                <span className="text-2xl">🚀</span>
+                <Rocket className="w-8 h-8 text-green-600" />
               </div>
             </CardContent>
           </Card>
@@ -193,7 +194,7 @@ export default function EventsPage() {
                     {mockEvents.reduce((sum, event) => sum + event.currentParticipants, 0)}
                   </p>
                 </div>
-                <span className="text-2xl">👥</span>
+                <Users className="w-8 h-8 text-purple-600" />
               </div>
             </CardContent>
           </Card>
@@ -207,7 +208,7 @@ export default function EventsPage() {
                     {mockEvents.filter(event => event.type === 'competition').length}
                   </p>
                 </div>
-                <span className="text-2xl">🏆</span>
+                <Trophy className="w-8 h-8 text-orange-600" />
               </div>
             </CardContent>
           </Card>
@@ -246,7 +247,7 @@ export default function EventsPage() {
                     >
                       {Object.entries(EVENT_CATEGORIES).map(([key, category]) => (
                         <option key={key} value={key}>
-                          {category.icon} {category.name}
+                          {category.name}
                         </option>
                       ))}
                     </select>
@@ -383,13 +384,14 @@ export default function EventsPage() {
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-2">
                             <Badge className={categoryInfo.color}>
-                              {categoryInfo.icon} {categoryInfo.name}
+                              <categoryInfo.icon className="w-4 h-4 mr-1" />
+                              {categoryInfo.name}
                             </Badge>
                             {event.type === 'competition' && (
-                              <Badge variant="warning">🏆 Competition</Badge>
+                              <Badge variant="warning"><Trophy className="w-4 h-4 mr-1" />Competition</Badge>
                             )}
                             {event.isOnline && (
-                              <Badge variant="info">🌐 Online</Badge>
+                              <Badge variant="info"><Globe className="w-4 h-4 mr-1" />Online</Badge>
                             )}
                             <Badge variant="success">
                               {getTimeUntil(event.startDate)}
@@ -469,7 +471,8 @@ export default function EventsPage() {
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-2">
                             <Badge className={categoryInfo.color}>
-                              {categoryInfo.icon} {categoryInfo.name}
+                              <categoryInfo.icon className="w-4 h-4 mr-1" />
+                              {categoryInfo.name}
                             </Badge>
                             <Badge variant="outline">Completed</Badge>
                           </div>
@@ -521,9 +524,7 @@ export default function EventsPage() {
                           </div>
                           <div className="flex items-center">
                             {[...Array(5)].map((_, i) => (
-                              <span key={i} className={i < review.rating ? 'text-yellow-400' : 'text-gray-300'}>
-                                ⭐
-                              </span>
+                              <Star key={i} className={`w-4 h-4 ${i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
                             ))}
                           </div>
                         </div>

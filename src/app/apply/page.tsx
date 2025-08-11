@@ -8,6 +8,7 @@ import { Badge } from '../../components/ui/badge'
 import { Navbar } from '../../components/layout/navbar'
 import { UNIVERSITIES } from '../../lib/constants'
 import { ClubApplicationForm } from '../../types'
+import { CheckCircle, ClipboardList, HelpCircle, Lightbulb } from 'lucide-react'
 
 export default function ApplyPage() {
   const [formData, setFormData] = useState<ClubApplicationForm>({
@@ -47,7 +48,7 @@ export default function ApplyPage() {
           <Card className="text-center">
             <CardContent className="p-12">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">✅</span>
+                <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
               <h1 className="text-2xl font-bold text-gray-900 mb-4">
                 Application Submitted Successfully!
@@ -95,7 +96,7 @@ export default function ApplyPage() {
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
-              <span>📋</span>
+              <ClipboardList className="w-5 h-5" />
               <span>Application Requirements</span>
             </CardTitle>
           </CardHeader>
@@ -296,7 +297,7 @@ export default function ApplyPage() {
         <Card className="mt-8">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
-              <span>💡</span>
+              <HelpCircle className="w-5 h-5" />
               <span>Need Help?</span>
             </CardTitle>
           </CardHeader>

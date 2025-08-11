@@ -11,7 +11,9 @@ import { EVENT_CATEGORIES } from '../../lib/constants'
 import { formatDate, formatTime, getTimeUntil, isEventUpcoming, isEventWithinWeek } from '../../lib/utils'
 import Link from 'next/link'
 import { useState } from 'react'
-import { useAuth } from '../../contexts/auth-context'
+import { useAuth } from '../../hooks/useAuth'
+import { User } from '../../types'
+import { User as UserIcon, Lock, Trophy, Globe, Building2, Users, Calendar, MapPin, Clock } from 'lucide-react'
 
 // Mock data - replace with actual API calls
 const mockEvents = [
@@ -245,11 +247,25 @@ export default function EventsPage() {
           <div className="flex justify-between items-center mb-6">
             <div></div>
             <Button
-               onClick={() => isLoggedIn ? logout() : login('john@example.com', 'password123')}
+               onClick={() => isLoggedIn ? logout() : login({
+               email: 'demo@example.com',
+               password: 'password123'
+
+               })}
                variant={isLoggedIn ? "default" : "outline"}
                className="ml-auto"
              >
-               {isLoggedIn ? `👤 ${user?.name || 'User'}` : '🔐 Login'}
+               {isLoggedIn ? (
+                 <>
+                   <UserIcon className="w-4 h-4 mr-1" />
+                   {user?.name || 'User'}
+                 </>
+               ) : (
+                 <>
+                   <Lock className="w-4 h-4 mr-1" />
+                   Login
+                 </>
+               )}
              </Button>
           </div>
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
@@ -287,7 +303,8 @@ export default function EventsPage() {
               variant="outline" 
               className="cursor-pointer hover:bg-gray-100"
             >
-              {category.icon} {category.name}
+              <category.icon className="w-3 h-3 mr-1" />
+              {category.name}
             </Badge>
           ))}
         </div>
@@ -343,13 +360,14 @@ export default function EventsPage() {
                   <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
                     <div className="flex space-x-2">
                       <Badge className={categoryInfo.color}>
-                        {categoryInfo.icon} {categoryInfo.name}
+                        <categoryInfo.icon className="w-3 h-3 mr-1" />
+                        {categoryInfo.name}
                       </Badge>
                       {event.type === 'competition' && (
-                        <Badge variant="warning">🏆 Competition</Badge>
+                        <Badge variant="warning"><Trophy className="w-3 h-3 mr-1" />Competition</Badge>
                       )}
                       {event.isOnline && (
-                        <Badge variant="info">🌐 Online</Badge>
+                        <Badge variant="info"><Globe className="w-3 h-3 mr-1" />Online</Badge>
                       )}
                     </div>
                     {isUpcoming && !isWithinWeek && (
@@ -371,8 +389,8 @@ export default function EventsPage() {
                       {event.title}
                     </h3>
                     <div className="flex items-center text-blue-100 text-sm">
-                      <span className="mr-4">🏛️ {event.club.university}</span>
-                      <span>👥 {event.club.name}</span>
+                      <span className="mr-4 flex items-center"><Building2 className="w-4 h-4 mr-1" />{event.club.university}</span>
+                      <span className="flex items-center"><Users className="w-4 h-4 mr-1" />{event.club.name}</span>
                     </div>
                   </div>
                 </div>
@@ -385,16 +403,16 @@ export default function EventsPage() {
                   {/* Event Details */}
                   <div className="space-y-3 mb-4">
                     <div className="flex items-center text-sm text-gray-600">
-                      <span className="mr-2">📅</span>
+                      <Calendar className="w-4 h-4 mr-2" />
                       <span>{formatDate(event.startDate)} at {formatTime(event.startDate)}</span>
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
-                      <span className="mr-2">📍</span>
+                      <MapPin className="w-4 h-4 mr-2" />
                       <span>{event.location}</span>
                     </div>
                     {event.maxParticipants && (
                       <div className="flex items-center text-sm text-gray-600">
-                        <span className="mr-2">👥</span>
+                        <Users className="w-4 h-4 mr-2" />
                         <span>
                           {event.currentParticipants}/{event.maxParticipants} participants
                           {spotsLeft && spotsLeft > 0 && (
@@ -407,7 +425,7 @@ export default function EventsPage() {
                     )}
                     {event.registrationDeadline && isEventUpcoming(event.registrationDeadline) && (
                       <div className="flex items-center text-sm text-orange-600">
-                        <span className="mr-2">⏰</span>
+                        <Clock className="w-4 h-4 mr-2" />
                         <span>Registration closes: {formatDate(event.registrationDeadline)}</span>
                       </div>
                     )}

@@ -8,6 +8,7 @@ import { Input } from '../../components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
 import { MemberLayout } from '../../components/layout/member-layout'
 import { formatDate, formatTime, getTimeUntil, isEventUpcoming } from '../../lib/utils'
+import { Bell, Building2, Calendar, Rocket, Search, User, Users, CheckCircle, AlertTriangle, Info, Star } from 'lucide-react'
 
 // Mock data for member dashboard
 const mockMemberData = {
@@ -138,6 +139,45 @@ const mockNotifications = [
   }
 ]
 
+const mockAnnouncements = [
+  {
+    id: '1',
+    clubId: '1',
+    clubName: 'Computer Science Club',
+    title: 'New Study Group Formation',
+    content: 'We are forming study groups for competitive programming. Join us every Saturday at 2 PM.',
+    date: new Date('2024-01-25'),
+    priority: 'normal' as const
+  },
+  {
+    id: '2',
+    clubId: '3',
+    clubName: 'Photography Club',
+    title: 'Equipment Available for Rent',
+    content: 'Professional cameras and lenses are now available for rent to club members at discounted rates.',
+    date: new Date('2024-01-23'),
+    priority: 'high' as const
+  },
+  {
+    id: '3',
+    clubId: '1',
+    clubName: 'Computer Science Club',
+    title: 'Hackathon Registration Open',
+    content: 'Registration is now open for our annual hackathon. Limited seats available!',
+    date: new Date('2024-01-20'),
+    priority: 'urgent' as const
+  }
+]
+
+const getPriorityColor = (priority: string) => {
+  switch (priority) {
+    case 'urgent': return 'bg-red-100 text-red-800'
+    case 'high': return 'bg-orange-100 text-orange-800'
+    case 'normal': return 'bg-blue-100 text-blue-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
+
 export default function MemberDashboard() {
   const [selectedTab, setSelectedTab] = useState('overview')
 
@@ -166,7 +206,7 @@ export default function MemberDashboard() {
           </div>
           <div className="flex space-x-2">
             <Button variant="outline">
-              🔔 Notifications {unreadNotifications > 0 && (
+              <Bell className="w-4 h-4 mr-2" />Notifications {unreadNotifications > 0 && (
                 <Badge variant="destructive" className="ml-2">{unreadNotifications}</Badge>
               )}
             </Button>
@@ -183,7 +223,7 @@ export default function MemberDashboard() {
                   <p className="text-sm font-medium text-gray-600">My Clubs</p>
                   <p className="text-3xl font-bold text-blue-600">{mockMemberData.joinedClubs}</p>
                 </div>
-                <span className="text-2xl">🏛️</span>
+                <Building2 className="w-8 h-8" />
               </div>
             </CardContent>
           </Card>
@@ -195,7 +235,7 @@ export default function MemberDashboard() {
                   <p className="text-sm font-medium text-gray-600">Events Attended</p>
                   <p className="text-3xl font-bold text-green-600">{mockMemberData.eventsAttended}</p>
                 </div>
-                <span className="text-2xl">📅</span>
+                <Calendar className="w-8 h-8" />
               </div>
             </CardContent>
           </Card>
@@ -207,7 +247,7 @@ export default function MemberDashboard() {
                   <p className="text-sm font-medium text-gray-600">Upcoming Events</p>
                   <p className="text-3xl font-bold text-purple-600">{mockMemberData.upcomingEvents}</p>
                 </div>
-                <span className="text-2xl">🚀</span>
+                <Rocket className="w-8 h-8" />
               </div>
             </CardContent>
           </Card>
@@ -219,14 +259,14 @@ export default function MemberDashboard() {
                   <p className="text-sm font-medium text-gray-600">Engagement Score</p>
                   <p className="text-3xl font-bold text-orange-600">{mockMemberData.engagementScore}%</p>
                 </div>
-                <span className="text-2xl">⭐</span>
+                <Star className="w-8 h-8" />
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
+        <Tabs defaultValue="overview" value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="clubs">My Clubs</TabsTrigger>
@@ -241,7 +281,7 @@ export default function MemberDashboard() {
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Upcoming Events */}
               <Card>
                 <CardHeader>
@@ -296,6 +336,33 @@ export default function MemberDashboard() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Announcements */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Club Announcements</CardTitle>
+                  <CardDescription>Latest announcements from your clubs</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {mockAnnouncements.map((announcement) => (
+                      <div key={announcement.id} className="p-3 border rounded-lg">
+                        <div className="flex items-start justify-between mb-2">
+                          <h4 className="font-medium text-sm">{announcement.title}</h4>
+                          <Badge className={`text-xs ${getPriorityColor(announcement.priority)}`}>
+                            {announcement.priority}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-2">{announcement.content}</p>
+                        <div className="flex items-center justify-between text-xs text-gray-500">
+                          <span>{announcement.clubName}</span>
+                          <span>{formatDate(announcement.date)}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
             {/* Quick Actions */}
@@ -307,15 +374,15 @@ export default function MemberDashboard() {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <Button variant="outline" className="h-20 flex flex-col items-center justify-center">
-                    <span className="text-2xl mb-2">🔍</span>
+                    <Search className="w-8 h-8 mb-2" />
                     <span>Explore New Clubs</span>
                   </Button>
                   <Button variant="outline" className="h-20 flex flex-col items-center justify-center">
-                    <span className="text-2xl mb-2">📅</span>
+                    <Calendar className="w-8 h-8 mb-2" />
                     <span>Browse Events</span>
                   </Button>
                   <Button variant="outline" className="h-20 flex flex-col items-center justify-center">
-                    <span className="text-2xl mb-2">👤</span>
+                    <User className="w-8 h-8 mb-2" />
                     <span>Update Profile</span>
                   </Button>
                 </div>
@@ -342,9 +409,9 @@ export default function MemberDashboard() {
                     <p className="text-sm text-gray-600 mb-4">{club.university}</p>
                     
                     <div className="space-y-2 text-sm text-gray-600 mb-4">
-                      <p>👥 {club.memberCount} members</p>
-                      <p>📅 {club.upcomingEvents} upcoming events</p>
-                      <p>📆 Joined {formatDate(club.joinedAt)}</p>
+                      <p><Users className="w-4 h-4 inline mr-1" />{club.memberCount} members</p>
+                      <p><Calendar className="w-4 h-4 inline mr-1" />{club.upcomingEvents} upcoming events</p>
+                      <p><Calendar className="w-4 h-4 inline mr-1" />Joined {formatDate(club.joinedAt)}</p>
                     </div>
 
                     <div className="flex space-x-2">
@@ -395,8 +462,8 @@ export default function MemberDashboard() {
                         <p className="text-gray-600 mb-4">Organized by {event.clubName}</p>
                         
                         <div className="text-sm text-gray-600 space-y-1">
-                          <p>📅 {formatDate(event.date)} at {formatTime(event.date)}</p>
-                          <p>📍 {event.location}</p>
+                          <p><Calendar className="w-4 h-4 inline mr-1" />{formatDate(event.date)} at {formatTime(event.date)}</p>
+                          <p className="flex items-center"><span className="w-4 h-4 mr-1">📍</span>{event.location}</p>
                         </div>
                       </div>
 
@@ -441,9 +508,9 @@ export default function MemberDashboard() {
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
                           <Badge variant={notification.type}>
-                            {notification.type === 'info' && 'ℹ️ Info'}
-                            {notification.type === 'success' && '✅ Success'}
-                            {notification.type === 'warning' && '⚠️ Warning'}
+                            {notification.type === 'info' && <><Info className="w-4 h-4 inline mr-1" />Info</>}
+                            {notification.type === 'success' && <><CheckCircle className="w-4 h-4 inline mr-1" />Success</>}
+                            {notification.type === 'warning' && <><AlertTriangle className="w-4 h-4 inline mr-1" />Warning</>}
                           </Badge>
                           {!notification.isRead && (
                             <Badge variant="destructive" className="text-xs">New</Badge>

@@ -7,6 +7,7 @@ import { Badge } from '../../../components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
 import { ClubAdminLayout } from '../../../components/layout/club-admin-layout'
 import { formatDate, formatTime, getTimeUntil } from '../../../lib/utils'
+import { Users, Calendar, Clock, DollarSign, CheckCircle, X } from 'lucide-react'
 
 // Mock data for club admin
 const mockClubData = {
@@ -81,6 +82,7 @@ const mockRecentActivities = [
 
 export default function ClubAdminDashboard() {
   const [selectedTimeRange, setSelectedTimeRange] = useState('7d')
+  const [selectedTab, setSelectedTab] = useState('overview')
 
   const handleApproveMember = (memberId: string) => {
     console.log('Approving member:', memberId)
@@ -92,7 +94,7 @@ export default function ClubAdminDashboard() {
 
   return (
     <ClubAdminLayout>
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8 w-full max-w-none">
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
@@ -106,7 +108,7 @@ export default function ClubAdminDashboard() {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -115,7 +117,7 @@ export default function ClubAdminDashboard() {
                   <p className="text-3xl font-bold text-blue-600">{mockClubData.memberCount}</p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <span className="text-2xl">👥</span>
+                  <Users className="w-6 h-6 text-blue-600" />
                 </div>
               </div>
               <div className="mt-4 flex items-center text-sm">
@@ -133,7 +135,7 @@ export default function ClubAdminDashboard() {
                   <p className="text-3xl font-bold text-yellow-600">{mockClubData.pendingMembers}</p>
                 </div>
                 <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <span className="text-2xl">⏳</span>
+                  <Clock className="w-6 h-6 text-yellow-600" />
                 </div>
               </div>
               <div className="mt-4">
@@ -150,7 +152,7 @@ export default function ClubAdminDashboard() {
                   <p className="text-3xl font-bold text-green-600">{mockClubData.activeEvents}</p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <span className="text-2xl">📅</span>
+                  <Calendar className="w-6 h-6 text-green-600" />
                 </div>
               </div>
               <div className="mt-4 text-sm text-gray-500">
@@ -167,7 +169,7 @@ export default function ClubAdminDashboard() {
                   <p className="text-3xl font-bold text-purple-600">৳{mockClubData.totalRevenue.toLocaleString()}</p>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <span className="text-2xl">💰</span>
+                  <DollarSign className="w-6 h-6 text-purple-600" />
                 </div>
               </div>
               <div className="mt-4 text-sm text-gray-500">
@@ -178,7 +180,7 @@ export default function ClubAdminDashboard() {
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs defaultValue="overview" className="space-y-6">
+        <Tabs defaultValue="overview" value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="members">Members</TabsTrigger>
@@ -272,12 +274,14 @@ export default function ClubAdminDashboard() {
                             variant="outline"
                             onClick={() => handleRejectMember(member.id)}
                           >
+                            <X className="w-4 h-4 mr-1" />
                             Reject
                           </Button>
                           <Button 
                             size="sm"
                             onClick={() => handleApproveMember(member.id)}
                           >
+                            <CheckCircle className="w-4 h-4 mr-1" />
                             Approve
                           </Button>
                         </div>

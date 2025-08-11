@@ -8,6 +8,7 @@ import { Input } from '../../../components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
 import { ClubAdminLayout } from '../../../components/layout/club-admin-layout'
 import { formatDate, formatTime } from '../../../lib/utils'
+import { MessageSquare, Bell, Megaphone, Info, AlertTriangle, X, CheckCircle } from 'lucide-react'
 
 // Mock data
 const mockChatMessages = [
@@ -39,7 +40,7 @@ const mockChatMessages = [
     id: '4',
     senderId: 'admin',
     senderName: 'Club Admin',
-    content: '📢 ANNOUNCEMENT: Programming contest registration is now open! Link: https://contest.example.com',
+    content: 'ANNOUNCEMENT: Programming contest registration is now open! Link: https://contest.example.com',
     timestamp: new Date('2024-02-10T15:00:00'),
     type: 'announcement' as const
   }
@@ -154,7 +155,7 @@ export default function CommunicationsPage() {
                   <p className="text-sm font-medium text-gray-600">Total Messages</p>
                   <p className="text-3xl font-bold text-blue-600">{mockChatMessages.length}</p>
                 </div>
-                <span className="text-2xl">💬</span>
+                <MessageSquare className="w-8 h-8 text-blue-600" />
               </div>
             </CardContent>
           </Card>
@@ -178,7 +179,7 @@ export default function CommunicationsPage() {
                   <p className="text-sm font-medium text-gray-600">Notifications Sent</p>
                   <p className="text-3xl font-bold text-purple-600">{mockNotifications.length}</p>
                 </div>
-                <span className="text-2xl">🔔</span>
+                <Bell className="w-8 h-8 text-yellow-600" />
               </div>
             </CardContent>
           </Card>
@@ -227,10 +228,10 @@ export default function CommunicationsPage() {
                       onChange={(e) => setNotificationForm({ ...notificationForm, type: e.target.value as any })}
                       className="w-full p-2 border border-gray-300 rounded-md"
                     >
-                      <option value="info">ℹ️ Information</option>
-                      <option value="success">✅ Success</option>
-                      <option value="warning">⚠️ Warning</option>
-                      <option value="error">❌ Error</option>
+                      <option value="info">Information</option>
+                      <option value="success">Success</option>
+                      <option value="warning">Warning</option>
+                      <option value="error">Error</option>
                     </select>
                   </div>
                 </div>
@@ -407,10 +408,12 @@ export default function CommunicationsPage() {
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-2">
                             <Badge variant={notification.type === 'error' ? 'destructive' : notification.type}>
-                              {notification.type === 'info' && 'ℹ️ Info'}
-                              {notification.type === 'success' && '✅ Success'}
-                              {notification.type === 'warning' && '⚠️ Warning'}
-                              {notification.type === 'error' && '❌ Error'}
+                              <span className="flex items-center gap-1">
+                  {notification.type === 'info' && <><Info className="w-3 h-3" /> Info</>}
+                  {notification.type === 'success' && <><CheckCircle className="w-3 h-3" /> Success</>}
+                  {notification.type === 'warning' && <><AlertTriangle className="w-3 h-3" /> Warning</>}
+                  {notification.type === 'error' && <><X className="w-3 h-3" /> Error</>}
+                </span>
                             </Badge>
                             <Badge variant="outline">{notification.status}</Badge>
                           </div>

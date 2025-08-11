@@ -2,10 +2,11 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-// import { usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
+import { cn } from '../../lib/utils'
+import { BarChart3, Calendar, Search, MessageCircle, User, X, Menu, Bell } from 'lucide-react'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
-import { cn } from '../../lib/utils'
 
 
 interface MemberLayoutProps {
@@ -16,46 +17,39 @@ const sidebarNavigation = [
   {
     name: 'Dashboard',
     href: '/dashboard',
-    icon: '📊',
+    icon: BarChart3,
     description: 'Overview and activities'
-  },
-  {
-    name: 'My Clubs',
-    href: '/my-clubs',
-    icon: '🏛️',
-    description: 'Clubs you\'ve joined'
   },
   {
     name: 'Events',
     href: '/events',
-    icon: '📅',
+    icon: Calendar,
     description: 'Browse and join events'
   },
   {
     name: 'Discover',
     href: '/clubs',
-    icon: '🔍',
+    icon: Search,
     description: 'Find new clubs'
   },
   {
     name: 'Chat',
     href: '/chat',
-    icon: '💬',
+    icon: MessageCircle,
     description: 'Club group chats',
     badge: 3
   },
   {
     name: 'Profile',
     href: '/profile',
-    icon: '👤',
+    icon: User,
     description: 'Your profile settings'
   }
 ]
 
 export function MemberLayout({ children }: MemberLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  // const pathname = usePathname()
-  const pathname = '/dashboard' // Mock for now
+  const pathname = usePathname()
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -87,7 +81,7 @@ export function MemberLayout({ children }: MemberLayoutProps) {
               className="lg:hidden"
               onClick={() => setSidebarOpen(false)}
             >
-              ✕
+              <X className="w-4 h-4" />
             </Button>
           </div>
 
@@ -107,7 +101,7 @@ export function MemberLayout({ children }: MemberLayoutProps) {
                   )}
                 >
                   <div className="flex items-center space-x-3">
-                    <span className="text-lg">{item.icon}</span>
+                    <item.icon className="w-5 h-5" />
                     <div>
                       <div>{item.name}</div>
                       <div className="text-xs text-gray-500">{item.description}</div>
@@ -157,12 +151,12 @@ export function MemberLayout({ children }: MemberLayoutProps) {
               className="lg:hidden"
               onClick={() => setSidebarOpen(true)}
             >
-              ☰
+              <Menu className="w-5 h-5" />
             </Button>
 
             <div className="flex items-center space-x-4">
               <Button variant="ghost" size="sm">
-                🔔 Notifications
+                <Bell className="w-4 h-4 mr-2" />Notifications
                 <Badge variant="destructive" className="ml-2">3</Badge>
               </Button>
               <Button variant="outline" size="sm">

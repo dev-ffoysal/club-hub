@@ -2,10 +2,11 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-// import { usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
+import { cn } from '../../lib/utils'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
-import { cn } from '../../lib/utils'
+import { BarChart3, Users, Calendar, MessageCircle, DollarSign, TrendingUp, Building2, Settings, X, Menu, Bell } from 'lucide-react'
 
 
 
@@ -17,58 +18,57 @@ const sidebarNavigation = [
   {
     name: 'Dashboard',
     href: '/admin/dashboard',
-    icon: '📊',
+    icon: BarChart3,
     description: 'Overview and statistics'
   },
   {
     name: 'Members',
     href: '/admin/members',
-    icon: '👥',
+    icon: Users,
     description: 'Manage club members',
     badge: 12
   },
   {
     name: 'Events',
     href: '/admin/events',
-    icon: '📅',
+    icon: Calendar,
     description: 'Create and manage events'
   },
   {
     name: 'Communications',
     href: '/admin/communications',
-    icon: '💬',
+    icon: MessageCircle,
     description: 'Group chat and notifications'
   },
   {
     name: 'Finances',
     href: '/admin/finances',
-    icon: '💰',
+    icon: DollarSign,
     description: 'Financial management'
   },
   {
     name: 'Analytics',
     href: '/admin/analytics',
-    icon: '📈',
+    icon: TrendingUp,
     description: 'Club performance metrics'
   },
   {
     name: 'Profile',
     href: '/admin/profile',
-    icon: '🏛️',
+    icon: Building2,
     description: 'Club profile settings'
   },
   {
     name: 'Settings',
     href: '/admin/settings',
-    icon: '⚙️',
+    icon: Settings,
     description: 'Club configuration'
   }
 ]
 
 export function ClubAdminLayout({ children }: ClubAdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  // const pathname = usePathname()
-  const pathname = '/admin/dashboard' // Mock for now
+  const pathname = usePathname()
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -100,7 +100,7 @@ export function ClubAdminLayout({ children }: ClubAdminLayoutProps) {
               className="lg:hidden"
               onClick={() => setSidebarOpen(false)}
             >
-              ✕
+              <X className="w-4 h-4" />
             </Button>
           </div>
 
@@ -120,7 +120,7 @@ export function ClubAdminLayout({ children }: ClubAdminLayoutProps) {
                   )}
                 >
                   <div className="flex items-center space-x-3">
-                    <span className="text-lg">{item.icon}</span>
+                    <item.icon className="w-5 h-5" />
                     <div>
                       <div>{item.name}</div>
                       <div className="text-xs text-gray-500">{item.description}</div>
@@ -155,9 +155,9 @@ export function ClubAdminLayout({ children }: ClubAdminLayoutProps) {
       </div>
 
       {/* Main content */}
-      <div className="lg:pl-64">
+      <div className="lg:pl-64 min-h-screen">
         {/* Top bar */}
-        <div className="sticky top-0 z-30 bg-white border-b px-6 py-4">
+        <div className="sticky top-0 z-30 bg-white border-b px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             <Button
               variant="ghost"
@@ -165,12 +165,12 @@ export function ClubAdminLayout({ children }: ClubAdminLayoutProps) {
               className="lg:hidden"
               onClick={() => setSidebarOpen(true)}
             >
-              ☰
+              <Menu className="w-5 h-5" />
             </Button>
             
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm">
-                🔔 Notifications
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <Button variant="ghost" size="sm" className="hidden sm:flex">
+                <Bell className="w-4 h-4 mr-2" />Notifications
               </Button>
               <Button variant="outline" size="sm">
                 <Link href="/">View Public Site</Link>
@@ -180,7 +180,7 @@ export function ClubAdminLayout({ children }: ClubAdminLayoutProps) {
         </div>
 
         {/* Page content */}
-        <main className="p-6">
+        <main className="p-4 sm:p-6 max-w-full overflow-x-hidden">
           {children}
         </main>
       </div>

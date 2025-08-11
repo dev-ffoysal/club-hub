@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { Badge } from '../ui/badge'
 import { cn } from '../../lib/utils'
 import { User } from '@/types'
-import { useAuth } from '../../contexts/auth-context'
+import { useAuth } from '../../hooks/useAuth'
 import { Button } from '../ui/button'
 
 

@@ -1,8 +1,9 @@
 import { Button } from '../../components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
-import { Badge } from '../../components/ui/badge'
 import { Navbar } from '../../components/layout/navbar'
 import Link from 'next/link'
+import { Target, Star, Search, Lightbulb, Rocket, GraduationCap, Wrench, Sprout, Users, LucideHeartHandshake } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 
 export default function AboutPage() {
   return (
@@ -33,7 +34,7 @@ export default function AboutPage() {
               <CardHeader>
                 <div className="flex items-center space-x-2">
                   <div className="rounded-lg bg-blue-100 p-3">
-                    <span className="text-3xl">🎯</span>
+                    <Target className="w-12 h-12" />
                   </div>
                   <CardTitle className="text-2xl">Our Mission</CardTitle>
                 </div>
@@ -51,7 +52,7 @@ export default function AboutPage() {
               <CardHeader>
                 <div className="flex items-center space-x-2">
                   <div className="rounded-lg bg-purple-100 p-3">
-                    <span className="text-3xl">🌟</span>
+                    <Star className="w-12 h-12" />
                   </div>
                   <CardTitle className="text-2xl">Our Vision</CardTitle>
                 </div>
@@ -85,7 +86,7 @@ export default function AboutPage() {
               <CardHeader>
                 <div className="text-center">
                   <div className="mx-auto rounded-lg bg-red-100 p-3 w-16 h-16 flex items-center justify-center">
-                    <span className="text-2xl">🔍</span>
+                    <Search className="w-8 h-8" />
                   </div>
                   <CardTitle className="text-xl mt-4">The Problem</CardTitle>
                 </div>
@@ -103,7 +104,7 @@ export default function AboutPage() {
               <CardHeader>
                 <div className="text-center">
                   <div className="mx-auto rounded-lg bg-yellow-100 p-3 w-16 h-16 flex items-center justify-center">
-                    <span className="text-2xl">💡</span>
+                    <Lightbulb className="w-8 h-8" />
                   </div>
                   <CardTitle className="text-xl mt-4">The Solution</CardTitle>
                 </div>
@@ -121,7 +122,7 @@ export default function AboutPage() {
               <CardHeader>
                 <div className="text-center">
                   <div className="mx-auto rounded-lg bg-green-100 p-3 w-16 h-16 flex items-center justify-center">
-                    <span className="text-2xl">🚀</span>
+                    <Rocket className="w-8 h-8" />
                   </div>
                   <CardTitle className="text-xl mt-4">The Impact</CardTitle>
                 </div>
@@ -153,7 +154,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div className="text-center">
               <div className="mx-auto rounded-lg bg-blue-100 p-4 w-20 h-20 flex items-center justify-center mb-4">
-                <span className="text-3xl">🤝</span>
+                <LucideHeartHandshake className="w-12 h-12" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Community First</h3>
               <p className="text-gray-600">
@@ -164,7 +165,7 @@ export default function AboutPage() {
 
             <div className="text-center">
               <div className="mx-auto rounded-lg bg-green-100 p-4 w-20 h-20 flex items-center justify-center mb-4">
-                <span className="text-3xl">🎓</span>
+                <GraduationCap className="w-12 h-12" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Student Empowerment</h3>
               <p className="text-gray-600">
@@ -175,7 +176,7 @@ export default function AboutPage() {
 
             <div className="text-center">
               <div className="mx-auto rounded-lg bg-purple-100 p-4 w-20 h-20 flex items-center justify-center mb-4">
-                <span className="text-3xl">🔧</span>
+                <Wrench className="w-12 h-12" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Simplicity</h3>
               <p className="text-gray-600">
@@ -186,7 +187,7 @@ export default function AboutPage() {
 
             <div className="text-center">
               <div className="mx-auto rounded-lg bg-yellow-100 p-4 w-20 h-20 flex items-center justify-center mb-4">
-                <span className="text-3xl">🌱</span>
+                <Sprout className="w-12 h-12" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Continuous Growth</h3>
               <p className="text-gray-600">
@@ -214,7 +215,7 @@ export default function AboutPage() {
             <CardContent className="p-8">
               <div className="text-center">
                 <div className="mx-auto rounded-lg bg-indigo-100 p-4 w-24 h-24 flex items-center justify-center mb-6">
-                  <span className="text-4xl">👥</span>
+                  <Users className="w-16 h-16" />
                 </div>
                 <h3 className="text-2xl font-semibold text-gray-900 mb-4">Our Development Team</h3>
                 <p className="text-lg text-gray-600 leading-relaxed">
