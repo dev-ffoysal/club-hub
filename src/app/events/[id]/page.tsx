@@ -121,7 +121,7 @@ export default function EventDetailPage() {
 
   if (!event) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -175,303 +175,329 @@ export default function EventDetailPage() {
     setIsRegistered(!isRegistered)
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Header with Login Toggle */}
-        <div className="flex justify-between items-center mb-6">
-          <Link href="/events">
-            <Button variant="outline">← Back to Events</Button>
-          </Link>
-          <Button
-            onClick={() => user ? logout() : login({
-              email: 'demo@example.com',
-              password: 'password123'
+return (
+  <div className="min-h-screen bg-gray-50 dark:bg-background dark:bg-background text-foreground">
+    <Navbar />
 
-            })}
-            variant={user ? "default" : "outline"}
-          >
-            {user ? <><UserIcon className="w-4 h-4 inline mr-1" />{user.name} (Demo)</> : <><Lock className="w-4 h-4 inline mr-1" />Login (Demo)</>}
-          </Button>
-        </div>
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      {/* Header with Login Toggle */}
+      <div className="flex justify-between items-center mb-6">
+        <Link href="/events">
+          <Button variant="outline">← Back to Events</Button>
+        </Link>
+        <Button
+          onClick={() =>
+            user
+              ? logout()
+              : login({
+                  email: 'demo@example.com',
+                  password: 'password123',
+                })
+          }
+          variant={user ? 'default' : 'outline'}
+        >
+          {user ? (
+            <>
+              <UserIcon className="w-4 h-4 inline mr-1" />
+              {user.name} (Demo)
+            </>
+          ) : (
+            <>
+              <Lock className="w-4 h-4 inline mr-1" />
+              Login (Demo)
+            </>
+          )}
+        </Button>
+      </div>
 
-        {/* Event Hero Section */}
-        <Card className="mb-8 overflow-hidden">
-          <div className="h-64 bg-gradient-to-br from-blue-500 to-purple-600 relative">
-            <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-            
-            {/* Countdown Timer for events within a week */}
-            {isUpcoming && isWithinWeek && (
-              <div className="absolute top-4 right-4">
-                <Countdown targetDate={event.startDate} />
-              </div>
-            )}
-            
-            <div className="absolute bottom-6 left-6 right-6">
-              <div className="flex flex-wrap gap-2 mb-4">
-                <Badge className={categoryInfo.color}>
-                  {categoryInfo.icon} {categoryInfo.name}
+      {/* Event Hero Section */}
+      <Card className="mb-8 overflow-hidden border bg-card text-card-foreground">
+        <div className="h-64 bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80 relative">
+          <div className="absolute inset-0 bg-black/20"></div>
+
+          {/* Countdown Timer for events within a week */}
+          {isUpcoming && isWithinWeek && (
+            <div className="absolute top-4 right-4">
+              <Countdown targetDate={event.startDate} />
+            </div>
+          )}
+
+          <div className="absolute bottom-6 left-6 right-6">
+            <div className="flex flex-wrap gap-2 mb-4">
+              <Badge className={categoryInfo.color}>
+                <categoryInfo.icon className="w-4 h-4 mr-1" /> {categoryInfo.name}
+              </Badge>
+              {event.type === 'competition' && (
+                <Badge variant="warning">
+                  <Trophy className="w-4 h-4 mr-1" />
+                  Competition
                 </Badge>
-                {event.type === 'competition' && (
-                  <Badge variant="warning"><Trophy className="w-4 h-4 mr-1" />Competition</Badge>
-                )}
-                {event.isOnline && (
-                  <Badge variant="info">🌐 Online</Badge>
-                )}
-                {isUpcoming && !isWithinWeek && (
-                  <Badge variant="success" className="bg-green-500 text-white">
-                    {formatDate(event.startDate)}
-                  </Badge>
-                )}
-              </div>
-              
-              <h1 className="text-white font-bold text-3xl mb-2">
-                {event.title}
-              </h1>
-              
-              <div className="flex items-center text-blue-100 text-sm">
-                <span className="mr-4"><Building2 className="w-4 h-4 inline mr-1" />{event.club.university}</span>
-                <span className="mr-4"><Users className="w-4 h-4 inline mr-1" />{event.club.name}</span>
-                {event.organizer && (
-                  <span><UserIcon className="w-4 h-4 inline mr-1" />{event.organizer.name}</span>
-                )}
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Description */}
-            <Card>
-              <CardHeader>
-                <CardTitle>About This Event</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="prose max-w-none">
-                  {event.longDescription ? (
-                    <div className="whitespace-pre-line text-gray-700">
-                      {event.longDescription}
-                    </div>
-                  ) : (
-                    <p className="text-gray-700">{event.description}</p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Agenda */}
-            {event.agenda && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Event Agenda</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {event.agenda.map((item, index) => (
-                      <div key={index} className="flex items-start space-x-4 p-3 bg-gray-50 rounded-lg">
-                        <div className="text-sm font-semibold text-blue-600 min-w-[100px]">
-                          {item.time}
-                        </div>
-                        <div className="text-sm text-gray-700">
-                          {item.activity}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Requirements & Benefits */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {event.requirements && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Requirements</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {event.requirements.map((req, index) => (
-                        <li key={index} className="flex items-start space-x-2">
-                          <span className="text-red-500 mt-1">•</span>
-                          <span className="text-sm text-gray-700">{req}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
               )}
+              {event.isOnline && <Badge variant="info">🌐 Online</Badge>}
+              {isUpcoming && !isWithinWeek && (
+                <Badge variant="success">{formatDate(event.startDate)}</Badge>
+              )}
+            </div>
 
-              {event.benefits && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">What You'll Get</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {event.benefits.map((benefit, index) => (
-                        <li key={index} className="flex items-start space-x-2">
-                          <span className="text-green-500 mt-1">✓</span>
-                          <span className="text-sm text-gray-700">{benefit}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
+            <h1 className="text-white font-bold text-3xl mb-2">{event.title}</h1>
+
+            <div className="flex items-center text-white/80 text-sm">
+              <span className="mr-4">
+                <Building2 className="w-4 h-4 inline mr-1" />
+                {event.club.university}
+              </span>
+              <span className="mr-4">
+                <Users className="w-4 h-4 inline mr-1" />
+                {event.club.name}
+              </span>
+              {event.organizer && (
+                <span>
+                  <UserIcon className="w-4 h-4 inline mr-1" />
+                  {event.organizer.name}
+                </span>
               )}
             </div>
           </div>
+        </div>
+      </Card>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Event Details */}
-            <Card>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main Content */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Description */}
+          <Card className="bg-card text-card-foreground">
+            <CardHeader>
+              <CardTitle>About This Event</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="prose max-w-none">
+                {event.longDescription ? (
+                  <div className="whitespace-pre-line">{event.longDescription}</div>
+                ) : (
+                  <p>{event.description}</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Agenda */}
+          {event.agenda && (
+            <Card className="bg-card text-card-foreground">
               <CardHeader>
-                <CardTitle>Event Details</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center text-sm">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  <div>
-                    <div className="font-semibold">{formatDate(event.startDate)}</div>
-                    <div className="text-gray-600">
-                      {formatTime(event.startDate)} - {formatTime(event.endDate)}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center text-sm">
-                  <MapPin className="w-4 h-4 mr-2" />
-                  <span>{event.location}</span>
-                </div>
-                
-                {event.maxParticipants && (
-                  <div className="flex items-center text-sm">
-                    <Users className="w-4 h-4 mr-2" />
-                    <span>
-                      {event.currentParticipants}/{event.maxParticipants} participants
-                      {spotsLeft && spotsLeft > 0 && (
-                        <span className="text-green-600 ml-1">
-                          ({spotsLeft} spots left)
-                        </span>
-                      )}
-                    </span>
-                  </div>
-                )}
-                
-                {event.registrationDeadline && isEventUpcoming(event.registrationDeadline) && (
-                  <div className="flex items-center text-sm text-orange-600">
-                    <Clock className="w-4 h-4 mr-2" />
-                    <span>Registration closes: {formatDate(event.registrationDeadline)}</span>
-                  </div>
-                )}
-
-                {event.organizer && (
-                  <div className="pt-4 border-t">
-                    <h4 className="font-semibold text-sm mb-2">Organizer</h4>
-                    <div className="text-sm">
-                      <div className="font-medium">{event.organizer.name}</div>
-                      <div className="text-gray-600">{event.organizer.title}</div>
-                      <div className="text-blue-600">{event.organizer.email}</div>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Registration Progress */}
-            {event.maxParticipants && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Registration Progress</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Registered</span>
-                      <span>{Math.round((event.currentParticipants / event.maxParticipants) * 100)}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3">
-                      <div 
-                        className="bg-blue-600 h-3 rounded-full transition-all duration-300"
-                        style={{ width: `${(event.currentParticipants / event.maxParticipants) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Social Interactions */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Community</CardTitle>
+                <CardTitle>Event Agenda</CardTitle>
               </CardHeader>
               <CardContent>
-                <SocialInteractions
-                  eventId={event.id}
-                  followers={event.followers}
-                  upvotes={event.upvotes}
-                  downvotes={event.downvotes}
-                  isLoggedIn={!!user}
-                  isFollowing={userInteractions.isFollowing}
-                  userVote={userInteractions.vote}
-                  onFollow={handleFollow}
-                  onUnfollow={handleUnfollow}
-                  onUpvote={handleUpvote}
-                  onDownvote={handleDownvote}
-                  onRemoveVote={handleRemoveVote}
-                  className="flex-col space-y-4"
-                />
-              </CardContent>
-            </Card>
-
-            {/* Registration Button */}
-            <Card>
-              <CardContent className="pt-6">
                 <div className="space-y-3">
-                  <Button 
-                    onClick={handleRegister}
-                    className="w-full"
-                    size="lg"
-                    disabled={!isUpcoming || spotsLeft === 0}
-                  >
-                    {!isUpcoming ? 'Event Ended' : 
-                     spotsLeft === 0 ? 'Event Full' :
-                     isRegistered ? '✓ Registered' : 'Register Now'}
-                  </Button>
-                  
-                  {!user && (
-                    <p className="text-xs text-gray-500 text-center">
-                      Please login to register for this event
-                    </p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Tags */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Tags</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {event.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
+                  {event.agenda.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start space-x-4 p-3 bg-muted/50 rounded-lg"
+                    >
+                      <div className="text-sm font-semibold text-primary min-w-[100px]">
+                        {item.time}
+                      </div>
+                      <div className="text-sm">{item.activity}</div>
+                    </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
+          )}
+
+          {/* Requirements & Benefits */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {event.requirements && (
+              <Card className="bg-card text-card-foreground">
+                <CardHeader>
+                  <CardTitle className="text-lg">Requirements</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    {event.requirements.map((req, index) => (
+                      <li key={index} className="flex items-start space-x-2">
+                        <span className="text-destructive mt-1">•</span>
+                        <span className="text-sm text-muted-foreground">{req}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
+
+            {event.benefits && (
+              <Card className="bg-card text-card-foreground">
+                <CardHeader>
+                  <CardTitle className="text-lg">What You'll Get</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    {event.benefits.map((benefit, index) => (
+                      <li key={index} className="flex items-start space-x-2">
+                        <span className="text-primary mt-1">✓</span>
+                        <span className="text-sm text-muted-foreground">{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
           </div>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Event Details */}
+          <Card className="bg-card text-card-foreground">
+            <CardHeader>
+              <CardTitle>Event Details</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center text-sm">
+                <Calendar className="w-4 h-4 mr-2" />
+                <div>
+                  <div className="font-semibold">{formatDate(event.startDate)}</div>
+                  <div className="text-muted-foreground">
+                    {formatTime(event.startDate)} - {formatTime(event.endDate)}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center text-sm">
+                <MapPin className="w-4 h-4 mr-2" />
+                <span className="text-muted-foreground">{event.location}</span>
+              </div>
+
+              {event.maxParticipants && (
+                <div className="flex items-center text-sm">
+                  <Users className="w-4 h-4 mr-2" />
+                  <span className="text-muted-foreground">
+                    {event.currentParticipants}/{event.maxParticipants} participants
+                    {spotsLeft && spotsLeft > 0 && (
+                      <span className="text-green-600 dark:text-green-400 ml-1">({spotsLeft} spots left)</span>
+
+                    )}
+                  </span>
+                </div>
+              )}
+
+              {event.registrationDeadline && isEventUpcoming(event.registrationDeadline) && (
+                <div className="flex items-center text-sm text-orange-500">
+                  <Clock className="w-4 h-4 mr-2" />
+                  <span>Registration closes: {formatDate(event.registrationDeadline)}</span>
+                </div>
+              )}
+
+              {event.organizer && (
+                <div className="pt-4 border-t">
+                  <h4 className="font-semibold text-sm mb-2">Organizer</h4>
+                  <div className="text-sm">
+                    <div className="font-medium">{event.organizer.name}</div>
+                    <div className="text-muted-foreground">{event.organizer.title}</div>
+                    <div className="text-primary">{event.organizer.email}</div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Registration Progress */}
+          {event.maxParticipants && (
+            <Card className="bg-card text-card-foreground">
+              <CardHeader>
+                <CardTitle>Registration Progress</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>Registered</span>
+                    <span>
+                      {Math.round((event.currentParticipants / event.maxParticipants) * 100)}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-3">
+                    <div
+                      className="bg-primary h-3 rounded-full transition-all duration-300"
+                      style={{
+                        width: `${(event.currentParticipants / event.maxParticipants) * 100}%`,
+                      }}
+                    ></div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Social Interactions */}
+          <Card className="bg-card text-card-foreground">
+            <CardHeader>
+              <CardTitle>Community</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <SocialInteractions
+                eventId={event.id}
+                followers={event.followers}
+                upvotes={event.upvotes}
+                downvotes={event.downvotes}
+                isLoggedIn={!!user}
+                isFollowing={userInteractions.isFollowing}
+                userVote={userInteractions.vote}
+                onFollow={handleFollow}
+                onUnfollow={handleUnfollow}
+                onUpvote={handleUpvote}
+                onDownvote={handleDownvote}
+                onRemoveVote={handleRemoveVote}
+                className="flex-col space-y-4"
+              />
+            </CardContent>
+          </Card>
+
+          {/* Registration Button */}
+          <Card className="bg-card text-card-foreground">
+            <CardContent className="pt-6">
+              <div className="space-y-3">
+                <Button
+                  onClick={handleRegister}
+                  className="w-full"
+                  size="lg"
+                  disabled={!isUpcoming || spotsLeft === 0}
+                >
+                  {!isUpcoming
+                    ? 'Event Ended'
+                    : spotsLeft === 0
+                    ? 'Event Full'
+                    : isRegistered
+                    ? '✓ Registered'
+                    : 'Register Now'}
+                </Button>
+
+                {!user && (
+                  <p className="text-xs text-muted-foreground text-center">
+                    Please login to register for this event
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Tags */}
+          <Card className="bg-card text-card-foreground">
+            <CardHeader>
+              <CardTitle>Tags</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {event.tags.map((tag) => (
+                  <Badge key={tag} variant="secondary" className="text-xs">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
-  )
+  </div>
+)
+
 }

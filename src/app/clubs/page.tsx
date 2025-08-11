@@ -108,16 +108,16 @@ const mockClubs = [
 
 export default function ClubsPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             University Clubs
           </h1>
-          <p className="mt-4 text-lg text-gray-600">
+          <p className="mt-4 text-lg text-muted-foreground">
             Discover and join amazing clubs from universities across Bangladesh
           </p>
         </div>
@@ -141,7 +141,7 @@ export default function ClubsPage() {
           <Card>
             <CardContent className="p-6 text-center">
               <div className="text-3xl font-bold text-blue-600">{mockClubs.length}</div>
-              <div className="text-sm text-gray-600">Active Clubs</div>
+              <div className="text-sm text-muted-foreground">Active Clubs</div>
             </CardContent>
           </Card>
           <Card>
@@ -149,7 +149,7 @@ export default function ClubsPage() {
               <div className="text-3xl font-bold text-green-600">
                 {mockClubs.reduce((sum, club) => sum + club.memberCount, 0)}
               </div>
-              <div className="text-sm text-gray-600">Total Members</div>
+              <div className="text-sm text-muted-foreground">Total Members</div>
             </CardContent>
           </Card>
           <Card>
@@ -157,89 +157,89 @@ export default function ClubsPage() {
               <div className="text-3xl font-bold text-purple-600">
                 {new Set(mockClubs.map(club => club.university)).size}
               </div>
-              <div className="text-sm text-gray-600">Universities</div>
+              <div className="text-sm text-muted-foreground">Universities</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Clubs Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockClubs.map((club) => (
-            <Card key={club.id} className="hover:shadow-lg transition-shadow overflow-hidden">
-              {/* Cover Image */}
-              <div className="h-48 bg-gradient-to-br from-blue-500 to-purple-600 relative">
-                <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-                      <span className="text-lg font-bold text-gray-800">
-                        {club.name.charAt(0)}
-                      </span>
-                    </div>
-                    <div>
-                      <h3 className="text-white font-semibold text-lg">{club.name}</h3>
-                      <p className="text-blue-100 text-sm">{club.university}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+{mockClubs.map((club) => (
+  <Card
+    key={club.id}
+    className="relative flex h-full flex-col overflow-hidden border bg-card text-card-foreground hover:shadow-lg transition-shadow"
+  >
+    {/* Cover Image */}
+    <div className="h-48 bg-gradient-to-br from-blue-500 to-purple-600 relative">
+      <div className="absolute inset-0 bg-black/20"></div>
+      <div className="absolute bottom-4 left-4 right-4">
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center shadow-sm">
+            <span className="text-lg font-bold text-foreground">
+              {club.name.charAt(0)}
+            </span>
+          </div>
+          <div>
+            <h3 className="text-white font-semibold text-lg">{club.name}</h3>
+            <p className="text-blue-100 dark:text-blue-200 text-sm">{club.university}</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-              <CardContent className="p-6">
-                <CardDescription className="mb-4 line-clamp-2">
-                  {club.description}
-                </CardDescription>
+    <CardContent className="p-6 pb-20">
+      <CardDescription className="mb-4 line-clamp-2 text-muted-foreground">
+        {club.description}
+      </CardDescription>
 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {club.tags.slice(0, 3).map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
+      {/* Tags */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {club.tags.slice(0, 3).map((tag) => (
+          <Badge key={tag} variant="secondary" className="text-xs">
+            {tag}
+          </Badge>
+        ))}
+      </div>
 
-                {/* Stats */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-4 text-sm text-gray-600">
-                    <span className="flex items-center">
-                      <Users className="w-4 h-4 mr-1" />
-                      {club.memberCount} members
-                    </span>
-                  </div>
-                  <Badge variant="success" className="text-xs">
-                    Active
-                  </Badge>
-                </div>
+      {/* Stats */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+          <span className="flex items-center">
+            <Users className="w-4 h-4 mr-1" />
+            {club.memberCount} members
+          </span>
+        </div>
+        <Badge variant="success" className="text-xs">Active</Badge>
+      </div>
 
-                {/* Recent Achievement */}
-                {club.achievements.length > 0 && (
-                  <div className="mb-4 p-3 bg-yellow-50 rounded-lg">
-                    <div className="flex items-center space-x-2">
-                      <Trophy className="w-4 h-4 text-yellow-600" />
-                      <span className="text-sm font-medium text-yellow-800">
-                        Latest Achievement
-                      </span>
-                    </div>
-                    <p className="text-xs text-yellow-700 mt-1">
-                      {club.achievements[0].title}
-                    </p>
-                  </div>
-                )}
+      {/* Recent Achievement */}
+      {club.achievements.length > 0 && (
+        <div className="mb-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20">
+          <div className="flex items-center space-x-2">
+            <Trophy className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            <span className="text-sm font-medium text-amber-800 dark:text-amber-200">
+              Latest Achievement
+            </span>
+          </div>
+          <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
+            {club.achievements[0].title}
+          </p>
+        </div>
+      )}
+    </CardContent>
 
-                {/* Actions */}
-                <div className="flex space-x-2">
-                  <Button asChild className="flex-1">
-                    <Link href={`/clubs/${club.slug}`}>
-                      View Club
-                    </Link>
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    Join
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+    {/* Actions pinned to bottom */}
+    <div className="absolute bottom-0 left-0 right-0 border-t bg-background/80 backdrop-blur p-4">
+      <div className="flex space-x-2">
+        <Button asChild className="flex-1">
+          <Link href={`/clubs/${club.slug}`}>View Club</Link>
+        </Button>
+        <Button variant="outline" size="sm">Join</Button>
+      </div>
+    </div>
+  </Card>
+))}
+
         </div>
 
         {/* Load More */}
@@ -252,7 +252,7 @@ export default function ClubsPage() {
         {/* CTA Section */}
         <div className="mt-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-center text-white">
           <h2 className="text-2xl font-bold mb-4">Don't see your club?</h2>
-          <p className="text-blue-100 mb-6">
+          <p className="text-blue-100 dark:text-blue-200 mb-6">
             Apply to get your university club featured on our platform and start managing your community effectively.
           </p>
           <Button size="lg" variant="secondary">

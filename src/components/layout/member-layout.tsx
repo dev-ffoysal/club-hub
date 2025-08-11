@@ -52,7 +52,7 @@ export function MemberLayout({ children }: MemberLayoutProps) {
   const pathname = usePathname()
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-background">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
@@ -97,7 +97,7 @@ export function MemberLayout({ children }: MemberLayoutProps) {
                     "flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                     isActive
                       ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                      : "text-gray-600 hover:bg-gray-50 dark:bg-background hover:text-gray-900"
                   )}
                 >
                   <div className="flex items-center space-x-3">

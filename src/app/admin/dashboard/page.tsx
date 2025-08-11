@@ -98,8 +98,8 @@ export default function ClubAdminDashboard() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">{mockClubData.name}</h1>
-            <p className="text-gray-600 mt-2">{mockClubData.university} • Club Admin Dashboard</p>
+            <h1 className="text-3xl font-bold text-foreground">{mockClubData.name}</h1>
+            <p className="text-muted-foreground mt-2">{mockClubData.university} • Club Admin Dashboard</p>
           </div>
           <div className="flex space-x-2">
             <Button variant="outline">Generate QR Code</Button>
@@ -113,16 +113,16 @@ export default function ClubAdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Members</p>
+                  <p className="text-sm font-medium text-muted-foreground">Total Members</p>
                   <p className="text-3xl font-bold text-blue-600">{mockClubData.memberCount}</p>
                 </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Users className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                  <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
               <div className="mt-4 flex items-center text-sm">
-                <span className="text-green-600">↗ +{mockClubData.monthlyGrowth}%</span>
-                <span className="text-gray-500 ml-2">from last month</span>
+                <span className="text-green-600 dark:text-green-400">↗ +{mockClubData.monthlyGrowth}%</span>
+                <span className="text-muted-foreground ml-2">from last month</span>
               </div>
             </CardContent>
           </Card>
@@ -131,11 +131,11 @@ export default function ClubAdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Pending Members</p>
+                  <p className="text-sm font-medium text-muted-foreground">Pending Members</p>
                   <p className="text-3xl font-bold text-yellow-600">{mockClubData.pendingMembers}</p>
                 </div>
-                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-yellow-600" />
+                <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
+                  <Clock className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
                 </div>
               </div>
               <div className="mt-4">
@@ -148,14 +148,14 @@ export default function ClubAdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Active Events</p>
+                  <p className="text-sm font-medium text-muted-foreground">Active Events</p>
                   <p className="text-3xl font-bold text-green-600">{mockClubData.activeEvents}</p>
                 </div>
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
               </div>
-              <div className="mt-4 text-sm text-gray-500">
+              <div className="mt-4 text-sm text-muted-foreground">
                 This month
               </div>
             </CardContent>
@@ -165,14 +165,14 @@ export default function ClubAdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Club Revenue</p>
+                  <p className="text-sm font-medium text-muted-foreground">Club Revenue</p>
                   <p className="text-3xl font-bold text-purple-600">৳{mockClubData.totalRevenue.toLocaleString()}</p>
                 </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <DollarSign className="w-6 h-6 text-purple-600" />
+                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                  <DollarSign className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                 </div>
               </div>
-              <div className="mt-4 text-sm text-gray-500">
+              <div className="mt-4 text-sm text-muted-foreground">
                 Total collected
               </div>
             </CardContent>
@@ -204,10 +204,10 @@ export default function ClubAdminDashboard() {
                       <div key={event.id} className="flex items-center justify-between p-3 border rounded-lg">
                         <div>
                           <h4 className="font-medium">{event.title}</h4>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-muted-foreground">
                             {formatDate(event.date)} at {formatTime(event.date)}
                           </p>
-                          <p className="text-xs text-blue-600">
+                          <p className="text-xs text-blue-600 dark:text-blue-400">
                             {event.participants}/{event.maxParticipants} registered
                           </p>
                         </div>
@@ -230,10 +230,10 @@ export default function ClubAdminDashboard() {
                   <div className="space-y-4">
                     {mockRecentActivities.map((activity) => (
                       <div key={activity.id} className="flex items-start space-x-3">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                        <div className="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full mt-2"></div>
                         <div>
                           <p className="text-sm font-medium">{activity.message}</p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             {formatDate(activity.timestamp)}
                           </p>
                         </div>
@@ -257,11 +257,11 @@ export default function ClubAdminDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   {mockPendingMembers.map((member) => (
-                    <div key={member.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                    <div key={member.id} className="border rounded-lg p-4 hover:bg-muted/50">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
                           <h3 className="font-semibold">{member.name}</h3>
-                          <div className="mt-1 space-y-1 text-sm text-gray-600">
+                          <div className="mt-1 space-y-1 text-sm text-muted-foreground">
                             <p>Email: {member.email}</p>
                             <p>Student ID: {member.studentId}</p>
                             <p>Department: {member.department}</p>
@@ -301,7 +301,7 @@ export default function ClubAdminDashboard() {
             </div>
             <Card>
               <CardContent className="p-6">
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-muted-foreground">
                   Event management interface will be implemented here
                 </div>
               </CardContent>
@@ -316,7 +316,7 @@ export default function ClubAdminDashboard() {
             </div>
             <Card>
               <CardContent className="p-6">
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-muted-foreground">
                   Financial management interface will be implemented here
                 </div>
               </CardContent>
@@ -331,7 +331,7 @@ export default function ClubAdminDashboard() {
             </div>
             <Card>
               <CardContent className="p-6">
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-muted-foreground">
                   Club settings interface will be implemented here
                 </div>
               </CardContent>

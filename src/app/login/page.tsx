@@ -132,7 +132,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-background">
       <Navbar />
       
       <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -230,7 +230,7 @@ export default function LoginPage() {
                       <div
                         key={user.id}
                         onClick={() => handleDemoLogin(user)}
-                        className="p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors border"
+                        className="p-3 bg-gray-50 dark:bg-background rounded-lg cursor-pointer hover:bg-gray-100 transition-colors border"
                       >
                         <div className="flex justify-between items-start">
                           <div>

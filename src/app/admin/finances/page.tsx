@@ -311,7 +311,7 @@ export default function FinancesPage() {
               <CardContent>
                 <div className="space-y-4">
                   {mockFinancialRecords.map((record) => (
-                    <div key={record.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                    <div key={record.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:bg-background">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-2">

@@ -10,6 +10,7 @@ import { Navbar } from '../../../components/layout/navbar'
 import { formatDate, formatTime, getTimeUntil, isEventUpcoming } from '../../../lib/utils'
 import { Users, Calendar, Trophy, Building2, MapPin, Mail, Phone } from 'lucide-react'
 
+// Mock data unchanged…
 // Mock data for individual club page
 const mockClub = {
   id: '1',
@@ -142,6 +143,15 @@ interface JoinForm {
   motivation: string
 }
 
+interface JoinForm {
+  name: string
+  email: string
+  studentId: string
+  department: string
+  year: string
+  motivation: string
+}
+
 export default function ClubDetailPage({ params }: { params: { slug: string } }) {
   const [showJoinForm, setShowJoinForm] = useState(false)
   const [joinForm, setJoinForm] = useState<JoinForm>({
@@ -157,7 +167,6 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
     e.preventDefault()
     console.log('Joining club with data:', joinForm)
     setShowJoinForm(false)
-    // Reset form
     setJoinForm({
       name: '',
       email: '',
@@ -175,38 +184,42 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
   const upcomingEvents = mockClubEvents.filter(event => isEventUpcoming(event.startDate))
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      
+
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Club Header */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-8">
-          <div className="absolute inset-0 bg-black bg-opacity-20"></div>
+        <div className="relative overflow-hidden rounded-2xl mb-8 bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80">
+          <div className="absolute inset-0 bg-black/20"></div>
           <div className="relative px-8 py-12">
             <div className="flex items-center space-x-6">
-              <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center shadow-lg">
-                <span className="text-3xl font-bold text-blue-600">
+              <div className="w-24 h-24 bg-background rounded-2xl flex items-center justify-center shadow-lg">
+                <span className="text-3xl font-bold text-primary">
                   {mockClub.name.charAt(0)}
                 </span>
               </div>
               <div className="flex-1">
                 <h1 className="text-4xl font-bold text-white mb-2">{mockClub.name}</h1>
-                <p className="text-blue-100 text-lg mb-4">{mockClub.university}</p>
-                <div className="flex items-center space-x-6 text-blue-100">
+                <p className="text-white/80 text-lg mb-4">{mockClub.university}</p>
+                <div className="flex items-center space-x-6 text-white/80">
                   <span><Users className="w-4 h-4 inline mr-1" />{mockClub.memberCount} members</span>
                   <span><Calendar className="w-4 h-4 inline mr-1" />Founded {mockClub.foundedYear}</span>
                   <span><Trophy className="w-4 h-4 inline mr-1" />{mockClub.achievements.length} achievements</span>
                 </div>
               </div>
               <div className="flex flex-col space-y-3">
-                <Button 
-                  size="lg" 
-                  className="bg-white text-blue-600 hover:bg-blue-50"
+                <Button
+                  size="lg"
+                  className="bg-background text-primary hover:bg-muted"
                   onClick={() => setShowJoinForm(true)}
                 >
                   Join Club
                 </Button>
-                <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-blue-600">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="text-white border-white hover:bg-white hover:text-primary"
+                >
                   Follow
                 </Button>
               </div>
@@ -216,7 +229,7 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
 
         {/* Join Form Modal */}
         {showJoinForm && (
-          <Card className="mb-8 border-blue-200 bg-blue-50">
+          <Card className="mb-8 border-[hsl(var(--primary))]/20 bg-[hsl(var(--primary))]/5">
             <CardHeader>
               <CardTitle>Join {mockClub.name}</CardTitle>
               <CardDescription>
@@ -227,25 +240,25 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
               <form onSubmit={handleJoinClub} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium mb-2">
                       Full Name *
                     </label>
                     <Input
                       required
                       value={joinForm.name}
-                      onChange={(e) => setJoinForm({...joinForm, name: e.target.value})}
+                      onChange={(e) => setJoinForm({ ...joinForm, name: e.target.value })}
                       placeholder="Your full name"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium mb-2">
                       Email Address *
                     </label>
                     <Input
                       type="email"
                       required
                       value={joinForm.email}
-                      onChange={(e) => setJoinForm({...joinForm, email: e.target.value})}
+                      onChange={(e) => setJoinForm({ ...joinForm, email: e.target.value })}
                       placeholder="your.email@university.edu.bd"
                     />
                   </div>
@@ -253,36 +266,36 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium mb-2">
                       Student ID *
                     </label>
                     <Input
                       required
                       value={joinForm.studentId}
-                      onChange={(e) => setJoinForm({...joinForm, studentId: e.target.value})}
+                      onChange={(e) => setJoinForm({ ...joinForm, studentId: e.target.value })}
                       placeholder="CSE2021001"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium mb-2">
                       Department *
                     </label>
                     <Input
                       required
                       value={joinForm.department}
-                      onChange={(e) => setJoinForm({...joinForm, department: e.target.value})}
+                      onChange={(e) => setJoinForm({ ...joinForm, department: e.target.value })}
                       placeholder="Computer Science"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium mb-2">
                       Year *
                     </label>
                     <select
                       required
                       value={joinForm.year}
-                      onChange={(e) => setJoinForm({...joinForm, year: e.target.value})}
-                      className="w-full p-2 border border-gray-300 rounded-md"
+                      onChange={(e) => setJoinForm({ ...joinForm, year: e.target.value })}
+                      className="w-full p-2 border rounded-md bg-background"
                     >
                       <option value="">Select year</option>
                       <option value="1st Year">1st Year</option>
@@ -296,14 +309,14 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium mb-2">
                     Why do you want to join this club? *
                   </label>
                   <textarea
                     required
                     value={joinForm.motivation}
-                    onChange={(e) => setJoinForm({...joinForm, motivation: e.target.value})}
-                    className="w-full p-3 border border-gray-300 rounded-md"
+                    onChange={(e) => setJoinForm({ ...joinForm, motivation: e.target.value })}
+                    className="w-full p-3 border rounded-md bg-background"
                     rows={4}
                     placeholder="Tell us about your interest and what you hope to contribute..."
                   />
@@ -323,8 +336,8 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
         )}
 
         {/* Main Content */}
-        <Tabs defaultValue="about" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+        <Tabs defaultValue="about" className="space-y-6 ">
+          <TabsList className="grid w-full grid-cols-5 bg-card">
             <TabsTrigger value="about">About</TabsTrigger>
             <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="members">Members</TabsTrigger>
@@ -336,22 +349,22 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
           <TabsContent value="about" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
-                <Card>
+                <Card className="bg-card">
                   <CardHeader>
                     <CardTitle>About Our Club</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
                       <h3 className="font-semibold text-lg mb-2">Description</h3>
-                      <p className="text-gray-600">{mockClub.description}</p>
+                      <p className="text-muted-foreground">{mockClub.description}</p>
                     </div>
                     <div>
                       <h3 className="font-semibold text-lg mb-2">Our Purpose</h3>
-                      <p className="text-gray-600">{mockClub.purpose}</p>
+                      <p className="text-muted-foreground">{mockClub.purpose}</p>
                     </div>
                     <div>
                       <h3 className="font-semibold text-lg mb-2">What We Do</h3>
-                      <ul className="list-disc list-inside text-gray-600 space-y-1">
+                      <ul className="list-disc list-inside text-muted-foreground space-y-1">
                         <li>Organize technical workshops and seminars</li>
                         <li>Host programming contests and hackathons</li>
                         <li>Facilitate networking with industry professionals</li>
@@ -366,60 +379,60 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
 
               <div className="space-y-6">
                 {/* Quick Stats */}
-                <Card>
+                <Card className="bg-card">
                   <CardHeader>
                     <CardTitle>Club Statistics</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Total Members</span>
+                      <span className="text-muted-foreground">Total Members</span>
                       <span className="font-semibold">{mockClub.memberCount}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Founded</span>
+                      <span className="text-muted-foreground">Founded</span>
                       <span className="font-semibold">{mockClub.foundedYear}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Active Events</span>
+                      <span className="text-muted-foreground">Active Events</span>
                       <span className="font-semibold">{upcomingEvents.length}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Achievements</span>
+                      <span className="text-muted-foreground">Achievements</span>
                       <span className="font-semibold">{mockClub.achievements.length}</span>
                     </div>
                   </CardContent>
                 </Card>
 
                 {/* Social Links */}
-                <Card>
+                <Card className="bg-card">
                   <CardHeader>
                     <CardTitle>Connect With Us</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {mockClub.socialLinks.facebook && (
-                      <a 
+                      <a
                         href={mockClub.socialLinks.facebook}
-                        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted transition-colors"
                       >
-                        <span className="text-blue-600">📘</span>
+                        <span className="text-primary">📘</span>
                         <span>Facebook</span>
                       </a>
                     )}
                     {mockClub.socialLinks.instagram && (
-                      <a 
+                      <a
                         href={mockClub.socialLinks.instagram}
-                        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted transition-colors"
                       >
-                        <span className="text-pink-600">📷</span>
+                        <span className="text-primary">📷</span>
                         <span>Instagram</span>
                       </a>
                     )}
                     {mockClub.socialLinks.website && (
-                      <a 
+                      <a
                         href={mockClub.socialLinks.website}
-                        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted transition-colors"
                       >
-                        <span className="text-gray-600">🌐</span>
+                        <span className="text-muted-foreground">🌐</span>
                         <span>Website</span>
                       </a>
                     )}
@@ -440,10 +453,10 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
               {mockClubEvents.map((event) => {
                 const isUpcoming = isEventUpcoming(event.startDate)
                 const spotsLeft = event.maxParticipants ? event.maxParticipants - event.currentParticipants : null
-                
+
                 return (
-                  <Card key={event.id} className="hover:shadow-lg transition-shadow">
-                    <CardContent className="p-6">
+                  <Card key={event.id} className="relative flex h-full flex-col hover:shadow-lg transition-shadow bg-card">
+                    <CardContent className="p-6 pb-20">
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex space-x-2">
                           <Badge variant="outline">{event.category}</Badge>
@@ -457,11 +470,11 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
                           )}
                         </div>
                       </div>
-                      
+
                       <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
-                      <p className="text-gray-600 mb-4">{event.description}</p>
-                      
-                      <div className="space-y-2 text-sm text-gray-600 mb-4">
+                      <p className="text-muted-foreground mb-4">{event.description}</p>
+
+                      <div className="space-y-2 text-sm text-muted-foreground mb-4">
                         <p><Calendar className="w-4 h-4 inline mr-1" />{formatDate(event.startDate)} at {formatTime(event.startDate)}</p>
                         <p><MapPin className="w-4 h-4 inline mr-1" />{event.location}</p>
                         {event.maxParticipants && (
@@ -472,25 +485,33 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
                       {/* Progress Bar */}
                       {event.maxParticipants && (
                         <div className="mb-4">
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                          <div className="w-full bg-muted rounded-full h-2">
+                            <div
+                              className="bg-primary h-2 rounded-full transition-all duration-300"
                               style={{ width: `${(event.currentParticipants / event.maxParticipants) * 100}%` }}
                             ></div>
                           </div>
                         </div>
                       )}
-
-                      {isUpcoming && (
-                        <Button 
-                          className="w-full"
-                          disabled={spotsLeft === 0}
-                          onClick={() => handleRegisterEvent(event.id)}
-                        >
-                          {spotsLeft === 0 ? 'Event Full' : 'Register Now'}
-                        </Button>
-                      )}
                     </CardContent>
+
+                    {/* Actions pinned to bottom */}
+                    {isUpcoming && (
+                      <div className="absolute bottom-0 left-0 right-0 border-t bg-background/80 backdrop-blur p-4">
+                        <div className="flex space-x-2">
+                          <Button
+                            className="flex-1"
+                            disabled={spotsLeft === 0}
+                            onClick={() => handleRegisterEvent(event.id)}
+                          >
+                            {spotsLeft === 0 ? 'Event Full' : 'Register Now'}
+                          </Button>
+                          <Button variant="outline" size="sm">
+                            Details
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </Card>
                 )
               })}
@@ -505,7 +526,7 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
             </div>
 
             {/* Leadership Team */}
-            <Card>
+            <Card className="bg-card">
               <CardHeader>
                 <CardTitle>Leadership Team</CardTitle>
                 <CardDescription>Meet the people leading our club</CardDescription>
@@ -514,16 +535,16 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {mockClubMembers.map((member) => (
                     <div key={member.id} className="text-center">
-                      <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <span className="text-xl font-semibold text-gray-600">
+                      <div className="w-20 h-20 bg-muted rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <span className="text-xl font-semibold text-muted-foreground">
                           {member.name.charAt(0)}
                         </span>
                       </div>
                       <h3 className="font-semibold text-lg">{member.name}</h3>
-                      <p className="text-blue-600 font-medium">{member.role}</p>
-                      <p className="text-sm text-gray-600">{member.department}</p>
-                      <p className="text-sm text-gray-600">{member.year}</p>
-                      <p className="text-xs text-gray-500 mt-2">
+                      <p className="text-primary font-medium">{member.role}</p>
+                      <p className="text-sm text-muted-foreground">{member.department}</p>
+                      <p className="text-sm text-muted-foreground">{member.year}</p>
+                      <p className="text-xs text-muted-foreground mt-2">
                         Member since {formatDate(member.joinedAt)}
                       </p>
                     </div>
@@ -533,7 +554,7 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
             </Card>
 
             {/* Member Benefits */}
-            <Card>
+            <Card className="bg-card">
               <CardHeader>
                 <CardTitle>Member Benefits</CardTitle>
                 <CardDescription>What you get as a club member</CardDescription>
@@ -542,7 +563,7 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <h4 className="font-semibold mb-3">Learning & Development</h4>
-                    <ul className="space-y-2 text-sm text-gray-600">
+                    <ul className="space-y-2 text-sm text-muted-foreground">
                       <li>• Access to exclusive workshops and seminars</li>
                       <li>• Mentorship from senior members and alumni</li>
                       <li>• Skill development programs</li>
@@ -551,7 +572,7 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
                   </div>
                   <div>
                     <h4 className="font-semibold mb-3">Networking & Opportunities</h4>
-                    <ul className="space-y-2 text-sm text-gray-600">
+                    <ul className="space-y-2 text-sm text-muted-foreground">
                       <li>• Industry connections and job opportunities</li>
                       <li>• Alumni network access</li>
                       <li>• Competition participation</li>
@@ -572,16 +593,16 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
 
             <div className="space-y-6">
               {mockClub.achievements.map((achievement) => (
-                <Card key={achievement.id} className="hover:shadow-lg transition-shadow">
+                <Card key={achievement.id} className="hover:shadow-lg transition-shadow bg-card">
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-6">
-                      <div className="w-16 h-16 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Trophy className="w-8 h-8 text-yellow-600" />
+                      <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Trophy className="w-8 h-8 text-amber-600 dark:text-amber-400" />
                       </div>
                       <div className="flex-1">
                         <h3 className="text-xl font-semibold mb-2">{achievement.title}</h3>
-                        <p className="text-gray-600 mb-3">{achievement.description}</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-muted-foreground mb-3">{achievement.description}</p>
+                        <p className="text-sm text-muted-foreground">
                           Achieved on {formatDate(achievement.date)}
                         </p>
                       </div>
@@ -595,39 +616,39 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
           {/* Contact Tab */}
           <TabsContent value="contact" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
+              <Card className="bg-card">
                 <CardHeader>
                   <CardTitle>Get in Touch</CardTitle>
                   <CardDescription>Contact us for any questions or inquiries</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center space-x-3">
-                    <Mail className="w-5 h-5 text-blue-600" />
+                    <Mail className="w-5 h-5 text-primary" />
                     <div>
                       <p className="font-medium">Email</p>
-                      <p className="text-gray-600">{mockClub.contactEmail}</p>
+                      <p className="text-muted-foreground">{mockClub.contactEmail}</p>
                     </div>
                   </div>
                   {mockClub.contactPhone && (
                     <div className="flex items-center space-x-3">
-                      <Phone className="w-5 h-5 text-green-600" />
+                      <Phone className="w-5 h-5 text-primary" />
                       <div>
                         <p className="font-medium">Phone</p>
-                        <p className="text-gray-600">{mockClub.contactPhone}</p>
+                        <p className="text-muted-foreground">{mockClub.contactPhone}</p>
                       </div>
                     </div>
                   )}
                   <div className="flex items-center space-x-3">
-                    <Building2 className="w-5 h-5 text-purple-600" />
+                    <Building2 className="w-5 h-5 text-primary" />
                     <div>
                       <p className="font-medium">University</p>
-                      <p className="text-gray-600">{mockClub.university}</p>
+                      <p className="text-muted-foreground">{mockClub.university}</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="bg-card">
                 <CardHeader>
                   <CardTitle>Send us a Message</CardTitle>
                   <CardDescription>We'd love to hear from you</CardDescription>
@@ -635,23 +656,23 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
                 <CardContent>
                   <form className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium mb-2">
                         Your Name
                       </label>
                       <Input placeholder="Enter your name" />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium mb-2">
                         Email Address
                       </label>
                       <Input type="email" placeholder="your.email@example.com" />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium mb-2">
                         Message
                       </label>
                       <textarea
-                        className="w-full p-3 border border-gray-300 rounded-md"
+                        className="w-full p-3 border rounded-md bg-background"
                         rows={4}
                         placeholder="Your message..."
                       />

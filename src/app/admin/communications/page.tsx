@@ -316,7 +316,7 @@ export default function CommunicationsPage() {
               </CardHeader>
               <CardContent>
                 {/* Chat Messages */}
-                <div className="h-96 overflow-y-auto border rounded-lg p-4 mb-4 bg-gray-50">
+                <div className="h-96 overflow-y-auto border rounded-lg p-4 mb-4 bg-gray-50 dark:bg-background">
                   <div className="space-y-4">
                     {mockChatMessages.map((message) => (
                       <div key={message.id} className="flex items-start space-x-3">
@@ -370,7 +370,7 @@ export default function CommunicationsPage() {
                 </form>
 
                 {/* Chat Settings */}
-                <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                <div className="mt-6 p-4 bg-gray-50 dark:bg-background rounded-lg">
                   <h4 className="font-medium mb-3">Chat Settings</h4>
                   <div className="space-y-2">
                     <label className="flex items-center">
@@ -403,7 +403,7 @@ export default function CommunicationsPage() {
               <CardContent>
                 <div className="space-y-4">
                   {mockNotifications.map((notification) => (
-                    <div key={notification.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                    <div key={notification.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:bg-background">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-2">

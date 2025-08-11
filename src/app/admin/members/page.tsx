@@ -344,7 +344,7 @@ export default function MembersPage() {
                 {/* Members List */}
                 <div className="space-y-4">
                   {filteredMembers.map((member) => (
-                    <div key={member.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                    <div key={member.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:bg-background">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
                           <input
@@ -442,7 +442,7 @@ export default function MembersPage() {
               <CardContent>
                 <div className="space-y-4">
                   {mockPendingMembers.map((member) => (
-                    <div key={member.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                    <div key={member.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:bg-background">
                       <div className="flex justify-between items-start">
                         <div className="flex items-center space-x-4">
                           <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">

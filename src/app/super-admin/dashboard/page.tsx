@@ -360,7 +360,7 @@ export default function SuperAdminDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   {mockApplications.filter(app => app.status === 'pending').map((application) => (
-                    <div key={application.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                    <div key={application.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:bg-background">
                       <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3">
@@ -435,7 +435,7 @@ export default function SuperAdminDashboard() {
                 
                 <div className="space-y-4">
                   {mockUsers.map((user) => (
-                    <div key={user.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                    <div key={user.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:bg-background">
                       <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3">
@@ -505,7 +505,7 @@ export default function SuperAdminDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   {mockAdvertisements.map((ad) => (
-                    <div key={ad.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                    <div key={ad.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:bg-background">
                       <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3">
@@ -569,7 +569,7 @@ export default function SuperAdminDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   {mockPromotedEvents.map((event) => (
-                    <div key={event.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                    <div key={event.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:bg-background">
                       <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3">
@@ -632,7 +632,7 @@ export default function SuperAdminDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   {mockPayments.map((payment) => (
-                    <div key={payment.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                    <div key={payment.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:bg-background">
                       <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3">
