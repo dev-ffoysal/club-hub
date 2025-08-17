@@ -97,7 +97,7 @@ export function SocialInteractions({
   return (
     <div className={`flex items-center justify-between ${className}`}>
       {/* Social Stats */}
-      <div className="flex items-center space-x-4 text-sm text-gray-600">
+      <div className="flex items-center space-x-4 text-sm ">
         <div className="flex items-center space-x-1">
           <Users className="w-4 h-4" />
           <span>{localFollowers} followers</span>

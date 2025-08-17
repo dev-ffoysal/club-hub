@@ -8,6 +8,7 @@ import { cn } from '../../lib/utils'
 import { User } from '@/types'
 import { useAuth } from '../../hooks/useAuth'
 import { Button } from '../ui/button'
+import { ThemeToggle } from '../theme-toggle'
 
 
 interface NavbarProps {
@@ -28,7 +29,7 @@ export function Navbar({ className }: NavbarProps) {
     ]
 
     return (
-        <nav className={cn('bg-white shadow-sm border-b', className)}>
+        <nav className={cn('bg-background shadow-sm border-b border-border', className)}>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     {/* Logo and primary navigation */}
@@ -38,7 +39,7 @@ export function Navbar({ className }: NavbarProps) {
                                 <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                                     <span className="text-white font-bold text-sm">CM</span>
                                 </div>
-                                <span className="font-bold text-xl text-gray-900">Club Hub</span>
+                                <span className="font-bold text-xl text-foreground">Club Hub</span>
                             </Link>
                         </div>
 
@@ -54,7 +55,7 @@ export function Navbar({ className }: NavbarProps) {
                                             "inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 transition-colors",
                                             isActive
                                                 ? "text-blue-600 border-blue-600"
-                                                : "text-gray-500 hover:text-gray-900 hover:border-gray-300 border-transparent"
+                                                : "text-muted-foreground hover:text-foreground hover:border-muted border-transparent"
                                         )}
                                     >
                                         {link.name}
@@ -68,7 +69,7 @@ export function Navbar({ className }: NavbarProps) {
                                         "inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 transition-colors",
                                         pathname === '/login'
                                             ? "text-blue-600 border-blue-600"
-                                            : "text-gray-500 hover:text-gray-900 hover:border-gray-300 border-transparent"
+                                            : "text-muted-foreground hover:text-foreground hover:border-muted border-transparent"
                                     )}
                                 >
                                     Login
@@ -77,8 +78,9 @@ export function Navbar({ className }: NavbarProps) {
                         </div>
                     </div>
 
-                    {/* Right side - Auth buttons or user menu */}
+                    {/* Right side - Theme toggle and Auth buttons or user menu */}
                     <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
+                        <ThemeToggle />
                         {user ? (
                             <div className="flex items-center space-x-4">
                                 <div className="flex items-center space-x-2">
@@ -87,7 +89,7 @@ export function Navbar({ className }: NavbarProps) {
                                             {user.name?.charAt(0) || 'U'}
                                         </span>
                                     </div>
-                                    <span className="text-sm font-medium text-gray-900">{user.name}</span>
+                                    <span className="text-sm font-medium text-foreground">{user.name}</span>
                                     <Button variant="ghost" size="sm" onClick={logout}>
                                         Logout
                                     </Button>
@@ -97,7 +99,7 @@ export function Navbar({ className }: NavbarProps) {
                             <div className="flex items-center space-x-4">
                                 <Link
                                     href="/login"
-                                    className="text-sm font-medium text-gray-700 hover:text-gray-900"
+                                    className="text-sm font-medium text-muted-foreground hover:text-foreground"
                                 >
                                     Sign In
                                 </Link>
@@ -111,11 +113,12 @@ export function Navbar({ className }: NavbarProps) {
                         )}
                     </div>
 
-                    {/* Mobile menu button */}
-                    <div className="sm:hidden flex items-center">
+                    {/* Mobile menu button and theme toggle */}
+                    <div className="sm:hidden flex items-center space-x-2">
+                        <ThemeToggle />
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+                            className="inline-flex items-center justify-center p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
                             aria-expanded="false"
                         >
                             <span className="sr-only">Open main menu</span>
@@ -156,8 +159,8 @@ export function Navbar({ className }: NavbarProps) {
                                 className={cn(
                                     "block pl-3 pr-4 py-2 text-base font-medium transition-colors",
                                     isActive
-                                        ? "text-blue-600 bg-blue-50 border-r-4 border-blue-600"
-                                        : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                                        ? "text-blue-600 bg-blue-50 dark:bg-blue-950 border-r-4 border-blue-600"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
                                 )}
                                 onClick={() => setIsMenuOpen(false)}
                             >
@@ -171,8 +174,8 @@ export function Navbar({ className }: NavbarProps) {
                             className={cn(
                                 "block pl-3 pr-4 py-2 text-base font-medium transition-colors",
                                 pathname === '/login'
-                                    ? "text-blue-600 bg-blue-50 border-r-4 border-blue-600"
-                                    : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                                    ? "text-blue-600 bg-blue-50 dark:bg-blue-950 border-r-4 border-blue-600"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
                             )}
                             onClick={() => setIsMenuOpen(false)}
                         >
@@ -181,7 +184,7 @@ export function Navbar({ className }: NavbarProps) {
                     )}
                 </div>
 
-                <div className="pt-4 pb-3 border-t border-gray-200">
+                <div className="pt-4 pb-3 border-t border-border">
                     {user ? (
                         <div className="space-y-1">
                             <div className="flex items-center px-4">
@@ -193,14 +196,14 @@ export function Navbar({ className }: NavbarProps) {
                                     </div>
                                 </div>
                                 <div className="ml-3">
-                                    <div className="text-base font-medium text-gray-800">{user.name}</div>
-                                    <div className="text-sm font-medium text-gray-500">{user.email}</div>
+                                    <div className="text-base font-medium text-foreground">{user.name}</div>
+                                    <div className="text-sm font-medium text-muted-foreground">{user.email}</div>
                                 </div>
                             </div>
                             <div className="mt-3 space-y-1">
                                 <Button
                                     variant="ghost"
-                                    className="w-full justify-start px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                                    className="w-full justify-start px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 dark:bg-background"
                                     onClick={() => {
                                         logout()
                                         setIsMenuOpen(false)

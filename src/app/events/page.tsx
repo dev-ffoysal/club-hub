@@ -178,102 +178,87 @@ const mockEvents = [
 
 export default function EventsPage() {
   const { user, isLoggedIn, login, logout } = useAuth()
-  
-  // Mock user interactions (in real app, this would come from API/context)
+
   const [userInteractions, setUserInteractions] = useState<{
-    [eventId: string]: {
-      isFollowing: boolean
-      vote: 'up' | 'down' | null
-    }
+    [eventId: string]: { isFollowing: boolean; vote: 'up' | 'down' | null }
   }>({})
 
   const handleFollow = (eventId: string) => {
     setUserInteractions(prev => ({
       ...prev,
-      [eventId]: {
-        ...prev[eventId],
-        isFollowing: true
-      }
+      [eventId]: { ...(prev[eventId] || { vote: null }), isFollowing: true }
     }))
   }
 
   const handleUnfollow = (eventId: string) => {
     setUserInteractions(prev => ({
       ...prev,
-      [eventId]: {
-        ...prev[eventId],
-        isFollowing: false
-      }
+      [eventId]: { ...(prev[eventId] || { vote: null }), isFollowing: false }
     }))
   }
 
   const handleUpvote = (eventId: string) => {
     setUserInteractions(prev => ({
       ...prev,
-      [eventId]: {
-        ...prev[eventId],
-        vote: 'up'
-      }
+      [eventId]: { ...(prev[eventId] || { isFollowing: false }), vote: 'up' }
     }))
   }
 
   const handleDownvote = (eventId: string) => {
     setUserInteractions(prev => ({
       ...prev,
-      [eventId]: {
-        ...prev[eventId],
-        vote: 'down'
-      }
+      [eventId]: { ...(prev[eventId] || { isFollowing: false }), vote: 'down' }
     }))
   }
 
   const handleRemoveVote = (eventId: string) => {
     setUserInteractions(prev => ({
       ...prev,
-      [eventId]: {
-        ...prev[eventId],
-        vote: null
-      }
+      [eventId]: { ...(prev[eventId] || { isFollowing: false }), vote: null }
     }))
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      
+
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex justify-between items-center mb-6">
-            <div></div>
+            <div />
             <Button
-               onClick={() => isLoggedIn ? logout() : login({
-               email: 'demo@example.com',
-               password: 'password123'
-
-               })}
-               variant={isLoggedIn ? "default" : "outline"}
-               className="ml-auto"
-             >
-               {isLoggedIn ? (
-                 <>
-                   <UserIcon className="w-4 h-4 mr-1" />
-                   {user?.name || 'User'}
-                 </>
-               ) : (
-                 <>
-                   <Lock className="w-4 h-4 mr-1" />
-                   Login
-                 </>
-               )}
-             </Button>
+              onClick={() =>
+                isLoggedIn
+                  ? logout()
+                  : login({ email: 'demo@example.com', password: 'password123' })
+              }
+              variant={isLoggedIn ? 'default' : 'outline'}
+              className="ml-auto"
+            >
+              {isLoggedIn ? (
+                <>
+                  <UserIcon className="w-4 h-4 mr-1" />
+                  {user?.name || 'User'}
+                </>
+              ) : (
+                <>
+                  <Lock className="w-4 h-4 mr-1" />
+                  Login
+                </>
+              )}
+            </Button>
           </div>
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-            University Events
-          </h1>
-          <p className="mt-4 text-lg text-gray-600">
-            Discover exciting events, workshops, and competitions happening across universities
-          </p>
+
+          {/* Gradient uses theme primary */}
+          <div className="mx-auto mb-6  ">
+            <div className="rounded-xl bg-background px-6 py-4">
+              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">University Events</h1>
+              <p className="mt-4 text-lg text-muted-foreground">
+                Discover exciting events, workshops, and competitions happening across universities
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Search and Filters */}
@@ -294,14 +279,14 @@ export default function EventsPage() {
 
         {/* Category Filter Pills */}
         <div className="mb-8 flex flex-wrap gap-2">
-          <Badge variant="outline" className="cursor-pointer hover:bg-gray-100">
+          <Badge variant="outline" className="cursor-pointer hover:bg-muted">
             All Events
           </Badge>
           {Object.entries(EVENT_CATEGORIES).map(([key, category]) => (
-            <Badge 
-              key={key} 
-              variant="outline" 
-              className="cursor-pointer hover:bg-gray-100"
+            <Badge
+              key={key}
+              variant="outline"
+              className="cursor-pointer hover:bg-muted"
             >
               <category.icon className="w-3 h-3 mr-1" />
               {category.name}
@@ -311,34 +296,34 @@ export default function EventsPage() {
 
         {/* Stats */}
         <div className="mb-8 grid grid-cols-1 sm:grid-cols-4 gap-4">
-          <Card>
+          <Card className="bg-card text-card-foreground">
             <CardContent className="p-6 text-center">
-              <div className="text-3xl font-bold text-blue-600">{mockEvents.length}</div>
-              <div className="text-sm text-gray-600">Total Events</div>
+              <div className="text-3xl font-bold text-primary">{mockEvents.length}</div>
+              <div className="text-sm text-muted-foreground">Total Events</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-card text-card-foreground">
             <CardContent className="p-6 text-center">
-              <div className="text-3xl font-bold text-green-600">
+              <div className="text-3xl font-bold text-primary">
                 {mockEvents.filter(event => isEventUpcoming(event.startDate)).length}
               </div>
-              <div className="text-sm text-gray-600">Upcoming</div>
+              <div className="text-sm text-muted-foreground">Upcoming</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-card text-card-foreground">
             <CardContent className="p-6 text-center">
-              <div className="text-3xl font-bold text-purple-600">
+              <div className="text-3xl font-bold text-primary">
                 {mockEvents.filter(event => event.isOnline).length}
               </div>
-              <div className="text-sm text-gray-600">Online Events</div>
+              <div className="text-sm text-muted-foreground">Online Events</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-card text-card-foreground">
             <CardContent className="p-6 text-center">
-              <div className="text-3xl font-bold text-orange-600">
+              <div className="text-3xl font-bold text-primary">
                 {mockEvents.filter(event => event.type === 'competition').length}
               </div>
-              <div className="text-sm text-gray-600">Competitions</div>
+              <div className="text-sm text-muted-foreground">Competitions</div>
             </CardContent>
           </Card>
         </div>
@@ -349,14 +334,20 @@ export default function EventsPage() {
             const categoryInfo = EVENT_CATEGORIES[event.category]
             const isUpcoming = isEventUpcoming(event.startDate)
             const isWithinWeek = isEventWithinWeek(event.startDate)
-            const spotsLeft = event.maxParticipants ? event.maxParticipants - event.currentParticipants : null
+            const spotsLeft = event.maxParticipants
+              ? event.maxParticipants - event.currentParticipants
+              : null
             const userInteraction = userInteractions[event.id] || { isFollowing: false, vote: null }
-            
+
             return (
-              <Card key={event.id} className="hover:shadow-lg transition-shadow overflow-hidden">
+              <Card
+                key={event.id}
+                className="relative flex h-full flex-col overflow-hidden border bg-card text-card-foreground hover:shadow-lg transition-shadow"
+              >
                 {/* Event Header */}
-                <div className="h-48 bg-gradient-to-br from-blue-500 to-purple-600 relative">
-                  <div className="absolute inset-0 bg-black bg-opacity-20"></div>
+                <div className="h-48 bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80 relative">
+                  <div className="absolute inset-0 bg-black/20"></div>
+
                   <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
                     <div className="flex space-x-2">
                       <Badge className={categoryInfo.color}>
@@ -364,71 +355,88 @@ export default function EventsPage() {
                         {categoryInfo.name}
                       </Badge>
                       {event.type === 'competition' && (
-                        <Badge variant="warning"><Trophy className="w-3 h-3 mr-1" />Competition</Badge>
+                        <Badge variant="warning">
+                          <Trophy className="w-3 h-3 mr-1" />
+                          Competition
+                        </Badge>
                       )}
                       {event.isOnline && (
-                        <Badge variant="info"><Globe className="w-3 h-3 mr-1" />Online</Badge>
+                        <Badge variant="info">
+                          <Globe className="w-3 h-3 mr-1" />
+                          Online
+                        </Badge>
                       )}
                     </div>
+
                     {isUpcoming && !isWithinWeek && (
-                      <Badge variant="success" className="bg-green-500 text-white">
+                      <Badge variant="success">
                         {getTimeUntil(event.startDate)}
                       </Badge>
                     )}
                   </div>
-                  
-                  {/* Countdown Timer for events within a week */}
+
                   {isUpcoming && isWithinWeek && (
                     <div className="absolute top-4 right-4">
                       <Countdown targetDate={event.startDate} />
                     </div>
                   )}
-                  
+
                   <div className="absolute bottom-4 left-4 right-4">
                     <h3 className="text-white font-bold text-xl mb-2 line-clamp-2">
                       {event.title}
                     </h3>
-                    <div className="flex items-center text-blue-100 text-sm">
-                      <span className="mr-4 flex items-center"><Building2 className="w-4 h-4 mr-1" />{event.club.university}</span>
-                      <span className="flex items-center"><Users className="w-4 h-4 mr-1" />{event.club.name}</span>
+                    <div className="flex items-center text-white/80 text-sm">
+                      <span className="mr-4 flex items-center">
+                        <Building2 className="w-4 h-4 mr-1" />
+                        {event.club.university}
+                      </span>
+                      <span className="flex items-center">
+                        <Users className="w-4 h-4 mr-1" />
+                        {event.club.name}
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                <CardContent className="p-6">
-                  <CardDescription className="mb-4 line-clamp-3">
+                <CardContent className="p-6 pb-24">
+                  <CardDescription className="mb-4 line-clamp-3 text-muted-foreground">
                     {event.description}
                   </CardDescription>
 
                   {/* Event Details */}
                   <div className="space-y-3 mb-4">
-                    <div className="flex items-center text-sm text-gray-600">
+                    <div className="flex items-center text-sm text-muted-foreground">
                       <Calendar className="w-4 h-4 mr-2" />
-                      <span>{formatDate(event.startDate)} at {formatTime(event.startDate)}</span>
+                      <span>
+                        {formatDate(event.startDate)} at {formatTime(event.startDate)}
+                      </span>
                     </div>
-                    <div className="flex items-center text-sm text-gray-600">
+                    <div className="flex items-center text-sm text-muted-foreground">
                       <MapPin className="w-4 h-4 mr-2" />
                       <span>{event.location}</span>
                     </div>
                     {event.maxParticipants && (
-                      <div className="flex items-center text-sm text-gray-600">
+                      <div className="flex items-center text-sm ">
                         <Users className="w-4 h-4 mr-2" />
                         <span>
                           {event.currentParticipants}/{event.maxParticipants} participants
-                          {spotsLeft && spotsLeft > 0 && (
-                            <span className="text-green-600 ml-1">
+                          {typeof spotsLeft === 'number' && spotsLeft > 0 && (
+                            <span className="ml-1 dark:text-green-400 text-green-600">
                               ({spotsLeft} spots left)
                             </span>
                           )}
                         </span>
                       </div>
                     )}
-                    {event.registrationDeadline && isEventUpcoming(event.registrationDeadline) && (
-                      <div className="flex items-center text-sm text-orange-600">
-                        <Clock className="w-4 h-4 mr-2" />
-                        <span>Registration closes: {formatDate(event.registrationDeadline)}</span>
-                      </div>
-                    )}
+                    {event.registrationDeadline &&
+                      isEventUpcoming(event.registrationDeadline) && (
+                        <div className="flex items-center text-sm  dark:text-orange-400 text-orange-600">
+                          <Clock className="w-4 h-4 mr-2" />
+                          <span className=''>
+                            Registration closes: {formatDate(event.registrationDeadline)}
+                          </span>
+                        </div>
+                      )}
                   </div>
 
                   {/* Tags */}
@@ -440,24 +448,33 @@ export default function EventsPage() {
                     ))}
                   </div>
 
-                  {/* Progress Bar for Registration */}
+                  {/* Progress Bar */}
                   {event.maxParticipants && (
                     <div className="mb-4">
-                      <div className="flex justify-between text-xs text-gray-600 mb-1">
+                      <div className="flex justify-between text-xs text-muted-foreground mb-1">
                         <span>Registration Progress</span>
-                        <span>{Math.round((event.currentParticipants / event.maxParticipants) * 100)}%</span>
+                        <span>
+                          {Math.round(
+                            (event.currentParticipants / event.maxParticipants) * 100
+                          )}
+                          %
+                        </span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${(event.currentParticipants / event.maxParticipants) * 100}%` }}
+                      <div className="w-full bg-muted rounded-full h-2">
+                        <div
+                          className="bg-primary h-2 rounded-full transition-all duration-300"
+                          style={{
+                            width: `${
+                              (event.currentParticipants / event.maxParticipants) * 100
+                            }%`
+                          }}
                         ></div>
                       </div>
                     </div>
                   )}
 
                   {/* Social Interactions */}
-                  <div className="mb-4">
+                  <div className="mb-2">
                     <SocialInteractions
                       eventId={event.id}
                       followers={event.followers}
@@ -473,25 +490,30 @@ export default function EventsPage() {
                       onRemoveVote={handleRemoveVote}
                     />
                   </div>
+                </CardContent>
 
-                  {/* Actions */}
-                  <div className="flex space-x-2">
+                {/* Actions pinned to bottom */}
+                <div className="absolute bottom-0 left-0 right-0 border-t bg-background/80 backdrop-blur p-4">
+                  <div className="flex gap-2">
                     <Button asChild className="flex-1">
-                      <Link href={`/events/${event.id}`}>
-                        View Details
-                      </Link>
+                      <Link href={`/events/${event.id}`}>View Details</Link>
                     </Button>
-                    {isUpcoming && (
-                      <Button 
-                        variant={spotsLeft && spotsLeft > 0 ? "default" : "outline"} 
+
+                    {isUpcoming ? (
+                      <Button
+                        variant={typeof spotsLeft === 'number' && spotsLeft > 0 ? 'default' : 'outline'}
                         size="sm"
                         disabled={spotsLeft === 0}
                       >
                         {spotsLeft === 0 ? 'Full' : 'Register'}
                       </Button>
+                    ) : (
+                      <Button variant="outline" size="sm" disabled>
+                        Past
+                      </Button>
                     )}
                   </div>
-                </CardContent>
+                </div>
               </Card>
             )
           })}
@@ -504,13 +526,13 @@ export default function EventsPage() {
           </Button>
         </div>
 
-        {/* CTA Section */}
-        <div className="mt-16 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl p-8 text-center text-white">
+        {/* CTA Section (token-based gradient) */}
+        <div className="mt-16 rounded-2xl p-8 text-center text-primary-foreground bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80">
           <h2 className="text-2xl font-bold mb-4">Want to organize an event?</h2>
-          <p className="text-green-100 mb-6">
+          <p className="text-sm md:text-base opacity-90 mb-6">
             Join our platform as a club admin and start creating amazing events for your university community.
           </p>
-          <Button size="lg" variant="secondary">
+          <Button size="lg" variant="secondary" asChild>
             <Link href="/apply">Apply for Your Club</Link>
           </Button>
         </div>

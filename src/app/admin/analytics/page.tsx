@@ -246,7 +246,7 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="space-y-4">
                   {topPerformers.events.map((event, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-background rounded-lg">
                       <div className="flex-1">
                         <h4 className="font-medium">{event.title}</h4>
                         <div className="flex items-center space-x-4 text-sm text-muted-foreground">
@@ -322,7 +322,7 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="space-y-4">
                   {topPerformers.members.map((member, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-background rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
                           {index + 1}
@@ -436,7 +436,7 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="space-y-4">
                   {eventParticipation.map((event, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-background rounded-lg">
                       <div className="flex-1">
                         <h4 className="font-medium">{event.eventTitle}</h4>
                         <p className="text-sm text-muted-foreground">{formatDate(event.date)}</p>

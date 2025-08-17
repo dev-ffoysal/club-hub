@@ -364,7 +364,7 @@ export default function MemberDetailsPage() {
               <CardContent>
                 <div className="space-y-4">
                   {member.references.map((ref, index) => (
-                    <div key={index} className="border rounded-lg p-4 bg-gray-50">
+                    <div key={index} className="border rounded-lg p-4 bg-gray-50 dark:bg-background">
                       <h4 className="font-semibold text-gray-900">{ref.name}</h4>
                       <p className="text-sm text-gray-600">{ref.designation}</p>
                       <p className="text-sm text-gray-600">{ref.department}</p>

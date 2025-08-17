@@ -42,7 +42,7 @@ export default function ApplyPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:px-8">
           <Card className="text-center">
@@ -50,16 +50,16 @@ export default function ApplyPage() {
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-4">
+              <h1 className="text-2xl font-bold text-foreground mb-4">
                 Application Submitted Successfully!
               </h1>
-              <p className="text-gray-600 mb-6">
+              <p className="text-muted-foreground mb-6">
                 Thank you for applying to join the Club Management Hub. Our team will review your application and get back to you within 2-3 business days.
               </p>
               <div className="space-y-4">
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <h3 className="font-semibold text-blue-900 mb-2">What happens next?</h3>
-                  <ul className="text-sm text-blue-800 space-y-1 text-left">
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                  <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">What happens next?</h3>
+                  <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1 text-left">
                     <li>• Our team will review your application</li>
                     <li>• We may contact you for additional information</li>
                     <li>• Upon approval, you'll receive login credentials via email</li>
@@ -78,16 +78,16 @@ export default function ApplyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             Apply for Your Club
           </h1>
-          <p className="mt-4 text-lg text-gray-600">
+          <p className="mt-4 text-lg text-muted-foreground">
             Join the Club Management Hub and start building your university community
           </p>
         </div>
@@ -103,8 +103,8 @@ export default function ApplyPage() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Club Information</h4>
-                <ul className="text-sm text-gray-600 space-y-1">
+                <h4 className="font-semibold text-foreground mb-2">Club Information</h4>
+                <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• Official club name</li>
                   <li>• Clear purpose and objectives</li>
                   <li>• University affiliation</li>
@@ -112,8 +112,8 @@ export default function ApplyPage() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Applicant Details</h4>
-                <ul className="text-sm text-gray-600 space-y-1">
+                <h4 className="font-semibold text-foreground mb-2">Applicant Details</h4>
+                <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• Must be a current student or faculty</li>
                   <li>• Valid university email address</li>
                   <li>• Authorization to represent the club</li>
@@ -136,10 +136,10 @@ export default function ApplyPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Club Information Section */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Club Information</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-4">Club Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Club Name *
                     </label>
                     <Input
@@ -150,7 +150,7 @@ export default function ApplyPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       University *
                     </label>
                     <select
@@ -170,7 +170,7 @@ export default function ApplyPage() {
                 </div>
 
                 <div className="mt-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Club Purpose *
                   </label>
                   <textarea
@@ -184,7 +184,7 @@ export default function ApplyPage() {
                 </div>
 
                 <div className="mt-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Detailed Description *
                   </label>
                   <textarea
@@ -200,10 +200,10 @@ export default function ApplyPage() {
 
               {/* Contact Information Section */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-4">Contact Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Club Contact Email *
                     </label>
                     <Input
@@ -215,7 +215,7 @@ export default function ApplyPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Club Contact Phone
                     </label>
                     <Input
@@ -230,10 +230,10 @@ export default function ApplyPage() {
 
               {/* Applicant Information Section */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Applicant Information</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-4">Applicant Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Your Full Name *
                     </label>
                     <Input
@@ -244,7 +244,7 @@ export default function ApplyPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Your Email Address *
                     </label>
                     <Input
@@ -259,14 +259,14 @@ export default function ApplyPage() {
               </div>
 
               {/* Terms and Conditions */}
-              <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="bg-muted/30 dark:bg-muted/20 p-4 rounded-lg">
                 <div className="flex items-start space-x-3">
                   <input
                     type="checkbox"
                     required
                     className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-muted-foreground">
                     <p>
                       I confirm that I am authorized to represent this club and that all information provided is accurate. 
                       I agree to the <a href="/terms" className="text-blue-600 hover:underline">Terms of Service</a> and{' '}
@@ -304,8 +304,8 @@ export default function ApplyPage() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Application Tips</h4>
-                <ul className="text-sm text-gray-600 space-y-1">
+                <h4 className="font-semibold text-foreground mb-2">Application Tips</h4>
+                <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• Be specific about your club's purpose and goals</li>
                   <li>• Use your official university email address</li>
                   <li>• Provide accurate contact information</li>
@@ -313,8 +313,8 @@ export default function ApplyPage() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Contact Support</h4>
-                <p className="text-sm text-gray-600 mb-2">
+                <h4 className="font-semibold text-foreground mb-2">Contact Support</h4>
+                <p className="text-sm text-muted-foreground mb-2">
                   Have questions about the application process?
                 </p>
                 <div className="space-y-1 text-sm">
