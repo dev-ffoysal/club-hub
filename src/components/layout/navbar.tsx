@@ -5,10 +5,12 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Badge } from '../ui/badge'
 import { cn } from '../../lib/utils'
-import { User } from '@/types'
-import { useAuth } from '../../hooks/useAuth'
+import { IUser } from '@/types'
 import { Button } from '../ui/button'
 import { ThemeToggle } from '../theme-toggle'
+import { useAppSelector } from '@/store/hooks'
+import { useLogoutMutation } from '@/store/api/authAPI'
+import { useRouter } from 'next/navigation'
 
 
 interface NavbarProps {
@@ -18,8 +20,21 @@ interface NavbarProps {
 export function Navbar({ className }: NavbarProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const pathname = usePathname()
+    const router = useRouter()
 
-    const { user, logout } = useAuth()
+    const { user, isAuthenticated } = useAppSelector((state) => state.auth)
+    const [logoutMutation] = useLogoutMutation()
+
+    const handleLogout = async () => {
+        try {
+            await logoutMutation().unwrap()
+            router.push('/login')
+        } catch (error) {
+            console.error('Logout failed:', error)
+            // Even if logout fails, redirect to login
+            router.push('/login')
+        }
+    }
 
     const navigationLinks = [
         { name: 'Home', href: '/' },
@@ -36,7 +51,7 @@ export function Navbar({ className }: NavbarProps) {
                     <div className="flex">
                         <div className="flex-shrink-0 flex items-center">
                             <Link href="/" className="flex items-center space-x-2">
-                                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                                     <span className="text-white font-bold text-sm">CM</span>
                                 </div>
                                 <span className="font-bold text-xl text-foreground">Club Hub</span>
@@ -54,7 +69,7 @@ export function Navbar({ className }: NavbarProps) {
                                         className={cn(
                                             "inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 transition-colors",
                                             isActive
-                                                ? "text-blue-600 border-blue-600"
+                                                ? "text-primary border-primary"
                                                 : "text-muted-foreground hover:text-foreground hover:border-muted border-transparent"
                                         )}
                                     >
@@ -68,7 +83,7 @@ export function Navbar({ className }: NavbarProps) {
                                     className={cn(
                                         "inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 transition-colors",
                                         pathname === '/login'
-                                            ? "text-blue-600 border-blue-600"
+                                            ? "text-primary border-primary"
                                             : "text-muted-foreground hover:text-foreground hover:border-muted border-transparent"
                                     )}
                                 >
@@ -84,13 +99,13 @@ export function Navbar({ className }: NavbarProps) {
                         {user ? (
                             <div className="flex items-center space-x-4">
                                 <div className="flex items-center space-x-2">
-                                    <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
+                                    <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
                                         <span className="text-sm font-medium text-white">
                                             {user.name?.charAt(0) || 'U'}
                                         </span>
                                     </div>
                                     <span className="text-sm font-medium text-foreground">{user.name}</span>
-                                    <Button variant="ghost" size="sm" onClick={logout}>
+                                    <Button variant="ghost" size="sm" onClick={handleLogout}>
                                         Logout
                                     </Button>
                                 </div>
@@ -103,9 +118,15 @@ export function Navbar({ className }: NavbarProps) {
                                 >
                                     Sign In
                                 </Link>
+                                {/* <Link
+                                    href="/signup"
+                                    className="inline-flex items-center justify-center px-3 py-2 border border-primary text-sm font-medium rounded-md text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+                                >
+                                    Sign Up
+                                </Link> */}
                                 <Link
                                     href="/apply"
-                                    className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                                    className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-primary-foreground bg-primary hover:bg-primary/90"
                                 >
                                     Apply for Your Club
                                 </Link>
@@ -118,7 +139,7 @@ export function Navbar({ className }: NavbarProps) {
                         <ThemeToggle />
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="inline-flex items-center justify-center p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+                            className="inline-flex items-center justify-center p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
                             aria-expanded="false"
                         >
                             <span className="sr-only">Open main menu</span>
@@ -159,7 +180,7 @@ export function Navbar({ className }: NavbarProps) {
                                 className={cn(
                                     "block pl-3 pr-4 py-2 text-base font-medium transition-colors",
                                     isActive
-                                        ? "text-blue-600 bg-blue-50 dark:bg-blue-950 border-r-4 border-blue-600"
+                                        ? "text-primary bg-primary/10 border-r-4 border-primary"
                                         : "text-muted-foreground hover:text-foreground hover:bg-muted"
                                 )}
                                 onClick={() => setIsMenuOpen(false)}
@@ -169,18 +190,32 @@ export function Navbar({ className }: NavbarProps) {
                         )
                     })}
                     {!user && (
-                        <Link
-                            href="/login"
-                            className={cn(
-                                "block pl-3 pr-4 py-2 text-base font-medium transition-colors",
-                                pathname === '/login'
-                                    ? "text-blue-600 bg-blue-50 dark:bg-blue-950 border-r-4 border-blue-600"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                            )}
-                            onClick={() => setIsMenuOpen(false)}
-                        >
-                            Login
-                        </Link>
+                        <>
+                            <Link
+                                href="/login"
+                                className={cn(
+                                    "block pl-3 pr-4 py-2 text-base font-medium transition-colors",
+                                    pathname === '/login'
+                                        ? "text-primary bg-primary/10 border-r-4 border-primary"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                                )}
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                Sign In
+                            </Link>
+                            {/* <Link
+                                href="/signup"
+                                className={cn(
+                                    "block pl-3 pr-4 py-2 text-base font-medium transition-colors",
+                                    pathname === '/signup'
+                                        ? "text-primary bg-primary/10 border-r-4 border-primary"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                                )}
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                Sign Up
+                            </Link> */}
+                        </>
                     )}
                 </div>
 
@@ -189,7 +224,7 @@ export function Navbar({ className }: NavbarProps) {
                         <div className="space-y-1">
                             <div className="flex items-center px-4">
                                 <div className="flex-shrink-0">
-                                    <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center">
+                                    <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center">
                                         <span className="text-sm font-medium text-white">
                                             {user.name?.charAt(0) || 'U'}
                                         </span>
@@ -203,9 +238,9 @@ export function Navbar({ className }: NavbarProps) {
                             <div className="mt-3 space-y-1">
                                 <Button
                                     variant="ghost"
-                                    className="w-full justify-start px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 dark:bg-background"
+                                    className="w-full justify-start px-4 py-2 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted"
                                     onClick={() => {
-                                        logout()
+                                        handleLogout()
                                         setIsMenuOpen(false)
                                     }}
                                 >
@@ -217,7 +252,7 @@ export function Navbar({ className }: NavbarProps) {
                         <div className="space-y-1">
                             <Link
                                 href="/apply"
-                                className="block px-4 py-2 text-base font-medium text-white bg-blue-600 hover:bg-blue-700"
+                                className="block px-4 py-2 text-base font-medium text-primary-foreground bg-primary hover:bg-primary/90"
                             >
                                 Apply for Your Club
                             </Link>

@@ -82,8 +82,8 @@ export default function ClubRequestsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Club Requests</h1>
-            <p className="text-gray-600 mt-2">Review and manage club registration requests</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Club Requests</h1>
+            <p className="text-muted-foreground mt-2">Review and manage club registration requests</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-2">
             <Button variant="outline" size="sm" className="w-full sm:w-auto">Export Report</Button>
@@ -107,7 +107,7 @@ export default function ClubRequestsPage() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="all">All Status</option>
                   <option value="pending">Pending</option>
@@ -127,12 +127,12 @@ export default function ClubRequestsPage() {
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <Building className="w-6 h-6 text-blue-600" />
+                      <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <Building className="w-6 h-6 text-primary" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-lg">{request.clubName}</h3>
-                        <p className="text-gray-600">{request.university}</p>
+                        <p className="text-muted-foreground">{request.university}</p>
                       </div>
                       <Badge variant={
                         request.status === 'approved' ? 'default' :
@@ -144,23 +144,23 @@ export default function ClubRequestsPage() {
                     
                     <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       <div>
-                        <p className="text-sm text-gray-500">Submitted by</p>
+                        <p className="text-sm text-muted-foreground">Submitted by</p>
                         <p className="font-medium">{request.applicantName}</p>
-                        <p className="text-sm text-gray-500">{request.applicantEmail}</p>
+                        <p className="text-sm text-muted-foreground">{request.applicantEmail}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Category</p>
+                        <p className="text-sm text-muted-foreground">Category</p>
                         <p className="font-medium">{request.category}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Submitted</p>
+                        <p className="text-sm text-muted-foreground">Submitted</p>
                         <p className="font-medium">{formatDate(request.submittedAt)}</p>
                       </div>
                     </div>
                     
                     <div className="mt-4">
-                      <p className="text-sm text-gray-500 mb-2">Description</p>
-                      <p className="text-gray-700">{request.description}</p>
+                      <p className="text-sm text-muted-foreground mb-2">Description</p>
+                      <p className="text-foreground">{request.description}</p>
                     </div>
                   </div>
                   
@@ -168,7 +168,7 @@ export default function ClubRequestsPage() {
                     <div className="flex flex-row lg:flex-col gap-2 lg:ml-6">
                       <Button 
                         size="sm" 
-                        className="bg-green-600 hover:bg-green-700 flex-1 lg:flex-none"
+                        className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 flex-1 lg:flex-none"
                         onClick={() => handleApproveRequest(request.id)}
                       >
                         ✓ Approve
@@ -176,7 +176,7 @@ export default function ClubRequestsPage() {
                       <Button 
                         size="sm" 
                         variant="outline" 
-                        className="text-red-600 border-red-600 hover:bg-red-50 flex-1 lg:flex-none"
+                        className="text-red-600 border-red-600 hover:bg-red-50 dark:text-red-400 dark:border-red-400 dark:hover:bg-red-950/20 flex-1 lg:flex-none"
                         onClick={() => handleRejectRequest(request.id)}
                       >
                         ✗ Reject
@@ -195,7 +195,7 @@ export default function ClubRequestsPage() {
         {filteredRequests.length === 0 && (
           <Card>
             <CardContent className="p-12 text-center">
-              <div className="text-gray-500">
+              <div className="text-muted-foreground">
                 <span className="text-4xl mb-4 block">📋</span>
                 <h3 className="text-lg font-medium mb-2">No club requests found</h3>
                 <p>Try adjusting your search criteria or filters.</p>

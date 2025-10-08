@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
 import { Button } from '../../components/ui/button'
 import { Badge } from '../../components/ui/badge'
-import { Input } from '../../components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
 import { MemberLayout } from '../../components/layout/member-layout'
 import { formatDate, formatTime, getTimeUntil, isEventUpcoming } from '../../lib/utils'
@@ -171,10 +170,10 @@ const mockAnnouncements = [
 
 const getPriorityColor = (priority: string) => {
   switch (priority) {
-    case 'urgent': return 'bg-red-100 text-red-800'
-    case 'high': return 'bg-orange-100 text-orange-800'
-    case 'normal': return 'bg-blue-100 text-blue-800'
-    default: return 'bg-gray-100 text-gray-800'
+    case 'urgent': return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
+    case 'high': return 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400'
+    case 'normal': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400'
+    default: return 'bg-muted text-muted-foreground'
   }
 }
 
@@ -201,15 +200,15 @@ export default function MemberDashboard() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Welcome back, {mockMemberData.name}!</h1>
-            <p className="text-gray-600 mt-2">Here's what's happening in your clubs</p>
+            <h1 className="text-3xl font-bold text-foreground">Welcome back, {mockMemberData.name}!</h1>
+            <p className="text-muted-foreground mt-2">Here's what's happening in your clubs</p>
           </div>
           <div className="flex space-x-2">
-            <Button variant="outline">
+            {/* <Button variant="outline">
               <Bell className="w-4 h-4 mr-2" />Notifications {unreadNotifications > 0 && (
                 <Badge variant="destructive" className="ml-2">{unreadNotifications}</Badge>
               )}
-            </Button>
+            </Button> */}
             <Button>Explore Clubs</Button>
           </div>
         </div>
@@ -220,8 +219,8 @@ export default function MemberDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">My Clubs</p>
-                  <p className="text-3xl font-bold text-blue-600">{mockMemberData.joinedClubs}</p>
+                  <p className="text-sm font-medium text-muted-foreground">My Clubs</p>
+                  <p className="text-3xl font-bold text-primary">{mockMemberData.joinedClubs}</p>
                 </div>
                 <Building2 className="w-8 h-8" />
               </div>
@@ -232,7 +231,7 @@ export default function MemberDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Events Attended</p>
+                  <p className="text-sm font-medium text-muted-foreground">Events Attended</p>
                   <p className="text-3xl font-bold text-green-600">{mockMemberData.eventsAttended}</p>
                 </div>
                 <Calendar className="w-8 h-8" />
@@ -244,7 +243,7 @@ export default function MemberDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Upcoming Events</p>
+                  <p className="text-sm font-medium text-muted-foreground">Upcoming Events</p>
                   <p className="text-3xl font-bold text-purple-600">{mockMemberData.upcomingEvents}</p>
                 </div>
                 <Rocket className="w-8 h-8" />
@@ -256,7 +255,7 @@ export default function MemberDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Engagement Score</p>
+                  <p className="text-sm font-medium text-muted-foreground">Engagement Score</p>
                   <p className="text-3xl font-bold text-orange-600">{mockMemberData.engagementScore}%</p>
                 </div>
                 <Star className="w-8 h-8" />
@@ -501,7 +500,7 @@ export default function MemberDashboard() {
               {mockNotifications.map((notification) => (
                 <Card 
                   key={notification.id} 
-                  className={`hover:shadow-lg transition-shadow ${!notification.isRead ? 'border-blue-200 bg-blue-50' : ''}`}
+                  className={`hover:shadow-lg transition-shadow ${!notification.isRead ? 'border-blue-200 ' : ''}`}
                 >
                   <CardContent className="p-6">
                     <div className="flex justify-between items-start">

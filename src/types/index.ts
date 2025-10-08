@@ -1,118 +1,30 @@
-// User Types
-export interface User {
-  id: string;
-  firstName: string;
-  lastName?: string;
-  name: string; // computed from firstName + lastName
-  email: string;
-  password?: string; // usually omitted in frontend responses
-  studentId?: string;
-  department?: string;
-  university?: string;
-  verified?: boolean;
-  bloodGroup?: string;
-  gender?: 'male' | 'female' | 'other';
-  contact?: string;
-  address?: {
-    city?: string;
-    line?: string;
-  };
-  role: UserRole;
-  avatar?: string;
-  profileImage?: string;
-  profileVisibility?: 'public' | 'private';
-  interestedIn?: string[];
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { MEMBERSHIP_STATUS } from "@/app/enums/all"
+import type { IUser, IClubUser, IMemberUser, IAdminUser } from './interfaces'
 
-// Club Types
-export interface Club {
-  id: string;
-  name: string;
-  clubName: string; // alias for name
-  slug: string;
-  clubCode?: string;
-  category?: string;
-  clubRegistrationNumber?: string;
-  clubFoundedAt?: string;
-  certificates?: string[];
-  description: string;
-  purpose: string;
-  objective?: string;
-  university: string;
-  dept?: string;
-  contactEmail: string;
-  contactPhone?: string;
-  contact?: {
-    email?: string;
-    phone?: string;
-  };
-  applicant?: {
-    name?: string;
-    email?: string;
-  };
-  logo?: string;
-  coverImage?: string;
-  clubImages?: string[];
-  cover?: string;
-  tags?: string[];
-  slogan?: string;
-  template: ClubTemplate;
-  colorScheme: ColorScheme;
-  status: ClubStatus;
-  verified?: boolean;
-  isPublic: boolean;
-  memberCount: number;
-  registrationFee?: number;
-  achievements: Achievement[];
-  socialLinks: SocialLinks;
-  socialMedia?: {
-    facebook?: string;
-    instagram?: string;
-    twitter?: string;
-    website?: string;
-  };
-  createdAt: Date;
-  updatedAt: Date;
-}
+// Export user types for backward compatibility
+export type User = IUser
+export type { IUser, IClubUser, IMemberUser, IAdminUser }
 
-export interface ClubApplication {
-  id: string;
-  clubName: string;
-  purpose: string;
-  contactDetails: ContactDetails;
-  university: string;
-  applicantName: string;
-  applicantEmail: string;
-  status: 'pending' | 'approved' | 'rejected';
-  submittedAt: Date;
-  reviewedAt?: Date;
-  reviewedBy?: string;
-  rejectionReason?: string;
-}
 
-export interface ContactDetails {
-  email: string;
-  phone?: string;
-  address?: string;
-}
 
-export interface Achievement {
-  id: string;
-  title: string;
-  description: string;
-  date: Date;
-  image?: string;
-}
 
-export interface SocialLinks {
-  facebook?: string;
-  instagram?: string;
-  twitter?: string;
-  linkedin?: string;
-  website?: string;
-}
+
+// export interface ClubApplication {
+//   id: string;
+//   clubName: string;
+//   purpose: string;
+//   contactDetails: ContactDetails;
+//   university: string;
+//   applicantName: string;
+//   applicantEmail: string;
+//   status: 'pending' | 'approved' | 'rejected';
+//   submittedAt: Date;
+//   reviewedAt?: Date;
+//   reviewedBy?: string;
+//   rejectionReason?: string;
+// }
+
+
 
 // Template and Design Types
 export type ClubTemplate = 'modern' | 'classic' | 'minimal' | 'vibrant' | 'academic';
@@ -231,11 +143,33 @@ export interface JoiningCode {
   createdAt: Date;
 }
 
+// Committee Management Types
+export interface CommitteeMember {
+  id: string;
+  userId: string;
+  clubId: string;
+  designation: string;
+  notes?: string;
+  appointedAt: Date;
+  isActive: boolean;
+}
+
+export interface Committee {
+  id: string;
+  clubId: string;
+  name: string;
+  description?: string;
+  members: CommitteeMember[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // Communication Types
 export interface GroupChat {
   id: string;
   clubId: string;
   name: string;
+  type: 'general' | 'committee';
   isPrivate: boolean;
   participants: string[];
   createdAt: Date;
@@ -364,7 +298,7 @@ export interface MonthlyFinancialData {
 // Additional Utility Types
 export type PaymentMethod = 'cash' | 'card' | 'bank_transfer' | 'digital_wallet' | 'cheque';
 export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'cancelled' | 'refunded';
-export type UserRole = 'super_admin' | 'club_admin' | 'member';
+export type UserRole = 'super_admin' | 'club' | 'member' | 'guest';
 export type ClubStatus = 'pending' | 'approved' | 'rejected' | 'active' | 'restricted' | 'deleted';
 export type EventStatus = 'draft' | 'published' | 'ongoing' | 'completed' | 'cancelled';
 export type RegistrationStatus = 'pending' | 'confirmed' | 'waitlisted' | 'cancelled';
@@ -484,13 +418,14 @@ export interface EventInvitation {
 // Form Types
 export interface ClubApplicationForm {
   clubName: string;
-  purpose: string;
+  clubPurpose: string;
   university: string;
-  contactEmail: string;
-  contactPhone?: string;
+  clubEmail: string;
+  clubPhone: string;
   applicantName: string;
   applicantEmail: string;
   description: string;
+  terms?: boolean;
 }
 
 export interface EventForm {
@@ -531,4 +466,20 @@ export interface TransactionForm {
   amount: number;
   paymentMethod: PaymentMethod;
   description?: string;
+}
+
+
+
+//------------------------
+
+
+
+
+
+export type IClubSettingForm = {
+  feeCollectionMethod?: string | 'online' | 'offline'
+  clubRegistrationEnabled?: boolean
+  clubRegistrationFees?: number
+  clubRegistrationStartsAt?: Date
+  clubRegistrationEndsAt?: Date
 }

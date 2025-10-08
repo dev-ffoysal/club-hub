@@ -3,11 +3,8 @@ import axios from 'axios'
 // Create axios instance with base configuration
 // Note: API calls are disabled for demo purposes
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5001/api/v1',
   timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 })
 
 // Mock API responses for demo purposes
@@ -39,7 +36,7 @@ api.interceptors.response.use(
       // Token expired or invalid
       localStorage.removeItem('token')
       localStorage.removeItem('user')
-      window.location.href = '/login'
+      window.location.href = '/auth/login'
     }
     
     if (error.response?.status === 403) {

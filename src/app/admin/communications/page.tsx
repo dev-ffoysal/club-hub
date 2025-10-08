@@ -8,10 +8,10 @@ import { Input } from '../../../components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
 import { ClubAdminLayout } from '../../../components/layout/club-admin-layout'
 import { formatDate, formatTime } from '../../../lib/utils'
-import { MessageSquare, Bell, Megaphone, Info, AlertTriangle, X, CheckCircle } from 'lucide-react'
+import { MessageSquare, Bell, Megaphone, Info, AlertTriangle, X, CheckCircle, UserCheck, Send } from 'lucide-react'
 
 // Mock data
-const mockChatMessages = [
+const mockGeneralChatMessages = [
   {
     id: '1',
     senderId: '1',
@@ -42,6 +42,41 @@ const mockChatMessages = [
     senderName: 'Club Admin',
     content: 'ANNOUNCEMENT: Programming contest registration is now open! Link: https://contest.example.com',
     timestamp: new Date('2024-02-10T15:00:00'),
+    type: 'announcement' as const
+  }
+]
+
+const mockCommitteeChatMessages = [
+  {
+    id: '1',
+    senderId: '1',
+    senderName: 'Ahmed Rahman',
+    content: 'Committee meeting scheduled for Friday 3 PM. Please confirm your attendance.',
+    timestamp: new Date('2024-02-10T09:00:00'),
+    type: 'text' as const
+  },
+  {
+    id: '2',
+    senderId: '3',
+    senderName: 'Karim Ahmed',
+    content: 'Confirmed. I\'ll prepare the agenda and send it by tomorrow.',
+    timestamp: new Date('2024-02-10T09:15:00'),
+    type: 'text' as const
+  },
+  {
+    id: '3',
+    senderId: '2',
+    senderName: 'Fatima Khan',
+    content: 'Confirmed. Should we discuss the budget allocation for upcoming events?',
+    timestamp: new Date('2024-02-10T09:30:00'),
+    type: 'text' as const
+  },
+  {
+    id: '4',
+    senderId: 'admin',
+    senderName: 'Club Admin',
+    content: 'COMMITTEE NOTICE: Please review the quarterly report before Friday\'s meeting.',
+    timestamp: new Date('2024-02-10T10:00:00'),
     type: 'announcement' as const
   }
 ]
@@ -94,7 +129,11 @@ interface NotificationForm {
 }
 
 export default function CommunicationsPage() {
+  const [selectedTab, setSelectedTab] = useState('chat')
+  const [activeChat, setActiveChat] = useState<'general' | 'committee'>('general')
   const [newMessage, setNewMessage] = useState('')
+  const [generalMessages, setGeneralMessages] = useState(mockGeneralChatMessages)
+  const [committeeMessages, setCommitteeMessages] = useState(mockCommitteeChatMessages)
   const [showNotificationForm, setShowNotificationForm] = useState(false)
   const [notificationForm, setNotificationForm] = useState<NotificationForm>({
     title: '',
@@ -107,8 +146,30 @@ export default function CommunicationsPage() {
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault()
     if (newMessage.trim()) {
-      console.log('Sending message:', newMessage)
+      const message = {
+        id: Date.now().toString(),
+        senderId: 'admin',
+        senderName: 'Club Admin',
+        content: newMessage,
+        timestamp: new Date(),
+        type: 'text' as const
+      }
+      
+      if (activeChat === 'general') {
+        setGeneralMessages(prev => [...prev, message])
+      } else {
+        setCommitteeMessages(prev => [...prev, message])
+      }
+      
       setNewMessage('')
+    }
+  }
+
+  const handleDeleteMessage = (messageId: string) => {
+    if (activeChat === 'general') {
+      setGeneralMessages(prev => prev.filter(msg => msg.id !== messageId))
+    } else {
+      setCommitteeMessages(prev => prev.filter(msg => msg.id !== messageId))
     }
   }
 
@@ -125,9 +186,6 @@ export default function CommunicationsPage() {
     })
   }
 
-  const handleDeleteMessage = (messageId: string) => {
-    console.log('Deleting message:', messageId)
-  }
 
   return (
     <ClubAdminLayout>
@@ -153,7 +211,7 @@ export default function CommunicationsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Messages</p>
-                  <p className="text-3xl font-bold text-blue-600">{mockChatMessages.length}</p>
+                  <p className="text-3xl font-bold text-blue-600">{mockGeneralChatMessages.length}</p>
                 </div>
                 <MessageSquare className="w-8 h-8 text-blue-600" />
               </div>
@@ -307,67 +365,104 @@ export default function CommunicationsPage() {
 
           {/* Group Chat Tab */}
           <TabsContent value="chat" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Club Group Chat</CardTitle>
-                <CardDescription>
-                  Private group chat for club members (not visible to super admin)
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {/* Chat Messages */}
-                <div className="h-96 overflow-y-auto border rounded-lg p-4 mb-4 bg-gray-50 dark:bg-background">
-                  <div className="space-y-4">
-                    {mockChatMessages.map((message) => (
-                      <div key={message.id} className="flex items-start space-x-3">
-                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-xs font-medium text-blue-600">
-                            {message.senderName.charAt(0)}
-                          </span>
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-2 mb-1">
-                            <span className="font-medium text-sm">{message.senderName}</span>
-                            <span className="text-xs text-gray-500">
-                              {formatTime(message.timestamp)}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <MessageSquare className="h-5 w-5" />
+                    <span>Club Communication</span>
+                  </CardTitle>
+                  <CardDescription>
+                    Manage club chat rooms for different member groups
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {/* Chat Room Selector */}
+                  <div className="flex space-x-2 mb-6">
+                    <Button
+                      variant={activeChat === 'general' ? 'default' : 'outline'}
+                      onClick={() => setActiveChat('general')}
+                      className="flex items-center space-x-2"
+                    >
+                      <MessageSquare className="h-4 w-4" />
+                      <span>General Chat</span>
+                    </Button>
+                    <Button
+                      variant={activeChat === 'committee' ? 'default' : 'outline'}
+                      onClick={() => setActiveChat('committee')}
+                      className="flex items-center space-x-2"
+                    >
+                      <UserCheck className="h-4 w-4" />
+                      <span>Committee Chat</span>
+                    </Button>
+                  </div>
+
+                  {/* Chat Messages */}
+                  <div className="h-96 overflow-y-auto border rounded-lg p-4 mb-4 bg-gray-50 dark:bg-gray-900">
+                    <div className="space-y-4">
+                      {(activeChat === 'general' ? generalMessages : committeeMessages).map((message) => (
+                        <div key={message.id} className="flex items-start space-x-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                            activeChat === 'general' 
+                              ? 'bg-blue-100 dark:bg-blue-900' 
+                              : 'bg-purple-100 dark:bg-purple-900'
+                          }`}>
+                            <span className={`text-xs font-medium ${
+                              activeChat === 'general'
+                                ? 'text-blue-600 dark:text-blue-300'
+                                : 'text-purple-600 dark:text-purple-300'
+                            }`}>
+                              {message.senderName.charAt(0)}
                             </span>
-                            {message.type === 'announcement' && (
-                              <Badge variant="info" className="text-xs">Announcement</Badge>
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <span className="font-medium text-sm text-gray-900 dark:text-gray-100">{message.senderName}</span>
+                              <span className="text-xs text-gray-500 dark:text-gray-400">
+                                {formatTime(message.timestamp)}
+                              </span>
+                              {message.type === 'announcement' && (
+                                <Badge variant="info" className="text-xs">Announcement</Badge>
+                              )}
+                            </div>
+                            <div className={`p-3 rounded-lg ${
+                              message.type === 'announcement'
+                                ? activeChat === 'general'
+                                  ? 'bg-blue-100 dark:bg-blue-900 border-l-4 border-blue-500'
+                                  : 'bg-purple-100 dark:bg-purple-900 border-l-4 border-purple-500'
+                                : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
+                            }`}>
+                              <p className="text-sm text-gray-900 dark:text-gray-100">{message.content}</p>
+                            </div>
+                            {message.senderId === 'admin' && (
+                              <div className="mt-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleDeleteMessage(message.id)}
+                                >
+                                  Delete
+                                </Button>
+                              </div>
                             )}
                           </div>
-                          <div className={`p-3 rounded-lg ${message.type === 'announcement'
-                            ? 'bg-blue-100 border-l-4 border-blue-500'
-                            : 'bg-white border'
-                            }`}>
-                            <p className="text-sm">{message.content}</p>
-                          </div>
-                          {message.senderId === 'admin' && (
-                            <div className="mt-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleDeleteMessage(message.id)}
-                              >
-                                Delete
-                              </Button>
-                            </div>
-                          )}
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* Message Input */}
-                <form onSubmit={handleSendMessage} className="flex space-x-2">
-                  <Input
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Type your message..."
-                    className="flex-1"
-                  />
-                  <Button type="submit">Send</Button>
-                </form>
+                  {/* Message Input */}
+                  <form onSubmit={handleSendMessage} className="flex space-x-2">
+                    <Input
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder={`Type your message to ${activeChat} chat...`}
+                      className="flex-1"
+                    />
+                    <Button type="submit" className="flex items-center space-x-2">
+                      <Send className="h-4 w-4" />
+                      <span>Send</span>
+                    </Button>
+                  </form>
 
                 {/* Chat Settings */}
                 <div className="mt-6 p-4 bg-gray-50 dark:bg-background rounded-lg">

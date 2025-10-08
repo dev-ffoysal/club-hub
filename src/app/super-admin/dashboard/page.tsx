@@ -223,8 +223,8 @@ export default function SuperAdminDashboard() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Super Admin Dashboard</h1>
-              <p className="text-gray-600 mt-2">Manage clubs, users, advertisements, and monitor platform activity</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Super Admin Dashboard</h1>
+              <p className="text-muted-foreground mt-2">Manage clubs, users, advertisements, and monitor platform activity</p>
             </div>
             <div className="flex flex-col sm:flex-row gap-2">
               <Button variant="outline" size="sm" className="w-full sm:w-auto">Export Report</Button>
@@ -238,16 +238,16 @@ export default function SuperAdminDashboard() {
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Clubs</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-blue-600">{mockStats.totalClubs}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Total Clubs</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-primary">{mockStats.totalClubs}</p>
                 </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center">
                   <Building2 className="w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
               </div>
               <div className="mt-2 sm:mt-4 flex items-center text-sm">
-                <span className="text-green-600">↗ +{mockStats.monthlyGrowth}%</span>
-                <span className="text-gray-500 ml-2">growth</span>
+                <span className="text-green-600 dark:text-green-400">↗ +{mockStats.monthlyGrowth}%</span>
+                <span className="text-muted-foreground ml-2">growth</span>
               </div>
             </CardContent>
           </Card>
@@ -256,14 +256,14 @@ export default function SuperAdminDashboard() {
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Club Requests</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-yellow-600">{mockStats.pendingApplications}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Club Requests</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-yellow-600 dark:text-yellow-400">{mockStats.pendingApplications}</p>
                 </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center">
                   <ClipboardList className="w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
               </div>
-              <div className="mt-2 sm:mt-4 text-xs sm:text-sm text-gray-500">
+              <div className="mt-2 sm:mt-4 text-xs sm:text-sm text-muted-foreground">
                 Pending review
               </div>
             </CardContent>
@@ -273,14 +273,14 @@ export default function SuperAdminDashboard() {
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Users</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-purple-600">{mockStats.totalUsers.toLocaleString()}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Total Users</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-purple-600 dark:text-purple-400">{mockStats.totalUsers.toLocaleString()}</p>
                 </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
                   <Users className="w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
               </div>
-              <div className="mt-2 sm:mt-4 text-xs sm:text-sm text-gray-500">
+              <div className="mt-2 sm:mt-4 text-xs sm:text-sm text-muted-foreground">
                 Platform users
               </div>
             </CardContent>
@@ -290,14 +290,14 @@ export default function SuperAdminDashboard() {
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Active Events</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-green-600">{mockStats.activeEvents}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Active Events</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-green-600 dark:text-green-400">{mockStats.activeEvents}</p>
                 </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
                   <Calendar className="w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
               </div>
-              <div className="mt-2 sm:mt-4 text-xs sm:text-sm text-gray-500">
+              <div className="mt-2 sm:mt-4 text-xs sm:text-sm text-muted-foreground">
                 All universities
               </div>
             </CardContent>
@@ -307,14 +307,14 @@ export default function SuperAdminDashboard() {
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Advertisements</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-indigo-600">{mockStats.activeAds}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Advertisements</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-indigo-600 dark:text-indigo-400">{mockStats.activeAds}</p>
                 </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center">
                   <Megaphone className="w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
               </div>
-              <div className="mt-2 sm:mt-4 text-xs sm:text-sm text-gray-500">
+              <div className="mt-2 sm:mt-4 text-xs sm:text-sm text-muted-foreground">
                 Currently active
               </div>
             </CardContent>
@@ -324,14 +324,14 @@ export default function SuperAdminDashboard() {
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Revenue</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-emerald-600">৳{(mockStats.revenueThisMonth / 1000).toFixed(0)}K</p>
+                  <p className="text-sm font-medium text-muted-foreground">Revenue</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400">৳{(mockStats.revenueThisMonth / 1000).toFixed(0)}K</p>
                 </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center">
                   <CreditCard className="w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
               </div>
-              <div className="mt-2 sm:mt-4 text-xs sm:text-sm text-gray-500">
+              <div className="mt-2 sm:mt-4 text-xs sm:text-sm text-muted-foreground">
                 This month
               </div>
             </CardContent>
@@ -360,29 +360,29 @@ export default function SuperAdminDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   {mockApplications.filter(app => app.status === 'pending').map((application) => (
-                    <div key={application.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:bg-background">
+                    <div key={application.id} className="border border-border rounded-lg p-4 hover:bg-muted/50">
                       <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3">
-                            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
                               <Building2 className="w-6 h-6" />
                             </div>
                             <div>
                               <h3 className="font-semibold text-lg">{application.clubName}</h3>
-                              <p className="text-gray-600">{application.university}</p>
+                              <p className="text-muted-foreground">{application.university}</p>
                             </div>
                           </div>
                           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             <div>
-                              <p className="text-sm text-gray-500">Applicant</p>
+                              <p className="text-sm text-muted-foreground">Applicant</p>
                               <p className="font-medium">{application.applicantName}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Email</p>
+                              <p className="text-sm text-muted-foreground">Email</p>
                               <p className="font-medium">{application.applicantEmail}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Submitted</p>
+                              <p className="text-sm text-muted-foreground">Submitted</p>
                               <p className="font-medium">{formatDate(application.submittedAt)}</p>
                             </div>
                           </div>
@@ -390,7 +390,7 @@ export default function SuperAdminDashboard() {
                         <div className="flex flex-row lg:flex-col gap-2">
                           <Button 
                             size="sm" 
-                            className="bg-green-600 hover:bg-green-700 flex-1 lg:flex-none"
+                            className="bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 flex-1 lg:flex-none"
                             onClick={() => handleApproveApplication(application.id)}
                           >
                             <CheckCircle className="w-4 h-4 mr-1" />Approve
@@ -398,7 +398,7 @@ export default function SuperAdminDashboard() {
                           <Button 
                             size="sm" 
                             variant="outline"
-                            className="text-red-600 border-red-600 hover:bg-red-50 flex-1 lg:flex-none"
+                            className="text-red-600 border-red-600 hover:bg-red-50 dark:text-red-400 dark:border-red-400 dark:hover:bg-red-900/20 flex-1 lg:flex-none"
                             onClick={() => handleRejectApplication(application.id)}
                           >
                             <X className="w-4 h-4 mr-1" />Reject
@@ -435,29 +435,29 @@ export default function SuperAdminDashboard() {
                 
                 <div className="space-y-4">
                   {mockUsers.map((user) => (
-                    <div key={user.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:bg-background">
+                    <div key={user.id} className="border border-border rounded-lg p-4 hover:bg-muted/50">
                       <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center">
                               <User className="w-5 h-5" />
                             </div>
                             <div>
                               <h4 className="font-semibold">{user.name}</h4>
-                              <p className="text-gray-600 text-sm">{user.email}</p>
+                              <p className="text-muted-foreground text-sm">{user.email}</p>
                             </div>
                           </div>
                           <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div>
-                              <p className="text-sm text-gray-500">University</p>
+                              <p className="text-sm text-muted-foreground">University</p>
                               <p className="font-medium">{user.university}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Joined</p>
+                              <p className="text-sm text-muted-foreground">Joined</p>
                               <p className="font-medium">{formatDate(user.joinedAt)}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Clubs Joined</p>
+                              <p className="text-sm text-muted-foreground">Clubs Joined</p>
                               <p className="font-medium">{user.clubsJoined}</p>
                             </div>
                           </div>
@@ -470,7 +470,7 @@ export default function SuperAdminDashboard() {
                             <Button 
                               size="sm" 
                               variant="outline"
-                              className="text-red-600 border-red-600 hover:bg-red-50"
+                              className="text-red-600 border-red-600 hover:bg-red-50 dark:text-red-400 dark:border-red-400 dark:hover:bg-red-900/20"
                               onClick={() => handleSuspendUser(user.id)}
                             >
                               Suspend
@@ -478,7 +478,7 @@ export default function SuperAdminDashboard() {
                           ) : (
                             <Button 
                               size="sm"
-                              className="bg-green-600 hover:bg-green-700"
+                              className="bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700"
                               onClick={() => handleActivateUser(user.id)}
                             >
                               Activate
@@ -505,33 +505,33 @@ export default function SuperAdminDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   {mockAdvertisements.map((ad) => (
-                    <div key={ad.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:bg-background">
+                    <div key={ad.id} className="border border-border rounded-lg p-4 hover:bg-muted/50">
                       <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3">
-                            <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+                            <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center">
                               <Megaphone className="w-6 h-6" />
                             </div>
                             <div>
                               <h4 className="font-semibold text-lg">{ad.title}</h4>
-                              <p className="text-gray-600">{ad.advertiser}</p>
+                              <p className="text-muted-foreground">{ad.advertiser}</p>
                             </div>
                           </div>
                           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <div>
-                              <p className="text-sm text-gray-500">Budget</p>
+                              <p className="text-sm text-muted-foreground">Budget</p>
                               <p className="font-medium">{formatCurrency(ad.budget)}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Duration</p>
+                              <p className="text-sm text-muted-foreground">Duration</p>
                               <p className="font-medium">{formatDate(ad.startDate)} - {formatDate(ad.endDate)}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Clicks</p>
+                              <p className="text-sm text-muted-foreground">Clicks</p>
                               <p className="font-medium">{ad.clicks.toLocaleString()}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Impressions</p>
+                              <p className="text-sm text-muted-foreground">Impressions</p>
                               <p className="font-medium">{ad.impressions.toLocaleString()}</p>
                             </div>
                           </div>
@@ -569,33 +569,33 @@ export default function SuperAdminDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   {mockPromotedEvents.map((event) => (
-                    <div key={event.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:bg-background">
+                    <div key={event.id} className="border border-border rounded-lg p-4 hover:bg-muted/50">
                       <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3">
-                            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                            <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
                               <Calendar className="w-6 h-6" />
                             </div>
                             <div>
                               <h4 className="font-semibold text-lg">{event.title}</h4>
-                              <p className="text-gray-600">{event.club}</p>
+                              <p className="text-muted-foreground">{event.club}</p>
                             </div>
                           </div>
                           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <div>
-                              <p className="text-sm text-gray-500">Date</p>
+                              <p className="text-sm text-muted-foreground">Date</p>
                               <p className="font-medium">{formatDate(event.date)}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Participants</p>
+                              <p className="text-sm text-muted-foreground">Participants</p>
                               <p className="font-medium">{event.participants}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Budget</p>
+                              <p className="text-sm text-muted-foreground">Budget</p>
                               <p className="font-medium">{formatCurrency(event.promotionBudget)}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Reach</p>
+                              <p className="text-sm text-muted-foreground">Reach</p>
                               <p className="font-medium">{event.reach.toLocaleString()}</p>
                             </div>
                           </div>
@@ -632,29 +632,29 @@ export default function SuperAdminDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   {mockPayments.map((payment) => (
-                    <div key={payment.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:bg-background">
+                    <div key={payment.id} className="border border-border rounded-lg p-4 hover:bg-muted/50">
                       <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3">
-                            <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+                            <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center">
                               <CreditCard className="w-6 h-6" />
                             </div>
                             <div>
                               <h4 className="font-semibold text-lg">{payment.clubName}</h4>
-                              <p className="text-gray-600">{payment.type.replace('_', ' ').toUpperCase()}</p>
+                              <p className="text-muted-foreground">{payment.type.replace('_', ' ').toUpperCase()}</p>
                             </div>
                           </div>
                           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             <div>
-                              <p className="text-sm text-gray-500">Amount</p>
+                              <p className="text-sm text-muted-foreground">Amount</p>
                               <p className="font-medium text-lg">{formatCurrency(payment.amount)}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Date</p>
+                              <p className="text-sm text-muted-foreground">Date</p>
                               <p className="font-medium">{formatDate(payment.date)}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Transaction ID</p>
+                              <p className="text-sm text-muted-foreground">Transaction ID</p>
                               <p className="font-medium">{payment.transactionId}</p>
                             </div>
                           </div>

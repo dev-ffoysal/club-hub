@@ -156,8 +156,8 @@ export default function SettingsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">System Settings</h1>
-            <p className="text-gray-600 mt-2">Configure platform settings and manage system preferences</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">System Settings</h1>
+            <p className="text-muted-foreground mt-2">Configure platform settings and manage system preferences</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-2">
             <Button variant="outline" size="sm" className="w-full sm:w-auto" onClick={handleBackupData}>
@@ -351,42 +351,42 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">Email Notifications</p>
-                      <p className="text-sm text-gray-500">Send notifications via email</p>
+                      <p className="text-sm text-muted-foreground">Send notifications via email</p>
                     </div>
                     <input type="checkbox" checked={settings.notifications.emailNotifications} className="rounded" />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">SMS Notifications</p>
-                      <p className="text-sm text-gray-500">Send notifications via SMS</p>
+                      <p className="text-sm text-muted-foreground">Send notifications via SMS</p>
                     </div>
                     <input type="checkbox" checked={settings.notifications.smsNotifications} className="rounded" />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">Push Notifications</p>
-                      <p className="text-sm text-gray-500">Send browser push notifications</p>
+                      <p className="text-sm text-muted-foreground">Send browser push notifications</p>
                     </div>
                     <input type="checkbox" checked={settings.notifications.pushNotifications} className="rounded" />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">Marketing Emails</p>
-                      <p className="text-sm text-gray-500">Send promotional and marketing emails</p>
+                      <p className="text-sm text-muted-foreground">Send promotional and marketing emails</p>
                     </div>
                     <input type="checkbox" checked={settings.notifications.marketingEmails} className="rounded" />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">System Alerts</p>
-                      <p className="text-sm text-gray-500">Critical system notifications</p>
+                      <p className="text-sm text-muted-foreground">Critical system notifications</p>
                     </div>
                     <input type="checkbox" checked={settings.notifications.systemAlerts} className="rounded" />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">Weekly Reports</p>
-                      <p className="text-sm text-gray-500">Send weekly analytics reports</p>
+                      <p className="text-sm text-muted-foreground">Send weekly analytics reports</p>
                     </div>
                     <input type="checkbox" checked={settings.notifications.weeklyReports} className="rounded" />
                   </div>
@@ -490,7 +490,7 @@ export default function SettingsPage() {
                     <div key={admin.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div>
                         <p className="font-medium">{admin.name}</p>
-                        <p className="text-sm text-gray-500">{admin.email}</p>
+                        <p className="text-sm text-muted-foreground">{admin.email}</p>
                         <div className="flex items-center space-x-2 mt-1">
                           <Badge variant="outline">{admin.role}</Badge>
                           <Badge variant={admin.status === 'active' ? 'default' : 'secondary'}>
@@ -499,7 +499,7 @@ export default function SettingsPage() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm text-gray-500">Last login: {formatDate(admin.lastLogin)}</p>
+                        <p className="text-sm text-muted-foreground">Last login: {formatDate(admin.lastLogin)}</p>
                         <Button 
                           size="sm" 
                           variant="outline" 
@@ -531,8 +531,8 @@ export default function SettingsPage() {
                     <div key={log.id} className="flex items-center justify-between p-3 border rounded">
                       <div>
                         <p className="font-medium text-sm">{log.action}</p>
-                        <p className="text-xs text-gray-500">{log.user}</p>
-                        <p className="text-xs text-gray-600 mt-1">{log.details}</p>
+                        <p className="text-xs text-muted-foreground">{log.user}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{log.details}</p>
                       </div>
                       <div className="text-right">
                         <Badge variant={
@@ -541,7 +541,7 @@ export default function SettingsPage() {
                         }>
                           {log.status}
                         </Badge>
-                        <p className="text-xs text-gray-500 mt-1">{formatDate(log.timestamp)}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{formatDate(log.timestamp)}</p>
                       </div>
                     </div>
                   ))}

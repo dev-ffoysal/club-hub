@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card'
 import { Badge } from '../../../components/ui/badge'
@@ -9,124 +9,54 @@ import { Navbar } from '../../../components/layout/navbar'
 import { Countdown } from '../../../components/ui/countdown'
 import { SocialInteractions } from '../../../components/ui/social-interactions'
 import { EVENT_CATEGORIES } from '../../../lib/constants'
-import { formatDate, formatTime, formatDateTime, isEventUpcoming, isEventWithinWeek } from '../../../lib/utils'
-import { useAuth } from '../../../hooks/useAuth'
-import { User } from '../../../types'
+import { formatDate, formatTime, isEventUpcoming, isEventWithinWeek } from '../../../lib/utils'
+import { getImageUrl } from '../../../lib/utils/imageDisplay'
+import { useGetSingleEventQuery } from '../../../store/api/eventAPI'
 import Link from 'next/link'
-import { User as UserIcon, Lock, Trophy, Building2, Users, Calendar, MapPin, Clock } from 'lucide-react'
-
-// Mock data - same as events page (in real app, this would be fetched from API)
-const mockEvents = [
-  {
-    id: '1',
-    title: 'AI and Machine Learning Workshop',
-    description: 'Learn the fundamentals of AI and ML with hands-on projects and real-world applications. This comprehensive workshop will cover machine learning algorithms, neural networks, and practical implementation using Python and popular ML libraries.',
-    longDescription: 'Join us for an intensive AI and Machine Learning workshop designed for students who want to dive deep into the world of artificial intelligence. This hands-on workshop will cover fundamental concepts including supervised and unsupervised learning, neural networks, deep learning, and practical applications in various domains.\n\nWhat you\'ll learn:\n• Introduction to Machine Learning concepts\n• Python programming for ML\n• Working with popular libraries (TensorFlow, PyTorch, Scikit-learn)\n• Building and training neural networks\n• Real-world project implementation\n• Best practices in ML development\n\nPrerequisites:\n• Basic programming knowledge (preferably Python)\n• Understanding of mathematics and statistics\n• Laptop with Python installed\n\nWhat to bring:\n• Laptop with Python 3.7+ installed\n• Notebook and pen for taking notes\n• Enthusiasm to learn!',
-    category: 'workshop' as const,
-    type: 'event' as const,
-    startDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-    endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000 + 3 * 60 * 60 * 1000),
-    location: 'Computer Lab, Building A',
-    isOnline: false,
-    maxParticipants: 50,
-    currentParticipants: 32,
-    registrationDeadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-    isPublic: true,
-    commentsEnabled: true,
-    tags: ['AI', 'Machine Learning', 'Technology'],
-    club: {
-      id: '1',
-      name: 'Computer Science Club',
-      university: 'University of Dhaka'
-    },
-    image: '/events/ai-workshop.jpg',
-    followers: 127,
-    upvotes: 89,
-    downvotes: 12,
-    organizer: {
-      name: 'Dr. Sarah Ahmed',
-      title: 'Professor of Computer Science',
-      email: 'sarah.ahmed@du.ac.bd'
-    },
-    agenda: [
-      { time: '14:00 - 14:30', activity: 'Registration and Welcome' },
-      { time: '14:30 - 15:30', activity: 'Introduction to AI and ML Concepts' },
-      { time: '15:30 - 15:45', activity: 'Coffee Break' },
-      { time: '15:45 - 16:45', activity: 'Hands-on Python Programming' },
-      { time: '16:45 - 17:00', activity: 'Q&A and Closing Remarks' }
-    ],
-    requirements: ['Laptop with Python 3.7+', 'Basic programming knowledge', 'Notebook and pen'],
-    benefits: ['Certificate of participation', 'Workshop materials', 'Networking opportunities', 'Project source code']
-  },
-  {
-    id: '2',
-    title: 'National Business Plan Competition',
-    description: 'Present your innovative business ideas and compete for prizes worth BDT 50,000.',
-    longDescription: 'The National Business Plan Competition is the premier entrepreneurship event bringing together the brightest minds from universities across Bangladesh. This competition provides a platform for students to showcase their innovative business ideas and compete for substantial prizes.\n\nCompetition Format:\n• Initial pitch submission (5 minutes)\n• Semi-final presentations (10 minutes + Q&A)\n• Final presentations (15 minutes + Q&A)\n\nPrizes:\n• 1st Place: BDT 30,000 + Incubation opportunity\n• 2nd Place: BDT 15,000 + Mentorship program\n• 3rd Place: BDT 5,000 + Business development resources\n\nJudging Criteria:\n• Innovation and originality (25%)\n• Market potential (25%)\n• Financial viability (25%)\n• Presentation quality (25%)',
-    category: 'competition' as const,
-    type: 'competition' as const,
-    startDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
-    endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000 + 9 * 60 * 60 * 1000),
-    location: 'Main Auditorium',
-    isOnline: false,
-    maxParticipants: 100,
-    currentParticipants: 78,
-    registrationDeadline: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000),
-    isPublic: true,
-    commentsEnabled: true,
-    tags: ['Business', 'Competition', 'Entrepreneurship'],
-    club: {
-      id: '2',
-      name: 'Business Club',
-      university: 'North South University'
-    },
-    image: '/events/business-competition.jpg',
-    followers: 234,
-    upvotes: 156,
-    downvotes: 23,
-    organizer: {
-      name: 'Prof. Mohammad Rahman',
-      title: 'Dean of Business School',
-      email: 'mohammad.rahman@northsouth.edu'
-    },
-    agenda: [
-      { time: '09:00 - 09:30', activity: 'Registration and Networking' },
-      { time: '09:30 - 12:00', activity: 'Semi-final Presentations' },
-      { time: '12:00 - 13:00', activity: 'Lunch Break' },
-      { time: '13:00 - 16:00', activity: 'Final Presentations' },
-      { time: '16:00 - 17:00', activity: 'Judging and Deliberation' },
-      { time: '17:00 - 18:00', activity: 'Award Ceremony' }
-    ],
-    requirements: ['Business plan document', 'Presentation slides', 'Team of 2-4 members'],
-    benefits: ['Cash prizes', 'Incubation opportunities', 'Mentorship', 'Networking']
-  }
-  // Add more events as needed...
-]
+import { User as UserIcon, Lock, Trophy, Building2, Users, Calendar, MapPin, Clock, Loader2 } from 'lucide-react'
+import { useAppSelector } from '@/store/hooks'
+import { useRouter } from 'next/navigation'
 
 export default function EventDetailPage() {
   const params = useParams()
+  const router = useRouter()
   const eventId = params.id as string
-  const { user, login, logout } = useAuth()
+  const { user, isAuthenticated } = useAppSelector((state) => state.auth)
   
   const [isRegistered, setIsRegistered] = useState(false)
   
-  // Mock user interactions
-  const [userInteractions, setUserInteractions] = useState<{
-    isFollowing: boolean
-    vote: 'up' | 'down' | null
-  }>({ isFollowing: false, vote: null })
 
-  // Find the event
-  const event = mockEvents.find(e => e.id === eventId)
 
-  if (!event) {
+  // Fetch event data from API
+  const { data: eventResponse, isLoading, error } = useGetSingleEventQuery(eventId)
+  const event = eventResponse?.data
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
+              <p className="text-muted-foreground">Loading event details...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Error state
+  if (error || !event) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
         <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900">Event Not Found</h1>
-            <p className="mt-2 text-gray-600">The event you're looking for doesn't exist.</p>
+            <p className="mt-2 text-gray-600">The event you're looking for doesn't exist or couldn't be loaded.</p>
             <Link href="/events">
               <Button className="mt-4">Back to Events</Button>
             </Link>
@@ -136,36 +66,15 @@ export default function EventDetailPage() {
     )
   }
 
-  const categoryInfo = EVENT_CATEGORIES[event.category]
-  const isUpcoming = isEventUpcoming(event.startDate)
-  const isWithinWeek = isEventWithinWeek(event.startDate)
-  const spotsLeft = event.maxParticipants ? event.maxParticipants - event.currentParticipants : null
+  // Get category info - fallback to default if category not found
+  const categoryKey = event.type || 'workshop'
+  const categoryInfo = EVENT_CATEGORIES[categoryKey as keyof typeof EVENT_CATEGORIES] || EVENT_CATEGORIES.workshop
+  
+  const isUpcoming = isEventUpcoming(new Date(event.startDate))
+  const isWithinWeek = isEventWithinWeek(new Date(event.startDate))
+  const spotsLeft = event.maxParticipants ? event.maxParticipants - (event.currentParticipants || 0) : null
 
-  const handleFollow = () => {
-    setUserInteractions(prev => ({ ...prev, isFollowing: !prev.isFollowing }))
-  }
 
-  const handleUnfollow = () => {
-    setUserInteractions(prev => ({ ...prev, isFollowing: false }))
-  }
-
-  const handleUpvote = () => {
-    setUserInteractions(prev => ({
-      ...prev,
-      vote: prev.vote === 'up' ? null : 'up'
-    }))
-  }
-
-  const handleDownvote = () => {
-    setUserInteractions(prev => ({
-      ...prev,
-      vote: prev.vote === 'down' ? null : 'down'
-    }))
-  }
-
-  const handleRemoveVote = () => {
-    setUserInteractions(prev => ({ ...prev, vote: null }))
-  }
 
   const handleRegister = () => {
     if (!user) {
@@ -175,329 +84,432 @@ export default function EventDetailPage() {
     setIsRegistered(!isRegistered)
   }
 
-return (
-  <div className="min-h-screen bg-gray-50 dark:bg-background dark:bg-background text-foreground">
-    <Navbar />
+  // Get creator info
+  const creator = typeof event.createdBy === 'object' ? event.createdBy : null
+  const organizedBy = typeof event.organizedBy === 'object' ? event.organizedBy : null
 
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Header with Login Toggle */}
-      <div className="flex justify-between items-center mb-6">
-        <Link href="/events">
-          <Button variant="outline">← Back to Events</Button>
-        </Link>
-        <Button
-          onClick={() =>
-            user
-              ? logout()
-              : login({
-                  email: 'demo@example.com',
-                  password: 'password123',
-                })
-          }
-          variant={user ? 'default' : 'outline'}
-        >
-          {user ? (
-            <>
-              <UserIcon className="w-4 h-4 inline mr-1" />
-              {user.name} (Demo)
-            </>
-          ) : (
-            <>
-              <Lock className="w-4 h-4 inline mr-1" />
-              Login (Demo)
-            </>
-          )}
-        </Button>
-      </div>
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-background  text-foreground">
+      <Navbar />
 
-      {/* Event Hero Section */}
-      <Card className="mb-8 overflow-hidden border bg-card text-card-foreground">
-        <div className="h-64 bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80 relative">
-          <div className="absolute inset-0 bg-black/20"></div>
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 
-          {/* Countdown Timer for events within a week */}
-          {isUpcoming && isWithinWeek && (
-            <div className="absolute top-4 right-4">
-              <Countdown targetDate={event.startDate} />
-            </div>
-          )}
+        {/* Event Hero Section */}
+        <Card className="mb-8 overflow-hidden border bg-card text-card-foreground">
+          <div className="h-[30vw] relative overflow-hidden">
+            {/* Background Image or Gradient */}
+            {event.cover ? (
+              <>
+                <img 
+                  src={getImageUrl(event.cover)} 
+                  alt={event.title}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/40"></div>
+              </>
+            ) : event.images && event.images.length > 0 ? (
+              <>
+                <img 
+                  src={getImageUrl(event.images[0])} 
+                  alt={event.title}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/40"></div>
+              </>
+            ) : (
+              <>
+                <div className="absolute inset-0  bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80"></div>
+                <div className="absolute inset-0 bg-black/20"></div>
+              </>
+            )}
 
-          <div className="absolute bottom-6 left-6 right-6">
-            <div className="flex flex-wrap gap-2 mb-4">
-              <Badge className={categoryInfo.color}>
-                <categoryInfo.icon className="w-4 h-4 mr-1" /> {categoryInfo.name}
-              </Badge>
-              {event.type === 'competition' && (
-                <Badge variant="warning">
-                  <Trophy className="w-4 h-4 mr-1" />
-                  Competition
-                </Badge>
-              )}
-              {event.isOnline && <Badge variant="info">🌐 Online</Badge>}
-              {isUpcoming && !isWithinWeek && (
-                <Badge variant="success">{formatDate(event.startDate)}</Badge>
-              )}
-            </div>
+            {/* Countdown Timer for events within a week */}
+            {isUpcoming && isWithinWeek && (
+              <div className="absolute top-4 right-4">
+                <Countdown targetDate={new Date(event.startDate)} />
+              </div>
+            )}
 
-            <h1 className="text-white font-bold text-3xl mb-2">{event.title}</h1>
+            <div className="absolute bottom-6 left-6 right-6">
+              <div className="backdrop-blur-sm bg-black/30 rounded-lg p-4">
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <Badge className={categoryInfo.color}>
+                    <categoryInfo.icon className="w-4 h-4 mr-1" /> {categoryInfo.name}
+                  </Badge>
+                  {event.type === 'competition' && (
+                    <Badge variant="warning">
+                      <Trophy className="w-4 h-4 mr-1" />
+                      Competition
+                    </Badge>
+                  )}
+                  {event.isOnline && <Badge variant="info">🌐 Online</Badge>}
+                  {isUpcoming && !isWithinWeek && (
+                    <Badge variant="success">{formatDate(new Date(event.startDate))}</Badge>
+                  )}
+                </div>
 
-            <div className="flex items-center text-white/80 text-sm">
-              <span className="mr-4">
-                <Building2 className="w-4 h-4 inline mr-1" />
-                {event.club.university}
-              </span>
-              <span className="mr-4">
-                <Users className="w-4 h-4 inline mr-1" />
-                {event.club.name}
-              </span>
-              {event.organizer && (
-                <span>
-                  <UserIcon className="w-4 h-4 inline mr-1" />
-                  {event.organizer.name}
-                </span>
-              )}
+                <h1 className="text-white font-bold text-3xl mb-2">{event.title}</h1>
+                {event.slogan && (
+                  <p className="text-white/90 text-lg mb-2">{event.slogan}</p>
+                )}
+
+                <div className="flex items-center text-white/90 text-sm">
+                  {organizedBy && (
+                    <>
+                      <span className="mr-4">
+                        <Building2 className="w-4 h-4 inline mr-1" />
+                        {organizedBy.university || 'University'}
+                      </span>
+                      <span className="mr-4">
+                        <Users className="w-4 h-4 inline mr-1" />
+                        {organizedBy.clubName || organizedBy.name}
+                      </span>
+                    </>
+                  )}
+                  {creator && (
+                    <span>
+                      <UserIcon className="w-4 h-4 inline mr-1" />
+                      {creator.name}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </Card>
+        </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Description */}
-          <Card className="bg-card text-card-foreground">
-            <CardHeader>
-              <CardTitle>About This Event</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="prose max-w-none">
-                {event.longDescription ? (
-                  <div className="whitespace-pre-line">{event.longDescription}</div>
-                ) : (
-                  <p>{event.description}</p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Agenda */}
-          {event.agenda && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Description */}
             <Card className="bg-card text-card-foreground">
               <CardHeader>
-                <CardTitle>Event Agenda</CardTitle>
+                <CardTitle>About This Event</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  {event.agenda.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start space-x-4 p-3 bg-muted/50 rounded-lg"
-                    >
-                      <div className="text-sm font-semibold text-primary min-w-[100px]">
-                        {item.time}
-                      </div>
-                      <div className="text-sm">{item.activity}</div>
-                    </div>
-                  ))}
+                <div className="prose max-w-none">
+                  <div 
+                  className="prose prose-sm max-w-none"
+                  dangerouslySetInnerHTML={{ __html: event.description ||'<p class="text-gray-500">Nothing to preview...</p>'}}
+                />
                 </div>
               </CardContent>
             </Card>
-          )}
 
-          {/* Requirements & Benefits */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {event.requirements && (
+            {/* Instructions */}
+            {event.instructions && event.instructions.length > 0 && (
               <Card className="bg-card text-card-foreground">
                 <CardHeader>
-                  <CardTitle className="text-lg">Requirements</CardTitle>
+                  <CardTitle>Instructions</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-2">
-                    {event.requirements.map((req, index) => (
-                      <li key={index} className="flex items-start space-x-2">
-                        <span className="text-destructive mt-1">•</span>
-                        <span className="text-sm text-muted-foreground">{req}</span>
-                      </li>
+                  <div className="space-y-3">
+                    {event.instructions.map((instruction, index) => (
+                      <div key={index} className="p-3 bg-muted/50 rounded-lg">
+                        <h4 className="font-semibold text-sm mb-2">{instruction.title}</h4>
+                        {instruction.description && (
+                          <p className="text-sm text-muted-foreground mb-2">{instruction.description}</p>
+                        )}
+                        {instruction.criteria && instruction.criteria.length > 0 && (
+                          <ul className="space-y-1">
+                            {instruction.criteria.map((criterion, idx) => (
+                              <li key={idx} className="text-sm text-muted-foreground flex items-start space-x-2">
+                                <span className="text-primary mt-1">•</span>
+                                <span>{criterion}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </CardContent>
               </Card>
             )}
 
-            {event.benefits && (
+            {/* Requirements & Benefits */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {event.requirements && event.requirements.length > 0 && (
+                <Card className="bg-card text-card-foreground">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Requirements</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {event.requirements.map((requirement, index) => (
+                        <div key={index} className="p-3 bg-muted/50 rounded-lg">
+                          <h4 className="font-semibold text-sm mb-2">{requirement.title}</h4>
+                          {requirement.description && (
+                            <p className="text-sm text-muted-foreground mb-2">{requirement.description}</p>
+                          )}
+                          {requirement.criteria && requirement.criteria.length > 0 && (
+                            <ul className="space-y-1">
+                              {requirement.criteria.map((criterion, idx) => (
+                                <li key={idx} className="text-sm text-muted-foreground flex items-start space-x-2">
+                                  <span className="text-destructive mt-1">•</span>
+                                  <span>{criterion}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {event.benefits && event.benefits.length > 0 && (
+                <Card className="bg-card text-card-foreground">
+                  <CardHeader>
+                    <CardTitle className="text-lg">What You'll Get</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {event.benefits.map((benefit, index) => (
+                        <div key={index} className="p-3 bg-muted/50 rounded-lg">
+                          <h4 className="font-semibold text-sm mb-2">{benefit.title}</h4>
+                          {benefit.description && (
+                            <p className="text-sm text-muted-foreground mb-2">{benefit.description}</p>
+                          )}
+                          {benefit.criteria && benefit.criteria.length > 0 && (
+                            <ul className="space-y-1">
+                              {benefit.criteria.map((criterion, idx) => (
+                                <li key={idx} className="text-sm text-muted-foreground flex items-start space-x-2">
+                                  <span className="text-primary mt-1">✓</span>
+                                  <span>{criterion}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+
+            {/* FAQs */}
+            {event.faqs && event.faqs.length > 0 && (
               <Card className="bg-card text-card-foreground">
                 <CardHeader>
-                  <CardTitle className="text-lg">What You'll Get</CardTitle>
+                  <CardTitle>Frequently Asked Questions</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-2">
-                    {event.benefits.map((benefit, index) => (
-                      <li key={index} className="flex items-start space-x-2">
-                        <span className="text-primary mt-1">✓</span>
-                        <span className="text-sm text-muted-foreground">{benefit}</span>
-                      </li>
+                  <div className="space-y-4">
+                    {event.faqs.map((faq, index) => (
+                      <div key={index} className="p-4 bg-muted/50 rounded-lg">
+                        <h4 className="font-semibold text-sm mb-2">{faq.question}</h4>
+                        <p className="text-sm text-muted-foreground">{faq.answer}</p>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </CardContent>
               </Card>
             )}
           </div>
-        </div>
 
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Event Details */}
-          <Card className="bg-card text-card-foreground">
-            <CardHeader>
-              <CardTitle>Event Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center text-sm">
-                <Calendar className="w-4 h-4 mr-2" />
-                <div>
-                  <div className="font-semibold">{formatDate(event.startDate)}</div>
-                  <div className="text-muted-foreground">
-                    {formatTime(event.startDate)} - {formatTime(event.endDate)}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center text-sm">
-                <MapPin className="w-4 h-4 mr-2" />
-                <span className="text-muted-foreground">{event.location}</span>
-              </div>
-
-              {event.maxParticipants && (
-                <div className="flex items-center text-sm">
-                  <Users className="w-4 h-4 mr-2" />
-                  <span className="text-muted-foreground">
-                    {event.currentParticipants}/{event.maxParticipants} participants
-                    {spotsLeft && spotsLeft > 0 && (
-                      <span className="text-green-600 dark:text-green-400 ml-1">({spotsLeft} spots left)</span>
-
-                    )}
-                  </span>
-                </div>
-              )}
-
-              {event.registrationDeadline && isEventUpcoming(event.registrationDeadline) && (
-                <div className="flex items-center text-sm text-orange-500">
-                  <Clock className="w-4 h-4 mr-2" />
-                  <span>Registration closes: {formatDate(event.registrationDeadline)}</span>
-                </div>
-              )}
-
-              {event.organizer && (
-                <div className="pt-4 border-t">
-                  <h4 className="font-semibold text-sm mb-2">Organizer</h4>
-                  <div className="text-sm">
-                    <div className="font-medium">{event.organizer.name}</div>
-                    <div className="text-muted-foreground">{event.organizer.title}</div>
-                    <div className="text-primary">{event.organizer.email}</div>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Registration Progress */}
-          {event.maxParticipants && (
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Event Details */}
             <Card className="bg-card text-card-foreground">
               <CardHeader>
-                <CardTitle>Registration Progress</CardTitle>
+                <CardTitle>Event Details</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm text-muted-foreground">
-                    <span>Registered</span>
-                    <span>
-                      {Math.round((event.currentParticipants / event.maxParticipants) * 100)}%
+              <CardContent className="space-y-4">
+                <div className="flex items-center text-sm">
+                  <Calendar className="w-4 h-4 mr-2" />
+                  <div>
+                    <div className="font-semibold">{formatDate(new Date(event.startDate))}</div>
+                    <div className="text-muted-foreground">
+                      {event.time || `${formatTime(new Date(event.startDate))} - ${formatTime(new Date(event.endDate))}`}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center text-sm">
+                  <MapPin className="w-4 h-4 mr-2" />
+                  <span className="text-muted-foreground">{event.location}</span>
+                </div>
+
+                {event.meetingLink && (
+                  <div className="flex items-center text-sm">
+                    <Users className="w-4 h-4 mr-2" />
+                    <a 
+                      href={event.meetingLink} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      Join Meeting
+                    </a>
+                  </div>
+                )}
+
+                {event.maxParticipants && (
+                  <div className="flex items-center text-sm">
+                    <Users className="w-4 h-4 mr-2" />
+                    <span className="text-muted-foreground">
+                      {event.currentParticipants || 0}/{event.maxParticipants} participants
+                      {spotsLeft && spotsLeft > 0 && (
+                        <span className="text-green-600 dark:text-green-400 ml-1">({spotsLeft} spots left)</span>
+                      )}
                     </span>
                   </div>
-                  <div className="w-full bg-muted rounded-full h-3">
-                    <div
-                      className="bg-primary h-3 rounded-full transition-all duration-300"
-                      style={{
-                        width: `${(event.currentParticipants / event.maxParticipants) * 100}%`,
-                      }}
-                    ></div>
+                )}
+
+                <div className="flex items-center text-sm">
+                  <Trophy className="w-4 h-4 mr-2" />
+                  <span className="text-muted-foreground">
+                    {event.registrationFee && event.registrationFee > 0 
+                      ? `Registration Fee: BDT ${event.registrationFee}`
+                      : 'Free Event'
+                    }
+                  </span>
+                </div>
+
+                {event.registrationDeadline && isEventUpcoming(new Date(event.registrationDeadline)) && (
+                  <div className="flex items-center text-sm text-orange-500">
+                    <Clock className="w-4 h-4 mr-2" />
+                    <span>Registration closes: {formatDate(new Date(event.registrationDeadline))}</span>
                   </div>
+                )}
+
+                {creator && (
+                  <div className="pt-4 border-t">
+                    <h4 className="font-semibold text-sm mb-2">Created By</h4>
+                    <div className="text-sm">
+                      <div className="font-medium">{creator.name}</div>
+                      <div className="text-primary">{creator.email}</div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Registration Progress */}
+            {event.maxParticipants && (
+              <Card className="bg-card text-card-foreground">
+                <CardHeader>
+                  <CardTitle>Registration Progress</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Registered</span>
+                      <span>
+                        {Math.round(((event.currentParticipants || 0) / event.maxParticipants) * 100)}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-3">
+                      <div
+                        className="bg-primary h-3 rounded-full transition-all duration-300"
+                        style={{
+                          width: `${((event.currentParticipants || 0) / event.maxParticipants) * 100}%`,
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Social Interactions */}
+            <Card className="bg-card text-card-foreground">
+              <CardHeader>
+                <CardTitle>Community</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <SocialInteractions
+                  eventId={event._id}
+                  clubId={typeof event.organizedBy === 'object' ? event.organizedBy?._id : event.organizedBy}
+                  followers={event.followersCount || 0}
+                  upvotes={event.upVotesCount || 0}
+                  downvotes={event.downVotesCount || 0}
+                  isLoggedIn={isAuthenticated}
+                  isFollowing={false} // Events don't have following functionality
+                  userVote={event.voteType}
+                  className="flex-col space-y-4"
+                  showFollowers={false} // Hide followers for events
+                />
+              </CardContent>
+            </Card>
+
+            {/* Registration Button */}
+            <Card className="bg-card text-card-foreground">
+              <CardContent className="pt-6">
+                <div className="space-y-3">
+                  <Button
+                    onClick={handleRegister}
+                    className="w-full"
+                    size="lg"
+                    disabled={!isUpcoming || spotsLeft === 0}
+                  >
+                    {!isUpcoming
+                      ? 'Event Ended'
+                      : spotsLeft === 0
+                      ? 'Event Full'
+                      : isRegistered
+                      ? '✓ Registered'
+                      : 'Register Now'}
+                  </Button>
+
+                  {!user && (
+                    <p className="text-xs text-muted-foreground text-center">
+                      Please login to register for this event
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </Card>
-          )}
 
-          {/* Social Interactions */}
-          <Card className="bg-card text-card-foreground">
-            <CardHeader>
-              <CardTitle>Community</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <SocialInteractions
-                eventId={event.id}
-                followers={event.followers}
-                upvotes={event.upvotes}
-                downvotes={event.downvotes}
-                isLoggedIn={!!user}
-                isFollowing={userInteractions.isFollowing}
-                userVote={userInteractions.vote}
-                onFollow={handleFollow}
-                onUnfollow={handleUnfollow}
-                onUpvote={handleUpvote}
-                onDownvote={handleDownvote}
-                onRemoveVote={handleRemoveVote}
-                className="flex-col space-y-4"
-              />
-            </CardContent>
-          </Card>
+            {/* Tags */}
+            {event.tags && event.tags.length > 0 && (
+              <Card className="bg-card text-card-foreground">
+                <CardHeader>
+                  <CardTitle>Tags</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {event.tags.map((tag) => (
+                      <Badge key={tag} variant="secondary" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
-          {/* Registration Button */}
-          <Card className="bg-card text-card-foreground">
-            <CardContent className="pt-6">
-              <div className="space-y-3">
-                <Button
-                  onClick={handleRegister}
-                  className="w-full"
-                  size="lg"
-                  disabled={!isUpcoming || spotsLeft === 0}
-                >
-                  {!isUpcoming
-                    ? 'Event Ended'
-                    : spotsLeft === 0
-                    ? 'Event Full'
-                    : isRegistered
-                    ? '✓ Registered'
-                    : 'Register Now'}
-                </Button>
-
-                {!user && (
-                  <p className="text-xs text-muted-foreground text-center">
-                    Please login to register for this event
-                  </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Tags */}
-          <Card className="bg-card text-card-foreground">
-            <CardHeader>
-              <CardTitle>Tags</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {event.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="text-xs">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+            {/* Winning Prizes */}
+            {event.winningPrize && event.winningPrize.length > 0 && (
+              <Card className="bg-card text-card-foreground">
+                <CardHeader>
+                  <CardTitle>Prizes</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {event.winningPrize.map((prize, index) => (
+                      <div key={index} className="p-3 bg-muted/50 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-semibold text-sm">{prize.title}</h4>
+                          {prize.amount && (
+                            <span className="text-primary font-bold">BDT {prize.amount}</span>
+                          )}
+                        </div>
+                        {prize.description && (
+                          <p className="text-sm text-muted-foreground">{prize.description}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-)
-
+  )
 }

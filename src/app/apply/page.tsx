@@ -1,42 +1,50 @@
 'use client'
 
 import { useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { ClubApplicationForm } from '../../types'
+import { clubApplicationSchema } from '@/validation/validation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
 import { Button } from '../../components/ui/button'
 import { Input } from '../../components/ui/input'
-import { Badge } from '../../components/ui/badge'
 import { Navbar } from '../../components/layout/navbar'
-import { UNIVERSITIES } from '../../lib/constants'
-import { ClubApplicationForm } from '../../types'
-import { CheckCircle, ClipboardList, HelpCircle, Lightbulb } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+
+import { CheckCircle, ClipboardList, HelpCircle } from 'lucide-react'
+import { useApplyClubMutation } from '@/store/api/authAPI'
+import { useGetUniversitiesQuery } from '@/store/api/universityAPI'
+import { IUniversity } from '@/types/interfaces'
 
 export default function ApplyPage() {
-  const [formData, setFormData] = useState<ClubApplicationForm>({
-    clubName: '',
-    purpose: '',
-    university: '',
-    contactEmail: '',
-    contactPhone: '',
-    applicantName: '',
-    applicantEmail: '',
-    description: ''
+  const [submitted, setSubmitted] = useState(false)
+  const [applyClub, { isLoading, error }] = useApplyClubMutation()
+  const { data } = useGetUniversitiesQuery()
+  const universities = data?.data || []
+  // React Hook Form
+  const { 
+    register, 
+    handleSubmit, 
+    watch, 
+    control,
+    formState: { errors, isSubmitting } 
+  } = useForm<ClubApplicationForm & {terms:boolean}>({
+    resolver: zodResolver(clubApplicationSchema),
+    mode: 'onTouched'
   })
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
+  const onSubmit = async (data: ClubApplicationForm) => {
+    console.log('Form Data:', data)
+    // Remove the terms field from the data
+    const { terms, ...formData } = data
+    // Apply club mutation
+    const {data:response} = await applyClub(formData)
+    // Handle success response
+    if (response?.success) {
+      setSubmitted(true)
+    }
 
-  const handleInputChange = (field: keyof ClubApplicationForm, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
-  }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    setIsSubmitting(false)
     setSubmitted(true)
   }
 
@@ -78,9 +86,8 @@ export default function ApplyPage() {
   }
 
   return (
-      <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
       <Navbar />
-      
       <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -106,7 +113,7 @@ export default function ApplyPage() {
                 <h4 className="font-semibold text-foreground mb-2">Club Information</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• Official club name</li>
-                  <li>• Clear purpose and objectives</li>
+                  <li>• Clear clubPurpose and objectives</li>
                   <li>• University affiliation</li>
                   <li>• Contact details</li>
                 </ul>
@@ -133,8 +140,9 @@ export default function ApplyPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Club Information Section */}
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+
+              {/* Club Information */}
               <div>
                 <h3 className="text-lg font-semibold text-foreground mb-4">Club Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -143,29 +151,33 @@ export default function ApplyPage() {
                       Club Name *
                     </label>
                     <Input
-                      required
-                      value={formData.clubName}
-                      onChange={(e) => handleInputChange('clubName', e.target.value)}
                       placeholder="e.g., Computer Science Club"
+                      {...register('clubName')}
                     />
+                    {errors.clubName && <p className="text-red-500 text-sm mt-1">{errors.clubName.message}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
                       University *
                     </label>
-                    <select
-                      required
-                      value={formData.university}
-                      onChange={(e) => handleInputChange('university', e.target.value)}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <option value="">Select your university</option>
-                      {UNIVERSITIES.map((university) => (
-                        <option key={university} value={university}>
-                          {university}
-                        </option>
-                      ))}
-                    </select>
+                   <Controller
+                    name="university"
+                    control={control} // get control from useForm hook
+                    render={({ field }) => (
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select your university" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {/* @ts-expect-error */}
+                          {universities.length > 0 && universities.map((u:IUniversity) => (
+                            <SelectItem key={u._id} value={u._id}>{u.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.university && <p className="text-red-500 text-sm mt-1">{errors.university.message}</p>}
                   </div>
                 </div>
 
@@ -174,13 +186,11 @@ export default function ApplyPage() {
                     Club Purpose *
                   </label>
                   <textarea
-                    required
-                    value={formData.purpose}
-                    onChange={(e) => handleInputChange('purpose', e.target.value)}
-                    placeholder="Describe the main purpose and objectives of your club"
-                    className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    rows={3}
+                    placeholder="Describe the main clubPurpose and objectives of your club"
+                    className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    {...register('clubPurpose')}
                   />
+                  {errors.clubPurpose && <p className="text-red-500 text-sm mt-1">{errors.clubPurpose.message}</p>}
                 </div>
 
                 <div className="mt-4">
@@ -188,17 +198,15 @@ export default function ApplyPage() {
                     Detailed Description *
                   </label>
                   <textarea
-                    required
-                    value={formData.description}
-                    onChange={(e) => handleInputChange('description', e.target.value)}
                     placeholder="Provide a detailed description of your club's activities, history, and goals"
-                    className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    rows={5}
+                    className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    {...register('description')}
                   />
+                  {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
                 </div>
               </div>
 
-              {/* Contact Information Section */}
+              {/* Contact Information */}
               <div>
                 <h3 className="text-lg font-semibold text-foreground mb-4">Contact Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -208,27 +216,26 @@ export default function ApplyPage() {
                     </label>
                     <Input
                       type="email"
-                      required
-                      value={formData.contactEmail}
-                      onChange={(e) => handleInputChange('contactEmail', e.target.value)}
                       placeholder="club@university.edu.bd"
+                      {...register('clubEmail')}
                     />
+                    {errors.clubEmail && <p className="text-red-500 text-sm mt-1">{errors.clubEmail.message}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      Club Contact Phone
+                      Club Contact Phone *
                     </label>
                     <Input
                       type="tel"
-                      value={formData.contactPhone}
-                      onChange={(e) => handleInputChange('contactPhone', e.target.value)}
-                      placeholder="+880 1XXX-XXXXXX"
+                      placeholder="+880 1XXXXXXXXX"
+                      {...register('clubPhone')}
                     />
+                    {errors.clubPhone && <p className="text-red-500 text-sm mt-1">{errors.clubPhone.message}</p>}
                   </div>
                 </div>
               </div>
 
-              {/* Applicant Information Section */}
+              {/* Applicant Information */}
               <div>
                 <h3 className="text-lg font-semibold text-foreground mb-4">Applicant Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -236,36 +243,23 @@ export default function ApplyPage() {
                     <label className="block text-sm font-medium text-foreground mb-2">
                       Your Full Name *
                     </label>
-                    <Input
-                      required
-                      value={formData.applicantName}
-                      onChange={(e) => handleInputChange('applicantName', e.target.value)}
-                      placeholder="John Doe"
-                    />
+                    <Input placeholder="John Doe" {...register('applicantName')} />
+                    {errors.applicantName && <p className="text-red-500 text-sm mt-1">{errors.applicantName.message}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
                       Your Email Address *
                     </label>
-                    <Input
-                      type="email"
-                      required
-                      value={formData.applicantEmail}
-                      onChange={(e) => handleInputChange('applicantEmail', e.target.value)}
-                      placeholder="john.doe@university.edu.bd"
-                    />
+                    <Input type="email" placeholder="john.doe@university.edu.bd" {...register('applicantEmail')} />
+                    {errors.applicantEmail && <p className="text-red-500 text-sm mt-1">{errors.applicantEmail.message}</p>}
                   </div>
                 </div>
               </div>
 
-              {/* Terms and Conditions */}
+              {/* Terms */}
               <div className="bg-muted/30 dark:bg-muted/20 p-4 rounded-lg">
                 <div className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    required
-                    className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
+                  <input type="checkbox" {...register('terms')} className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
                   <div className="text-sm text-muted-foreground">
                     <p>
                       I confirm that I am authorized to represent this club and that all information provided is accurate. 
@@ -274,18 +268,13 @@ export default function ApplyPage() {
                     </p>
                   </div>
                 </div>
+                {errors.terms && <p className="text-red-500 text-sm mt-1">{errors.terms.message}</p>}
               </div>
 
-              {/* Submit Button */}
+              {/* Submit */}
               <div className="flex justify-end space-x-4">
-                <Button type="button" variant="outline">
-                  Save as Draft
-                </Button>
-                <Button 
-                  type="submit" 
-                  disabled={isSubmitting}
-                  className="gradient-bg"
-                >
+                <Button type="button" variant="outline">Save as Draft</Button>
+                <Button type="submit" disabled={isSubmitting} className="gradient-bg">
                   {isSubmitting ? 'Submitting...' : 'Submit Application'}
                 </Button>
               </div>
@@ -306,7 +295,7 @@ export default function ApplyPage() {
               <div>
                 <h4 className="font-semibold text-foreground mb-2">Application Tips</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• Be specific about your club's purpose and goals</li>
+                  <li>• Be specific about your club's clubPurpose and goals</li>
                   <li>• Use your official university email address</li>
                   <li>• Provide accurate contact information</li>
                   <li>• Review all information before submitting</li>

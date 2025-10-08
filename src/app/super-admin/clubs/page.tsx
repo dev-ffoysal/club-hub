@@ -8,6 +8,7 @@ import { Input } from '../../../components/ui/input'
 import { SuperAdminLayout } from '../../../components/layout/super-admin-layout'
 import { formatDate } from '../../../lib/utils'
 import { Building, Sprout, Eye, Pause, Play, Trash2, Briefcase, Palette, Monitor, Drama } from 'lucide-react'
+import { useGetClubsQuery, useUpdateClubMutation, useDeleteClubMutation } from '../../../store/api/clubAPI'
 
 // Mock data for clubs
 const mockClubs = [
@@ -181,20 +182,47 @@ export default function ClubsPage() {
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [universityFilter, setUniversityFilter] = useState('all')
 
-  const handleApproveClub = (clubId: string) => {
-    console.log('Approving club:', clubId)
+  const { data: clubsResponse, isLoading, error } = useGetClubsQuery({
+    page: 1,
+    limit: 10,
+    status: statusFilter,
+    categories: categoryFilter === 'all' ? undefined : [categoryFilter],
+    universities: universityFilter === 'all' ? undefined : [universityFilter],
+  })
+  const clubs = clubsResponse?.data || []
+  const [updateClub] = useUpdateClubMutation()
+  const [deleteClub] = useDeleteClubMutation()
+
+  const handleApproveClub = async (clubId: string) => {
+    try {
+      await updateClub({ clubId, clubData: { status: 'active' } }).unwrap()
+    } catch (error) {
+      console.error('Failed to approve club:', error)
+    }
   }
 
-  const handleSuspendClub = (clubId: string) => {
-    console.log('Suspending club:', clubId)
+  const handleSuspendClub = async (clubId: string) => {
+    try {
+      await updateClub({ clubId, clubData: { status: 'suspended' } }).unwrap()
+    } catch (error) {
+      console.error('Failed to suspend club:', error)
+    }
   }
 
-  const handleActivateClub = (clubId: string) => {
-    console.log('Activating club:', clubId)
+  const handleActivateClub = async (clubId: string) => {
+    try {
+      await updateClub({ clubId, clubData: { status: 'active' } }).unwrap()
+    } catch (error) {
+      console.error('Failed to activate club:', error)
+    }
   }
 
-  const handleDeleteClub = (clubId: string) => {
-    console.log('Deleting club:', clubId)
+  const handleDeleteClub = async (clubId: string) => {
+    try {
+      await deleteClub(clubId).unwrap()
+    } catch (error) {
+      console.error('Failed to delete club:', error)
+    }
   }
 
   const handleViewDetails = (clubId: string) => {
@@ -205,14 +233,18 @@ export default function ClubsPage() {
     console.log('Contacting club:', clubId)
   }
 
-  const filteredClubs = mockClubs.filter(club => {
-    const matchesSearch = club.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         club.university.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         club.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         club.president.name.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === 'all' || club.status === statusFilter
-    const matchesCategory = categoryFilter === 'all' || club.category === categoryFilter
-    const matchesUniversity = universityFilter === 'all' || club.university === universityFilter
+  const filteredClubs = clubs.filter((club: any) => {
+    const clubName = club.clubName || club.name || ''
+    const clubUniversity = club.university || ''
+    const clubCategory = club.categories?.[0] || club.category || ''
+    const clubStatus = club.status || ''
+    
+    const matchesSearch = clubName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         clubUniversity.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         clubCategory.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesStatus = statusFilter === 'all' || clubStatus === statusFilter
+    const matchesCategory = categoryFilter === 'all' || clubCategory === categoryFilter
+    const matchesUniversity = universityFilter === 'all' || clubUniversity === universityFilter
     return matchesSearch && matchesStatus && matchesCategory && matchesUniversity
   })
 
@@ -363,16 +395,25 @@ export default function ClubsPage() {
         </Card>
 
         {/* Clubs List */}
-        <div className="space-y-4">
-          {filteredClubs.map((club) => (
-            <Card key={club.id}>
+        {isLoading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="text-lg">Loading clubs...</div>
+          </div>
+        ) : error ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="text-lg text-red-600">Error loading clubs</div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {filteredClubs.map((club) => (
+            <Card key={club._id}>
               <CardContent className="p-6">
                 <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3">
                       <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                         <span className="text-xl">
-                          {club.category === 'Technology' ? <Monitor className="w-4 h-4" /> :
+                          {club.categor === 'Technology' ? <Monitor className="w-4 h-4" /> :
                             club.category === 'Cultural' ? <Drama className="w-4 h-4" /> :
                            club.category === 'Business' ? <Briefcase className="w-4 h-4" /> :
                             club.category === 'Arts' ? <Palette className="w-4 h-4" /> :
@@ -436,27 +477,27 @@ export default function ClubsPage() {
                       </div>
                       <div>
                         <p className="text-sm text-gray-500 mb-1">Advisor</p>
-                        <p className="text-sm font-medium">{club.advisor.name}</p>
-                        <p className="text-xs text-gray-600">{club.advisor.email}</p>
+                        <p className="text-sm font-medium">{club.advisor?.name || 'N/A'}</p>
+                        <p className="text-xs text-gray-600">{club.advisor?.email || 'N/A'}</p>
                       </div>
                     </div>
                     
                     <div className="mt-4">
                       <p className="text-sm text-gray-500 mb-2">Links</p>
                       <div className="flex flex-wrap gap-2">
-                        {club.website && (
-                          <a href={club.website} target="_blank" rel="noopener noreferrer" className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                        {club.socialLinks?.website && (
+                          <a href={club.socialLinks.website} target="_blank" rel="noopener noreferrer" className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
                             🌐 Website
                           </a>
                         )}
-                        {club.socialMedia.facebook && (
-                          <a href={club.socialMedia.facebook} target="_blank" rel="noopener noreferrer" className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                        {club.socialLinks?.facebook && (
+                          <a href={club.socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
                             📘 Facebook
                           </a>
                         )}
-                        {club.socialMedia.instagram && (
+                        {club.socialLinks?.instagram && (
                           <span className="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded">
-                            📷 {club.socialMedia.instagram}
+                            📷 {club.socialLinks.instagram}
                           </span>
                         )}
                       </div>
@@ -468,7 +509,7 @@ export default function ClubsPage() {
                       size="sm" 
                       variant="outline" 
                       className="flex-1 lg:flex-none"
-                      onClick={() => handleViewDetails(club.id)}
+                      onClick={() => handleViewDetails(club._id)}
                     >
                       <Eye className="w-4 h-4 mr-1" /> Details
                     </Button>
@@ -477,7 +518,7 @@ export default function ClubsPage() {
                       size="sm" 
                       variant="outline" 
                       className="flex-1 lg:flex-none"
-                      onClick={() => handleContactClub(club.id)}
+                      onClick={() => handleContactClub(club._id)}
                     >
                       📧 Contact
                     </Button>
@@ -486,7 +527,7 @@ export default function ClubsPage() {
                       <Button 
                         size="sm" 
                         className="bg-green-600 hover:bg-green-700 flex-1 lg:flex-none"
-                        onClick={() => handleApproveClub(club.id)}
+                        onClick={() => handleApproveClub(club._id)}
                       >
                         ✓ Approve
                       </Button>
@@ -497,7 +538,7 @@ export default function ClubsPage() {
                         size="sm" 
                         variant="outline"
                         className="text-orange-600 border-orange-600 hover:bg-orange-50 flex-1 lg:flex-none"
-                        onClick={() => handleSuspendClub(club.id)}
+                        onClick={() => handleSuspendClub(club._id)}
                       >
                         <Pause className="w-4 h-4 mr-1" /> Suspend
                       </Button>
@@ -507,7 +548,7 @@ export default function ClubsPage() {
                       <Button 
                         size="sm" 
                         className="bg-blue-600 hover:bg-blue-700 flex-1 lg:flex-none"
-                        onClick={() => handleActivateClub(club.id)}
+                        onClick={() => handleActivateClub(club._id)}
                       >
                         <Play className="w-4 h-4 mr-1" /> Activate
                       </Button>
@@ -517,7 +558,7 @@ export default function ClubsPage() {
                       size="sm" 
                       variant="outline"
                       className="text-red-600 border-red-600 hover:bg-red-50 flex-1 lg:flex-none"
-                      onClick={() => handleDeleteClub(club.id)}
+                      onClick={() => handleDeleteClub(club._id)}
                     >
                       <Trash2 className="w-4 h-4 mr-1" /> Delete
                     </Button>
@@ -525,10 +566,11 @@ export default function ClubsPage() {
                 </div>
               </CardContent>
             </Card>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
-        {filteredClubs.length === 0 && (
+        {!isLoading && !error && filteredClubs.length === 0 && (
           <Card>
             <CardContent className="p-12 text-center">
               <div className="text-gray-500">

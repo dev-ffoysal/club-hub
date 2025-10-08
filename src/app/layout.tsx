@@ -4,6 +4,10 @@ import './globals.css'
 import { cn } from '../lib/utils'
 import { ReduxProvider } from '../store/provider'
 import { ThemeProvider } from '../components/theme-provider'
+import { ConditionalFooter } from '@/components/layout/conditional-footer'
+import { Toaster } from 'react-hot-toast'
+import '@/lib/debugUtils' // Import debug utilities for development
+
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -38,7 +42,9 @@ export default function RootLayout({
               <div className="flex-1">
                 {children}
               </div>
+              <ConditionalFooter />
             </div>
+            <Toaster />
           </ReduxProvider>
         </ThemeProvider>
       </body>

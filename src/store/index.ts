@@ -1,23 +1,22 @@
 import { configureStore } from '@reduxjs/toolkit'
-import authSlice from './slices/authSlice'
-import clubSlice from './slices/clubSlice'
-import eventSlice from './slices/eventSlice'
-import userSlice from './slices/userSlice'
+import { persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
+import { baseAPI } from './api/baseAPI'
+import { persistedAuthReducer } from './persistConfig'
 
 export const store = configureStore({
   reducer: {
-    auth: authSlice,
-    clubs: clubSlice,
-    events: eventSlice,
-    users: userSlice,
+    auth: persistedAuthReducer,
+    [baseAPI.reducerPath]: baseAPI.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ['persist/PERSIST'],
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat(baseAPI.middleware),
 })
+
+export const persistor = persistStore(store)
 
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch

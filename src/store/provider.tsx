@@ -1,33 +1,26 @@
 'use client'
 
 import { Provider } from 'react-redux'
-import { store } from './index'
-import { useEffect } from 'react'
-import { useAppDispatch } from './hooks'
-import { checkAuthStatus } from './slices/authSlice'
+import { PersistGate } from 'redux-persist/integration/react'
+import { store, persistor } from './index'
 
 interface ReduxProviderProps {
   children: React.ReactNode
 }
 
-// Component to handle auth initialization
-function AuthInitializer({ children }: { children: React.ReactNode }) {
-  const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    // Check authentication status on app start
-    dispatch(checkAuthStatus())
-  }, [dispatch])
-
-  return <>{children}</>
-}
-
 export function ReduxProvider({ children }: ReduxProviderProps) {
   return (
     <Provider store={store}>
-      <AuthInitializer>
+      <PersistGate 
+        loading={
+          <div className="flex items-center justify-center min-h-screen">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+        } 
+        persistor={persistor}
+      >
         {children}
-      </AuthInitializer>
+      </PersistGate>
     </Provider>
   )
 }

@@ -1,118 +1,213 @@
-import { User } from '@/types';
-import api from './axiosConfig'
+import { ClubApplicationForm, IUser } from '@/types'
+import { baseAPI } from './baseAPI'
+import { setUser, setError, clearAuth, setTokens, setLoading } from '../slices/AuthSlice'
 
-// Mock user data for demo purposes
-const mockUser = {
-  id: '1',
-  name: 'Demo User',
-  email: 'demo@example.com',
-  role: 'member' as const,
-  university: 'University of Dhaka',
-  department: 'Computer Science',
-  studentId: 'CS2021001',
-  joinedAt: new Date().toISOString(),
-  isActive: true
-}
+import { ApiResponse, IClubApplicationResponse, IMemberRegistrationResponse, IUserLoginResponse, IVerifyOtpResponse } from '@/types/response'
+import { ILoginRequest, IMemberRegistration } from '@/types/request'
 
-// Authentication API endpoints (using mock responses for demo)
-export const authAPI = {
-  // Login user
-  login: (credentials: { email: string; password: string }) => {
-    // Mock login - always succeed for demo
-    return Promise.resolve({
-      data: {
-        user: mockUser,
-        token: 'mock-jwt-token-' + Date.now()
-      }
-    })
-  },
 
-  // Register user
-  register: (userData: any) => {
-    // Mock registration - always succeed for demo
-    return Promise.resolve({
-      data: {
-        user: { ...mockUser, ...userData },
-        token: 'mock-jwt-token-' + Date.now()
-      }
-    })
-  },
 
-  // Logout user
-  logout: () => {
-    // Mock logout - always succeed
-    return Promise.resolve({ data: { message: 'Logged out successfully' } })
-  },
 
-  // Verify token
-  verify: () => {
-    // Mock verify - always succeed
-    return Promise.resolve({ data: { user: mockUser } })
-  },
 
-  // Refresh token
-  refresh: () => {
-    // Mock refresh - always succeed
-    return Promise.resolve({
-      data: {
-        token: 'mock-jwt-token-' + Date.now()
-      }
-    })
-  },
 
-  // Forgot password
-  forgotPassword: async (email: string) => {
-    return api.post('/auth/forgot-password', { email })
-  },
+// Auth API endpoints
+export const authAPI = baseAPI.injectEndpoints({
+  endpoints: (builder) => ({
+    login: builder.mutation<ApiResponse<IUserLoginResponse>, ILoginRequest>({
+      query: (credentials) => ({
+        url: '/auth/login',
+        method: 'POST',
+        body: credentials,
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          dispatch(setLoading(true))
+          const { data } = await queryFulfilled
+          
+          console.log('Login response received:', data)
+          
+          if (data.data?.accessToken && data.data?.role) {
+          
+            
+            // Store tokens in Redux store (Redux Persist will handle localStorage automatically)
+            dispatch(setTokens({
+              accessToken: data.data.accessToken,
+              refreshToken: data.data.refreshToken || '',
+            }))
+            
+            console.log('Tokens dispatched to Redux store')
+            
+            // Fetch complete user details after successful login
+            try {
+                console.log("💪💪💪💪💪💪💪","FETCHING PROFILE")
 
-  // Reset password
-  resetPassword: async (token: string, password: string) => {
-    return api.post('/auth/reset-password', { token, password })
-  },
-
-  // Change password
-  changePassword: async (currentPassword: string, newPassword: string) => {
-    return api.post('/auth/change-password', { currentPassword, newPassword })
-  },
-
-  // Update profile
-  updateProfile: async (userData: Partial<User>) => {
-    return api.put('/auth/profile', userData)
-  },
-
-  // Get current user profile
-  getProfile: async () => {
-    return api.get('/auth/profile')
-  },
-
-  // Upload profile picture
-  uploadProfilePicture: async (file: File) => {
-    const formData = new FormData()
-    formData.append('profilePicture', file)
-    return api.post('/auth/upload-profile-picture', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
+              const userResponse = await dispatch(authAPI.endpoints.checkAuthStatus.initiate()).unwrap()
+              if (userResponse) {
+                // Merge the role from login response with user data from getUserMe
+                const userWithRole = { ...userResponse, role: data.data.role }
+                console.log("💪💪💪💪💪💪💪",userWithRole)
+                dispatch(setUser(userWithRole))
+                console.log('Login successful, user data stored:', userWithRole)
+              }
+            } catch (userError) {
+              console.error('Failed to fetch user data after login:', userError)
+              dispatch(setError('Failed to fetch user data'))
+            }
+          } else {
+            console.error('Login response missing required data:', {
+              hasAccessToken: !!data.data?.accessToken,
+              hasRole: !!data.data?.role,
+              data: data.data
+            })
+          }
+          dispatch(setLoading(false))
+        } catch (error: any) {
+          dispatch(setLoading(false))
+          const errorMessage = error?.data?.message || 'Login failed'
+          dispatch(setError(errorMessage))
+          console.error('Login failed:', error)
+        }
       },
-    })
-  },
+      invalidatesTags: ['Auth'],
+    }),
 
-  // Delete account
-  deleteAccount: async (password: string) => {
-    return api.delete('/auth/account', { data: { password } })
-  },
+    register: builder.mutation<ApiResponse<IMemberRegistrationResponse>, IMemberRegistration>({
+      query: (userData) => ({
+        url: '/auth/signup',
+        method: 'POST',
+        body: userData,
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled
+          // Store auth data in localStorage
+          console.log("registration completed:",data)
 
-  // Enable two-factor authentication
-  enableTwoFactor: async () => {
-    return api.post('/auth/2fa/enable')
-  },
+        } catch (error) {
+          console.error('Registration failed:', error)
+        }
+      },
+      invalidatesTags: ['Auth'],
+    }),
 
-  // Disable two-factor authentication
-  disableTwoFactor: async (code: string) => {
-    return api.post('/auth/2fa/disable', { code })
-  },
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: '/auth/logout',
+        method: 'POST',
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error) {
+          // Even if logout fails on server, clear auth state
+          console.error('Logout error:', error)
+        } finally {
+          // Clear Redux auth state (Redux Persist will handle localStorage automatically)
+          dispatch(clearAuth())
+        }
+      },
+      invalidatesTags: ['Auth'],
+    }),
 
-  // Verify two-factor authentication
-  verifyTwoFactor: async (code: string) => {
-    return api.post('/auth/2fa/verify', { code })
-  },
-}
+    verifyOtp: builder.mutation<ApiResponse<IVerifyOtpResponse>, { email: string; oneTimeCode: string }>({
+      query: (otpData) => ({
+        url: '/auth/verify-account',
+        method: 'POST',
+        body: otpData,
+      }),
+      invalidatesTags: ['Auth'],
+    }),
+
+    checkAuthStatus: builder.query<IUser | null, void>({
+      query: () => '/auth/me',
+      transformResponse: (response: ApiResponse<IUser>) => response.data || null,
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled
+          console.log("💪💪💪💪💪💪💪",data)
+
+          if (data) {
+            dispatch(setUser(data))
+          }
+        } catch (error) {
+          // If auth check fails, clear auth state and local storage
+          dispatch(clearAuth())
+        }
+      },
+      providesTags: ['Auth'],
+    }),
+
+
+
+    applyClub: builder.mutation<ApiResponse<IClubApplicationResponse>, ClubApplicationForm>({
+      query: (clubApplicationData) => ({
+        url: '/application/create-club-application',
+        method: 'POST',
+        body: clubApplicationData,
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled
+          // Store auth data in localStorage
+          console.log("club application completed:",data)
+
+        } catch (error) {
+          console.error('Registration failed:', error)
+        }
+      },
+      invalidatesTags: ['Auth'],
+    }),
+
+    updateProfile: builder.mutation<ApiResponse<string>, FormData>({
+      query: (userData) => ({
+        url: '/user/member-profile',
+        method: 'PATCH',
+        body: userData,
+      }),
+      invalidatesTags: ['User'],
+    }),
+
+    updateClubProfile: builder.mutation<ApiResponse<string>, FormData>({
+      query: (clubProfileData) => ({
+        url: '/user/club-profile',
+        method: 'PATCH',
+        body: clubProfileData,
+      }),
+      invalidatesTags: ['User'],
+    }),
+
+    getProfile: builder.query<ApiResponse<Partial<IUser>>, void>({
+      query: () => '/user/profile',
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled
+          if (data) {
+            localStorage.setItem('user', JSON.stringify(data))
+          }
+        } catch (error) {
+          // If auth check fails, clear local storage
+          localStorage.removeItem('user')
+        }
+      },
+      providesTags: ['User'],
+    }),
+
+
+  }),
+
+  
+
+})
+
+// Export hooks for use in components
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useLogoutMutation,
+  useCheckAuthStatusQuery,
+  useVerifyOtpMutation,
+  useApplyClubMutation,
+  useUpdateProfileMutation,
+  useGetProfileQuery,
+  useUpdateClubProfileMutation,
+} = authAPI

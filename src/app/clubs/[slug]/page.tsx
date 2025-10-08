@@ -1,171 +1,84 @@
 'use client'
 
-import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card'
-import { Button } from '../../../components/ui/button'
-import { Badge } from '../../../components/ui/badge'
-import { Input } from '../../../components/ui/input'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
-import { Navbar } from '../../../components/layout/navbar'
-import { formatDate, formatTime, getTimeUntil, isEventUpcoming } from '../../../lib/utils'
-import { Users, Calendar, Trophy, Building2, MapPin, Mail, Phone } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useParams } from 'next/navigation'
+import { useGetClubByIdQuery } from '@/store/api/clubAPI'
+import { IClubUser, IEvent, IAchievement, EVENT_TYPE, USER_ROLES } from '@/types/interfaces'
+import { useToggleClubFollowMutation } from '@/store/api/engagementAPI'
+import { useAppSelector } from '@/store/hooks'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Navbar } from '@/components/layout/navbar'
+import { CalendarDays, MapPin, Users, Mail, Phone, Globe, Facebook, Instagram, Twitter, Linkedin, Clock, Trophy, Star, Heart, ChevronLeft, ChevronRight } from 'lucide-react'
+import Link from 'next/link'
 
-// Mock data unchanged…
-// Mock data for individual club page
-const mockClub = {
-  id: '1',
-  name: 'Computer Science Club',
-  slug: 'computer-science-club',
-  description: 'Fostering innovation and technical excellence in computer science education and research.',
-  purpose: 'To create a community of passionate computer science students and professionals who collaborate on projects, share knowledge, and advance the field through learning and innovation.',
-  university: 'University of Dhaka',
-  contactEmail: 'contact@csclub.du.ac.bd',
-  contactPhone: '+880 1XXX-XXXXXX',
-  logo: '/clubs/cs-club-logo.jpg',
-  coverImage: '/clubs/cs-club-cover.jpg',
-  template: 'modern' as const,
-  colorScheme: {
-    primary: '#3B82F6',
-    secondary: '#1E40AF',
-    accent: '#60A5FA',
-    background: '#F8FAFC'
-  },
-  isPublic: true,
-  memberCount: 156,
-  foundedYear: 2018,
-  socialLinks: {
-    facebook: 'https://facebook.com/csclub.du',
-    instagram: 'https://instagram.com/csclub_du',
-    website: 'https://csclub.du.ac.bd'
-  },
-  achievements: [
-    {
-      id: '1',
-      title: 'National Programming Contest Winner 2023',
-      description: 'Our team secured first place in the National Collegiate Programming Contest',
-      date: new Date('2023-12-15'),
-      image: '/achievements/programming-contest.jpg'
-    },
-    {
-      id: '2',
-      title: 'Best Tech Innovation Award',
-      description: 'Recognized for outstanding contribution to technology innovation in education',
-      date: new Date('2023-10-20'),
-      image: '/achievements/innovation-award.jpg'
-    },
-    {
-      id: '3',
-      title: 'Community Impact Recognition',
-      description: 'Awarded for significant impact on local tech community development',
-      date: new Date('2023-08-10'),
-      image: '/achievements/community-impact.jpg'
-    }
-  ],
-  createdAt: new Date('2018-09-01'),
-  updatedAt: new Date('2024-02-10')
-}
+import ClubAchievements from './components/ClubAchievements'
+import { ClubEvents } from './components/ClubEvents'
+import { getImageUrl } from '@/lib/utils/imageDisplay'
+import DOMPurify from 'dompurify'
 
-const mockClubEvents = [
-  {
-    id: '1',
-    title: 'AI and Machine Learning Workshop',
-    description: 'Learn the fundamentals of AI and ML with hands-on projects and real-world applications.',
-    category: 'workshop' as const,
-    type: 'event' as const,
-    startDate: new Date('2024-02-15T14:00:00'),
-    endDate: new Date('2024-02-15T17:00:00'),
-    location: 'Computer Lab, Building A',
-    isOnline: false,
-    maxParticipants: 50,
-    currentParticipants: 32,
-    registrationDeadline: new Date('2024-02-13T23:59:59'),
-    isPublic: true,
-    commentsEnabled: true,
-    tags: ['AI', 'Machine Learning', 'Technology'],
-    image: '/events/ai-workshop.jpg'
-  },
-  {
-    id: '2',
-    title: 'Programming Contest 2024',
-    description: 'Annual programming contest with exciting prizes worth BDT 50,000.',
-    category: 'competition' as const,
-    type: 'competition' as const,
-    startDate: new Date('2024-02-20T09:00:00'),
-    endDate: new Date('2024-02-20T18:00:00'),
-    location: 'Main Auditorium',
-    isOnline: false,
-    maxParticipants: 100,
-    currentParticipants: 78,
-    registrationDeadline: new Date('2024-02-18T23:59:59'),
-    isPublic: true,
-    commentsEnabled: true,
-    tags: ['Programming', 'Competition', 'Coding'],
-    image: '/events/programming-contest.jpg'
-  }
-]
 
-const mockClubMembers = [
-  {
-    id: '1',
-    name: 'Ahmed Rahman',
-    role: 'President',
-    department: 'Computer Science',
-    year: '4th Year',
-    joinedAt: new Date('2022-09-01'),
-    avatar: '/members/ahmed.jpg'
-  },
-  {
-    id: '2',
-    name: 'Fatima Khan',
-    role: 'Vice President',
-    department: 'Computer Science',
-    year: '3rd Year',
-    joinedAt: new Date('2022-10-15'),
-    avatar: '/members/fatima.jpg'
-  },
-  {
-    id: '3',
-    name: 'Karim Ahmed',
-    role: 'Secretary',
-    department: 'Computer Science',
-    year: '3rd Year',
-    joinedAt: new Date('2023-01-20'),
-    avatar: '/members/karim.jpg'
-  }
-]
-
-interface JoinForm {
+interface JoinFormData {
   name: string
   email: string
   studentId: string
   department: string
   year: string
-  motivation: string
+  reason: string
 }
 
-interface JoinForm {
-  name: string
-  email: string
-  studentId: string
-  department: string
-  year: string
-  motivation: string
-}
-
-export default function ClubDetailPage({ params }: { params: { slug: string } }) {
+export default function ClubDetailPage() {
+  const params = useParams()
+  const slug = params.slug as string
+  const [activeTab, setActiveTab] = useState('about')
   const [showJoinForm, setShowJoinForm] = useState(false)
-  const [joinForm, setJoinForm] = useState<JoinForm>({
+  const [currentCoverIndex, setCurrentCoverIndex] = useState(0)
+  const [joinForm, setJoinForm] = useState<JoinFormData>({
     name: '',
     email: '',
     studentId: '',
     department: '',
     year: '',
-    motivation: ''
+    reason: ''
   })
 
-  const handleJoinClub = (e: React.FormEvent) => {
+  const { data: clubData, isLoading, error } = useGetClubByIdQuery(slug)
+  const [club, setClub] = useState<IClubUser | null>(null)
+
+  // Authentication state
+  const { user, isAuthenticated } = useAppSelector((state) => state.auth)
+  
+  // Follow functionality
+  const [toggleClubFollow] = useToggleClubFollowMutation()
+
+  // Update local club state when API data changes
+  useEffect(() => {
+    if (clubData?.data) {
+      setClub(clubData.data)
+    }
+  }, [clubData])
+
+  // Auto-slideshow for cover images
+  useEffect(() => {
+    if (club?.clubCovers && club.clubCovers.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentCoverIndex((prev) => 
+          prev === club.clubCovers!.length - 1 ? 0 : prev + 1
+        )
+      }, 5000) // Change every 5 seconds
+
+      return () => clearInterval(interval)
+    }
+  }, [club?.clubCovers])
+
+  const handleJoinSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Joining club with data:', joinForm)
+    console.log('Join form submitted:', joinForm)
     setShowJoinForm(false)
     setJoinForm({
       name: '',
@@ -173,518 +86,726 @@ export default function ClubDetailPage({ params }: { params: { slug: string } })
       studentId: '',
       department: '',
       year: '',
-      motivation: ''
+      reason: ''
     })
   }
 
-  const handleRegisterEvent = (eventId: string) => {
-    console.log('Registering for event:', eventId)
+  // Follow handler
+  const handleFollow = async () => {
+    if (!isAuthenticated || !club?._id) return
+    
+    try {
+      const result = await toggleClubFollow( club._id ).unwrap()
+      // Update the local club state with the new isFollowing value
+      setClub(prev => prev ? { ...prev, isFollowing: result.data?.isFollowing } : null)
+    } catch (error) {
+      console.error('Error toggling club follow:', error)
+    }
   }
 
-  const upcomingEvents = mockClubEvents.filter(event => isEventUpcoming(event.startDate))
+  // Role-based authorization checks
+  const canInteract = () => {
+    if (!isAuthenticated || !club) return false
+    // Only members can follow clubs - clubs cannot follow other clubs
+    if (user?.role === USER_ROLES.CLUB) return false
+    return true
+  }
+
+  const nextCover = () => {
+    if (club?.clubCovers && club.clubCovers.length > 1) {
+      setCurrentCoverIndex((prev) => 
+        prev === club.clubCovers!.length - 1 ? 0 : prev + 1
+      )
+    }
+  }
+
+  const prevCover = () => {
+    if (club?.clubCovers && club.clubCovers.length > 1) {
+      setCurrentCoverIndex((prev) => 
+        prev === 0 ? club.clubCovers!.length - 1 : prev - 1
+      )
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading club details...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Error Loading Club</h1>
+          <p className="text-gray-600">Failed to load club details. Please try again later.</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!club) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Club Not Found</h1>
+          <p className="text-gray-600">The club you're looking for doesn't exist.</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-gray-50 dark:bg-background text-foreground">
       <Navbar />
-
+      
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Club Header */}
-        <div className="relative overflow-hidden rounded-2xl mb-8 bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80">
-          <div className="absolute inset-0 bg-black/20"></div>
-          <div className="relative px-8 py-12">
-            <div className="flex items-center space-x-6">
-              <div className="w-24 h-24 bg-background rounded-2xl flex items-center justify-center shadow-lg">
-                <span className="text-3xl font-bold text-primary">
-                  {mockClub.name.charAt(0)}
-                </span>
+        {/* Header with Back Button */}
+        {/* <div className="flex justify-between items-center mb-6">
+          <Link href="/clubs">
+            <Button variant="outline">← Back to Clubs</Button>
+          </Link>
+        </div> */}
+
+        {/* Enhanced Club Hero Banner with Cover Slideshow */}
+        <Card className="mb-8 overflow-hidden border bg-card text-card-foreground">
+          <div className="h-[30vw] relative">
+            {/* Cover Image Slideshow */}
+            {club.clubCovers && club.clubCovers.length > 0 ? (
+              <div className="relative w-full h-full">
+                <img 
+                  src={getImageUrl(club.clubCovers[currentCoverIndex])} 
+                  alt={`${club.clubName} cover ${currentCoverIndex + 1}`}
+                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                />
+                
+                {/* Navigation arrows for multiple covers */}
+                {club.clubCovers.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevCover}
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={nextCover}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                    
+                    {/* Dots indicator */}
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                      {club.clubCovers.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentCoverIndex(index)}
+                          className={`w-2 h-2 rounded-full transition-all ${
+                            index === currentCoverIndex ? 'bg-white' : 'bg-white/50'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
-              <div className="flex-1">
-                <h1 className="text-4xl font-bold text-white mb-2">{mockClub.name}</h1>
-                <p className="text-white/80 text-lg mb-4">{mockClub.university}</p>
-                <div className="flex items-center space-x-6 text-white/80">
-                  <span><Users className="w-4 h-4 inline mr-1" />{mockClub.memberCount} members</span>
-                  <span><Calendar className="w-4 h-4 inline mr-1" />Founded {mockClub.foundedYear}</span>
-                  <span><Trophy className="w-4 h-4 inline mr-1" />{mockClub.achievements.length} achievements</span>
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80" />
+            )}
+            
+            {/* Dark overlay */}
+            <div className="absolute inset-0 bg-black/40"></div>
+
+            {/* Club Profile Content */}
+            <div className="absolute inset-0 flex flex-col justify-end p-8">
+              <div className="flex items-end space-x-6">
+                {/* Rounded Profile Picture */}
+                <div className="flex-shrink-0">
+                  <Avatar className="w-32 h-32 border-4 border-white shadow-lg">
+                    <AvatarImage 
+                      src={getImageUrl(club.profile)} 
+                      alt={club.clubName}
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="text-2xl font-bold bg-white text-gray-800">
+                      {club.clubName?.charAt(0) || 'C'}
+                    </AvatarFallback>
+                  </Avatar>
                 </div>
-              </div>
-              <div className="flex flex-col space-y-3">
-                <Button
-                  size="lg"
-                  className="bg-background text-primary hover:bg-muted"
-                  onClick={() => setShowJoinForm(true)}
-                >
-                  Join Club
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="text-white border-white hover:bg-white hover:text-primary"
-                >
-                  Follow
-                </Button>
+
+                {/* Club Information */}
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-white font-bold text-4xl mb-2 truncate">{club.clubName}</h1>
+                  {club.clubTitle && (
+                    <p className="text-white/90 text-xl mb-3">{club.clubTitle}</p>
+                  )}
+
+                  {/* Prominent Information */}
+                  <div className="flex flex-wrap gap-3 mb-4">
+                    {club.university && (
+                      <Badge className="bg-blue-600/90 text-white border-0">
+                        <Globe className="w-4 h-4 mr-1" />
+                        {club.university}
+                      </Badge>
+                    )}
+                    
+                    {club.categories && club.categories.length > 0 && (
+                      <Badge className="bg-green-600/90 text-white border-0">
+                        <Trophy className="w-4 h-4 mr-1" />
+                        {club.categories.join(', ')}
+                      </Badge>
+                    )}
+                    
+                    <Badge className="bg-purple-600/90 text-white border-0">
+                      <Heart className="w-4 h-4 mr-1" />
+                      {club.followersCount || 0} followers
+                    </Badge>
+                    
+                    {club.establishedYear && (
+                      <Badge className="bg-orange-600/90 text-white border-0">
+                        <CalendarDays className="w-4 h-4 mr-1" />
+                        Est. {club.establishedYear}
+                      </Badge>
+                    )}
+                  </div>
+
+                  {/* Additional Info */}
+                  <div className="flex items-center text-white/80 text-sm space-x-4">
+                    <span className="flex items-center">
+                      <Users className="w-4 h-4 mr-1" />
+                      {club.membersCount || 0} members
+                    </span>
+                    {club.rating && club.rating > 0 && (
+                      <span className="flex items-center">
+                        <Star className="w-4 h-4 mr-1" />
+                        {club.rating} rating
+                      </span>
+                    )}
+                    {club.address && (
+                      <span className="flex items-center">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        {club.address}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Follow/Join Button */}
+                <div className="flex-shrink-0 flex space-x-3">
+                  {isAuthenticated ? (
+                    canInteract() ? (
+                      <Button 
+                        onClick={handleFollow}
+                        size="lg"
+                        variant={club?.isFollowing ? "outline" : "default"}
+                        className="font-semibold px-8"
+                      >
+                        {club?.isFollowing ? 'Unfollow' : 'Follow'}
+                      </Button>
+                    ) : (
+                       <Button 
+                         size="lg"
+                         disabled
+                         className="font-semibold px-8"
+                         title="Only members can follow clubs"
+                       >
+                         Follow
+                       </Button>
+                     )
+                  ) : (
+                    <Button 
+                      size="lg"
+                      disabled
+                      className="font-semibold px-8"
+                      title="Please login to follow clubs"
+                    >
+                      Follow
+                    </Button>
+                  )}
+                  <Button 
+                    onClick={() => setShowJoinForm(true)}
+                    size="lg"
+                    className="bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8"
+                  >
+                    Join Club
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Join Form Modal */}
-        {showJoinForm && (
-          <Card className="mb-8 border-[hsl(var(--primary))]/20 bg-[hsl(var(--primary))]/5">
-            <CardHeader>
-              <CardTitle>Join {mockClub.name}</CardTitle>
-              <CardDescription>
-                Fill out the form below to request membership to this club
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleJoinClub} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Full Name *
-                    </label>
-                    <Input
-                      required
-                      value={joinForm.name}
-                      onChange={(e) => setJoinForm({ ...joinForm, name: e.target.value })}
-                      placeholder="Your full name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Email Address *
-                    </label>
-                    <Input
-                      type="email"
-                      required
-                      value={joinForm.email}
-                      onChange={(e) => setJoinForm({ ...joinForm, email: e.target.value })}
-                      placeholder="your.email@university.edu.bd"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Student ID *
-                    </label>
-                    <Input
-                      required
-                      value={joinForm.studentId}
-                      onChange={(e) => setJoinForm({ ...joinForm, studentId: e.target.value })}
-                      placeholder="CSE2021001"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Department *
-                    </label>
-                    <Input
-                      required
-                      value={joinForm.department}
-                      onChange={(e) => setJoinForm({ ...joinForm, department: e.target.value })}
-                      placeholder="Computer Science"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Year *
-                    </label>
-                    <select
-                      required
-                      value={joinForm.year}
-                      onChange={(e) => setJoinForm({ ...joinForm, year: e.target.value })}
-                      className="w-full p-2 border rounded-md bg-background"
-                    >
-                      <option value="">Select year</option>
-                      <option value="1st Year">1st Year</option>
-                      <option value="2nd Year">2nd Year</option>
-                      <option value="3rd Year">3rd Year</option>
-                      <option value="4th Year">4th Year</option>
-                      <option value="Masters">Masters</option>
-                      <option value="PhD">PhD</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Why do you want to join this club? *
-                  </label>
-                  <textarea
-                    required
-                    value={joinForm.motivation}
-                    onChange={(e) => setJoinForm({ ...joinForm, motivation: e.target.value })}
-                    className="w-full p-3 border rounded-md bg-background"
-                    rows={4}
-                    placeholder="Tell us about your interest and what you hope to contribute..."
-                  />
-                </div>
-
-                <div className="flex justify-end space-x-2">
-                  <Button type="button" variant="outline" onClick={() => setShowJoinForm(false)}>
-                    Cancel
-                  </Button>
-                  <Button type="submit">
-                    Submit Application
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        )}
+        </Card>
 
         {/* Main Content */}
-        <Tabs defaultValue="about" className="space-y-6 ">
-          <TabsList className="grid w-full grid-cols-5 bg-card">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="about">About</TabsTrigger>
             <TabsTrigger value="events">Events</TabsTrigger>
-            <TabsTrigger value="members">Members</TabsTrigger>
             <TabsTrigger value="achievements">Achievements</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
           </TabsList>
 
-          {/* About Tab */}
-          <TabsContent value="about" className="space-y-6">
+          <TabsContent value="about" className="mt-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <Card className="bg-card">
+              {/* Main About Content */}
+              <div className="lg:col-span-2 space-y-6">
+                {/* Club Description */}
+                <Card>
                   <CardHeader>
-                    <CardTitle>About Our Club</CardTitle>
+                    <CardTitle className="flex items-center">
+                      <Globe className="w-5 h-5 mr-2" />
+                      About {club.clubName}
+                    </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <h3 className="font-semibold text-lg mb-2">Description</h3>
-                      <p className="text-muted-foreground">{mockClub.description}</p>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg mb-2">Our Purpose</h3>
-                      <p className="text-muted-foreground">{mockClub.purpose}</p>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg mb-2">What We Do</h3>
-                      <ul className="list-disc list-inside text-muted-foreground space-y-1">
-                        <li>Organize technical workshops and seminars</li>
-                        <li>Host programming contests and hackathons</li>
-                        <li>Facilitate networking with industry professionals</li>
-                        <li>Provide mentorship for academic and career development</li>
-                        <li>Collaborate on open-source projects</li>
-                        <li>Organize study groups and peer learning sessions</li>
-                      </ul>
-                    </div>
+                  <CardContent>
+                    <div
+                      className="prose text-gray-600 leading-relaxed"
+                      dangerouslySetInnerHTML={{
+                        __html: DOMPurify.sanitize(
+                          club.clubDescription ||
+                          club.description ||
+                          '<p>No description available for this club.</p>'
+                        ),
+                      }}
+/>
                   </CardContent>
                 </Card>
+
+                {/* Goals */}
+                {club.clubGoal && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <Star className="w-5 h-5 mr-2" />
+                        Goals
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-gray-600 leading-relaxed">{club.clubGoal}</p>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
 
+              {/* Sidebar Information */}
               <div className="space-y-6">
-                {/* Quick Stats */}
-                <Card className="bg-card">
+                {/* Club Statistics */}
+                <Card>
                   <CardHeader>
                     <CardTitle>Club Statistics</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Total Members</span>
-                      <span className="font-semibold">{mockClub.memberCount}</span>
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center text-sm">
+                        <Users className="h-4 w-4 mr-2 text-gray-400" />
+                        Members
+                      </span>
+                      <span className="font-semibold">{club.membersCount || 0}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Founded</span>
-                      <span className="font-semibold">{mockClub.foundedYear}</span>
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center text-sm">
+                        <Heart className="h-4 w-4 mr-2 text-gray-400" />
+                        Followers
+                      </span>
+                      <span className="font-semibold">{club.followersCount || 0}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Active Events</span>
-                      <span className="font-semibold">{upcomingEvents.length}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Achievements</span>
-                      <span className="font-semibold">{mockClub.achievements.length}</span>
-                    </div>
+                    {club.rating && club.rating > 0 && (
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center text-sm">
+                          <Star className="h-4 w-4 mr-2 text-gray-400" />
+                          Rating
+                        </span>
+                        <span className="font-semibold">{club.rating}</span>
+                      </div>
+                    )}
+                    {club.establishedYear && (
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center text-sm">
+                          <CalendarDays className="h-4 w-4 mr-2 text-gray-400" />
+                          Established
+                        </span>
+                        <span className="font-semibold">{club.establishedYear}</span>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
 
-                {/* Social Links */}
-                <Card className="bg-card">
+                {/* Categories */}
+                {club.categories && club.categories.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Categories</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-wrap gap-2">
+                        {club.categories.map((category, index) => (
+                          <Badge key={index} variant="outline">
+                            {category}
+                          </Badge>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Location */}
+                {club.address && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Location</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="flex items-center text-sm">
+                        <MapPin className="h-4 w-4 mr-2 text-gray-400" />
+                        {club.address}
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </div>
+
+            {/* Combined Purpose and Working Areas Section */}
+            {(club.clubPurpose || (club.clubWorkingAreas && club.clubWorkingAreas.length > 0)) && (
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <Card>
                   <CardHeader>
-                    <CardTitle>Connect With Us</CardTitle>
+                    <CardTitle className="flex items-center text-xl">
+                      <Trophy className="w-6 h-6 mr-3 text-blue-600" />
+                      Purpose & Working Areas
+                    </CardTitle>
+                    <CardDescription>
+                      Our mission and the areas we focus on
+                    </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-3">
-                    {mockClub.socialLinks.facebook && (
-                      <a
-                        href={mockClub.socialLinks.facebook}
-                        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted transition-colors"
-                      >
-                        <span className="text-primary">📘</span>
-                        <span>Facebook</span>
-                      </a>
+                  <CardContent className="space-y-6">
+                    {/* Purpose Section */}
+                    {club.clubPurpose && (
+                      <div>
+                        <h4 className="font-semibold text-lg mb-3 text-gray-800">Our Purpose</h4>
+                          <div
+                            className="prose text-gray-600 leading-relaxed"
+                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(club.clubPurpose) }}
+                          />
+                      </div>
                     )}
-                    {mockClub.socialLinks.instagram && (
-                      <a
-                        href={mockClub.socialLinks.instagram}
-                        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted transition-colors"
-                      >
-                        <span className="text-primary">📷</span>
-                        <span>Instagram</span>
-                      </a>
-                    )}
-                    {mockClub.socialLinks.website && (
-                      <a
-                        href={mockClub.socialLinks.website}
-                        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted transition-colors"
-                      >
-                        <span className="text-muted-foreground">🌐</span>
-                        <span>Website</span>
-                      </a>
+
+                    {/* Working Areas Section */}
+                    {club.clubWorkingAreas && club.clubWorkingAreas.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-lg mb-3 text-gray-800">Working Areas</h4>
+                        <div className="flex flex-wrap gap-3">
+                          {club.clubWorkingAreas.map((area, index) => (
+                            <Badge 
+                              key={index} 
+                              variant="secondary" 
+                              className="text-sm px-3 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
+                            >
+                              <Users className="w-3 h-3 mr-1" />
+                              {area}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
                     )}
                   </CardContent>
                 </Card>
               </div>
-            </div>
+            )}
           </TabsContent>
 
-          {/* Events Tab */}
-          <TabsContent value="events" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Club Events</h2>
-              <Badge variant="info">{upcomingEvents.length} upcoming events</Badge>
-            </div>
+          <TabsContent value="events" className="mt-6">
+            <ClubEvents clubId={club._id} />
+          </TabsContent>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {mockClubEvents.map((event) => {
-                const isUpcoming = isEventUpcoming(event.startDate)
-                const spotsLeft = event.maxParticipants ? event.maxParticipants - event.currentParticipants : null
+          <TabsContent value="achievements" className="mt-6">
+            <ClubAchievements clubId={club._id} />
+          </TabsContent>
 
-                return (
-                  <Card key={event.id} className="relative flex h-full flex-col hover:shadow-lg transition-shadow bg-card">
-                    <CardContent className="p-6 pb-20">
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="flex space-x-2">
-                          <Badge variant="outline">{event.category}</Badge>
-                          {event.type === 'competition' && (
-                            <Badge variant="warning"><Trophy className="w-4 h-4 mr-1" />Competition</Badge>
-                          )}
-                          {isUpcoming && (
-                            <Badge variant="success">
-                              {getTimeUntil(event.startDate)}
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
+          <TabsContent value="members" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Club Members</CardTitle>
+                <CardDescription>
+                  Current members of {club.clubName}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">Member list feature coming soon...</p>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-                      <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
-                      <p className="text-muted-foreground mb-4">{event.description}</p>
-
-                      <div className="space-y-2 text-sm text-muted-foreground mb-4">
-                        <p><Calendar className="w-4 h-4 inline mr-1" />{formatDate(event.startDate)} at {formatTime(event.startDate)}</p>
-                        <p><MapPin className="w-4 h-4 inline mr-1" />{event.location}</p>
-                        {event.maxParticipants && (
-                          <p><Users className="w-4 h-4 inline mr-1" />{event.currentParticipants}/{event.maxParticipants} registered</p>
-                        )}
-                      </div>
-
-                      {/* Progress Bar */}
-                      {event.maxParticipants && (
-                        <div className="mb-4">
-                          <div className="w-full bg-muted rounded-full h-2">
-                            <div
-                              className="bg-primary h-2 rounded-full transition-all duration-300"
-                              style={{ width: `${(event.currentParticipants / event.maxParticipants) * 100}%` }}
-                            ></div>
+          <TabsContent value="contact" className="mt-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Primary Contact Information */}
+              <Card className="h-fit">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Mail className="h-5 w-5 text-blue-600" />
+                    Contact Information
+                  </CardTitle>
+                  <CardDescription>Get in touch with the club</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {club && (
+                    <>
+                      {club.email && (
+                        <div className="flex items-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                          <div className="flex-shrink-0 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                            <Mail className="h-5 w-5 text-white" />
+                          </div>
+                          <div className="ml-3 flex-1">
+                            <p className="text-sm font-medium text-gray-900">Email</p>
+                            <a href={`mailto:${club.email}`} className="text-blue-600 hover:text-blue-800 font-medium">
+                              {club.email}
+                            </a>
                           </div>
                         </div>
                       )}
-                    </CardContent>
-
-                    {/* Actions pinned to bottom */}
-                    {isUpcoming && (
-                      <div className="absolute bottom-0 left-0 right-0 border-t bg-background/80 backdrop-blur p-4">
-                        <div className="flex space-x-2">
-                          <Button
-                            className="flex-1"
-                            disabled={spotsLeft === 0}
-                            onClick={() => handleRegisterEvent(event.id)}
-                          >
-                            {spotsLeft === 0 ? 'Event Full' : 'Register Now'}
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            Details
-                          </Button>
+                      
+                      {club.phone && (
+                        <div className="flex items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                          <div className="flex-shrink-0 w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
+                            <Phone className="h-5 w-5 text-white" />
+                          </div>
+                          <div className="ml-3 flex-1">
+                            <p className="text-sm font-medium text-gray-900">Phone</p>
+                            <a href={`tel:${club.phone}`} className="text-green-600 hover:text-green-800 font-medium">
+                              {club.phone}
+                            </a>
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </Card>
-                )
-              })}
-            </div>
-          </TabsContent>
-
-          {/* Members Tab */}
-          <TabsContent value="members" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Club Members</h2>
-              <Badge variant="info">{mockClub.memberCount} total members</Badge>
-            </div>
-
-            {/* Leadership Team */}
-            <Card className="bg-card">
-              <CardHeader>
-                <CardTitle>Leadership Team</CardTitle>
-                <CardDescription>Meet the people leading our club</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {mockClubMembers.map((member) => (
-                    <div key={member.id} className="text-center">
-                      <div className="w-20 h-20 bg-muted rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <span className="text-xl font-semibold text-muted-foreground">
-                          {member.name.charAt(0)}
-                        </span>
-                      </div>
-                      <h3 className="font-semibold text-lg">{member.name}</h3>
-                      <p className="text-primary font-medium">{member.role}</p>
-                      <p className="text-sm text-muted-foreground">{member.department}</p>
-                      <p className="text-sm text-muted-foreground">{member.year}</p>
-                      <p className="text-xs text-muted-foreground mt-2">
-                        Member since {formatDate(member.joinedAt)}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Member Benefits */}
-            <Card className="bg-card">
-              <CardHeader>
-                <CardTitle>Member Benefits</CardTitle>
-                <CardDescription>What you get as a club member</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="font-semibold mb-3">Learning & Development</h4>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li>• Access to exclusive workshops and seminars</li>
-                      <li>• Mentorship from senior members and alumni</li>
-                      <li>• Skill development programs</li>
-                      <li>• Technical project collaboration</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-3">Networking & Opportunities</h4>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li>• Industry connections and job opportunities</li>
-                      <li>• Alumni network access</li>
-                      <li>• Competition participation</li>
-                      <li>• Leadership development opportunities</li>
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Achievements Tab */}
-          <TabsContent value="achievements" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Our Achievements</h2>
-              <Badge variant="info">{mockClub.achievements.length} achievements</Badge>
-            </div>
-
-            <div className="space-y-6">
-              {mockClub.achievements.map((achievement) => (
-                <Card key={achievement.id} className="hover:shadow-lg transition-shadow bg-card">
-                  <CardContent className="p-6">
-                    <div className="flex items-start space-x-6">
-                      <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Trophy className="w-8 h-8 text-amber-600 dark:text-amber-400" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-xl font-semibold mb-2">{achievement.title}</h3>
-                        <p className="text-muted-foreground mb-3">{achievement.description}</p>
-                        <p className="text-sm text-muted-foreground">
-                          Achieved on {formatDate(achievement.date)}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* Contact Tab */}
-          <TabsContent value="contact" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-card">
-                <CardHeader>
-                  <CardTitle>Get in Touch</CardTitle>
-                  <CardDescription>Contact us for any questions or inquiries</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center space-x-3">
-                    <Mail className="w-5 h-5 text-primary" />
-                    <div>
-                      <p className="font-medium">Email</p>
-                      <p className="text-muted-foreground">{mockClub.contactEmail}</p>
-                    </div>
-                  </div>
-                  {mockClub.contactPhone && (
-                    <div className="flex items-center space-x-3">
-                      <Phone className="w-5 h-5 text-primary" />
-                      <div>
-                        <p className="font-medium">Phone</p>
-                        <p className="text-muted-foreground">{mockClub.contactPhone}</p>
-                      </div>
-                    </div>
+                      )}
+                      
+                      {club.address && (
+                        <div className="flex items-start p-3 bg-purple-50 rounded-lg">
+                          <div className="flex-shrink-0 w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
+                            <MapPin className="h-5 w-5 text-white" />
+                          </div>
+                          <div className="ml-3 flex-1">
+                            <p className="text-sm font-medium text-gray-900">Address</p>
+                            <p className="text-purple-600 font-medium">{club.address}</p>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {club.university && (
+                        <div className="flex items-center p-3 bg-orange-50 rounded-lg">
+                          <div className="flex-shrink-0 w-10 h-10 bg-orange-600 rounded-full flex items-center justify-center">
+                            <Users className="h-5 w-5 text-white" />
+                          </div>
+                          <div className="ml-3 flex-1">
+                            <p className="text-sm font-medium text-gray-900">University</p>
+                            <p className="text-orange-600 font-medium">{club.university}</p>
+                          </div>
+                        </div>
+                      )}
+                    </>
                   )}
-                  <div className="flex items-center space-x-3">
-                    <Building2 className="w-5 h-5 text-primary" />
-                    <div>
-                      <p className="font-medium">University</p>
-                      <p className="text-muted-foreground">{mockClub.university}</p>
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-card">
+              {/* Social Media & Online Presence */}
+              <Card className="h-fit">
                 <CardHeader>
-                  <CardTitle>Send us a Message</CardTitle>
-                  <CardDescription>We'd love to hear from you</CardDescription>
+                  <CardTitle className="flex items-center gap-2">
+                    <Globe className="h-5 w-5 text-purple-600" />
+                    Connect With Us
+                  </CardTitle>
+                  <CardDescription>Follow us on social media</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <form className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Your Name
-                      </label>
-                      <Input placeholder="Enter your name" />
+                  {club?.socialLinks ? (
+                    <div className="space-y-3">
+                      {club.socialLinks.website && (
+                        <a 
+                          href={club.socialLinks.website} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                        >
+                          <div className="flex-shrink-0 w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center group-hover:bg-gray-700 transition-colors">
+                            <Globe className="h-5 w-5 text-white" />
+                          </div>
+                          <div className="ml-3 flex-1">
+                            <p className="text-sm font-medium text-gray-900">Website</p>
+                            <p className="text-gray-600 text-sm truncate">{club.socialLinks.website}</p>
+                          </div>
+                        </a>
+                      )}
+                      
+                      {club.socialLinks.facebook && (
+                        <a 
+                          href={club.socialLinks.facebook} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="flex items-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors group"
+                        >
+                          <div className="flex-shrink-0 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center group-hover:bg-blue-700 transition-colors">
+                            <Facebook className="h-5 w-5 text-white" />
+                          </div>
+                          <div className="ml-3 flex-1">
+                            <p className="text-sm font-medium text-gray-900">Facebook</p>
+                            <p className="text-blue-600 text-sm">Follow our page</p>
+                          </div>
+                        </a>
+                      )}
+                      
+                      {club.socialLinks.instagram && (
+                        <a 
+                          href={club.socialLinks.instagram} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="flex items-center p-3 bg-pink-50 rounded-lg hover:bg-pink-100 transition-colors group"
+                        >
+                          <div className="flex-shrink-0 w-10 h-10 bg-pink-600 rounded-full flex items-center justify-center group-hover:bg-pink-700 transition-colors">
+                            <Instagram className="h-5 w-5 text-white" />
+                          </div>
+                          <div className="ml-3 flex-1">
+                            <p className="text-sm font-medium text-gray-900">Instagram</p>
+                            <p className="text-pink-600 text-sm">See our photos</p>
+                          </div>
+                        </a>
+                      )}
+                      
+                      {club.socialLinks.twitter && (
+                        <a 
+                          href={club.socialLinks.twitter} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="flex items-center p-3 bg-sky-50 rounded-lg hover:bg-sky-100 transition-colors group"
+                        >
+                          <div className="flex-shrink-0 w-10 h-10 bg-sky-600 rounded-full flex items-center justify-center group-hover:bg-sky-700 transition-colors">
+                            <Twitter className="h-5 w-5 text-white" />
+                          </div>
+                          <div className="ml-3 flex-1">
+                            <p className="text-sm font-medium text-gray-900">Twitter</p>
+                            <p className="text-sky-600 text-sm">Latest updates</p>
+                          </div>
+                        </a>
+                      )}
+                      
+                      {club.socialLinks.linkedin && (
+                        <a 
+                          href={club.socialLinks.linkedin} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="flex items-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors group"
+                        >
+                          <div className="flex-shrink-0 w-10 h-10 bg-blue-700 rounded-full flex items-center justify-center group-hover:bg-blue-800 transition-colors">
+                            <Linkedin className="h-5 w-5 text-white" />
+                          </div>
+                          <div className="ml-3 flex-1">
+                            <p className="text-sm font-medium text-gray-900">LinkedIn</p>
+                            <p className="text-blue-700 text-sm">Professional network</p>
+                          </div>
+                        </a>
+                      )}
+                      
+                      {!club.socialLinks.website && !club.socialLinks.facebook && !club.socialLinks.instagram && !club.socialLinks.twitter && !club.socialLinks.linkedin && (
+                        <div className="text-center py-8">
+                          <Globe className="h-12 w-12 mx-auto text-gray-300 mb-3" />
+                          <p className="text-gray-500">No social media links available</p>
+                        </div>
+                      )}
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Email Address
-                      </label>
-                      <Input type="email" placeholder="your.email@example.com" />
+                  ) : (
+                    <div className="text-center py-8">
+                      <Globe className="h-12 w-12 mx-auto text-gray-300 mb-3" />
+                      <p className="text-gray-500">No social media links available</p>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Message
-                      </label>
-                      <textarea
-                        className="w-full p-3 border rounded-md bg-background"
-                        rows={4}
-                        placeholder="Your message..."
-                      />
-                    </div>
-                    <Button className="w-full">Send Message</Button>
-                  </form>
+                  )}
                 </CardContent>
               </Card>
             </div>
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Join Form Modal */}
+      {showJoinForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle>Join {club.clubName}</CardTitle>
+              <CardDescription>
+                Fill out this form to request membership
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleJoinSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Full Name</label>
+                  <Input
+                    value={joinForm.name}
+                    onChange={(e) => setJoinForm({...joinForm, name: e.target.value})}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Email</label>
+                  <Input
+                    type="email"
+                    value={joinForm.email}
+                    onChange={(e) => setJoinForm({...joinForm, email: e.target.value})}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Student ID</label>
+                  <Input
+                    value={joinForm.studentId}
+                    onChange={(e) => setJoinForm({...joinForm, studentId: e.target.value})}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Department</label>
+                  <Input
+                    value={joinForm.department}
+                    onChange={(e) => setJoinForm({...joinForm, department: e.target.value})}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Year</label>
+                  <Input
+                    value={joinForm.year}
+                    onChange={(e) => setJoinForm({...joinForm, year: e.target.value})}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Why do you want to join?</label>
+                  <Textarea
+                    value={joinForm.reason}
+                    onChange={(e) => setJoinForm({...joinForm, reason: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className="flex space-x-2">
+                  <Button type="submit" className="flex-1">
+                    Submit Application
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setShowJoinForm(false)}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   )
 }

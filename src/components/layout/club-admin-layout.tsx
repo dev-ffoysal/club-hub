@@ -15,10 +15,13 @@ import {
   TrendingUp,
   Building2,
   Settings,
+  Trophy,
+  Shield,
   X,
   Menu,
   Bell,
 } from 'lucide-react'
+import { ThemeToggle } from '../ui/theme-toggle'
 
 interface ClubAdminLayoutProps {
   children: React.ReactNode
@@ -27,7 +30,9 @@ interface ClubAdminLayoutProps {
 const sidebarNavigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: BarChart3, description: 'Overview and statistics' },
   { name: 'Members', href: '/admin/members', icon: Users, description: 'Manage club members', badge: 12 },
+  { name: 'Committees', href: '/admin/committees', icon: Shield, description: 'Manage club committees' },
   { name: 'Events', href: '/admin/events', icon: Calendar, description: 'Create and manage events' },
+  { name: 'Achievements', href: '/admin/achievements', icon: Trophy, description: 'Manage club achievements' },
   { name: 'Communications', href: '/admin/communications', icon: MessageCircle, description: 'Group chat and notifications' },
   { name: 'Finances', href: '/admin/finances', icon: DollarSign, description: 'Financial management' },
   { name: 'Analytics', href: '/admin/analytics', icon: TrendingUp, description: 'Club performance metrics' },
@@ -118,7 +123,18 @@ export function ClubAdminLayout({ children }: ClubAdminLayoutProps) {
                 <div className="text-xs text-muted-foreground">University of Dhaka</div>
               </div>
             </div>
-            <Button variant="outline" size="sm" className="w-full mt-3">
+            <div className="mt-3 flex space-x-2">
+              <Button variant="outline" size="sm" className="flex-1" asChild>
+                <Link href="/admin/settings">Settings</Link>
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => {
+                // TODO: Implement sign out functionality
+                console.log('Club Admin sign out clicked')
+              }}>
+                Sign Out
+              </Button>
+            </div>
+            <Button variant="outline" size="sm" className="w-full mt-2">
               View Public Profile
             </Button>
           </div>
@@ -140,6 +156,7 @@ export function ClubAdminLayout({ children }: ClubAdminLayoutProps) {
             </Button>
 
             <div className="flex items-center space-x-2 sm:space-x-4">
+              <ThemeToggle />
               <Button variant="ghost" size="sm" className="hidden sm:flex">
                 <Bell className="w-4 h-4 mr-2" />
                 Notifications
